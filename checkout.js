@@ -1,5 +1,28 @@
-const CHECKOUT_ONLINE_ATIVO = false;
+/* ================================
+CONFIGURAÇÃO
+================================ */
+
 const BACKEND_URL = "https://sitecondebonfim.onrender.com";
+const CHECKOUT_ONLINE_ATIVO = false;
+
+/* ================================
+UTILS
+================================ */
+
+function onlyDigits(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+function brl(value) {
+  return Number(value || 0).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+}
+
+/* ================================
+TIPO ENTREGA / PAGAMENTO
+================================ */
 
 function getCheckoutDeliveryType() {
   return document.querySelector('input[name="checkoutDeliveryType"]:checked')?.value || "Entrega";
@@ -14,10 +37,17 @@ function updateCheckoutDeliveryUI() {
   const deliveryType = getCheckoutDeliveryType();
 
   if (!addressWrap) return;
-  addressWrap.style.display = deliveryType === "Retirada" ? "none" : "block";
+
+  addressWrap.style.display =
+    deliveryType === "Retirada" ? "none" : "block";
 }
 
+/* ================================
+PERSISTÊNCIA LOCAL
+================================ */
+
 function fillCheckoutFormFromStorage() {
+
   const nameInput = document.getElementById("checkoutName");
   const phoneInput = document.getElementById("checkoutPhone");
   const emailInput = document.getElementById("checkoutEmail");
@@ -35,11 +65,13 @@ function fillCheckoutFormFromStorage() {
   if (notesInput) notesInput.value = localStorage.getItem("cb_checkout_notes") || "";
 
   const savedDelivery = localStorage.getItem("cb_delivery_type") || "Entrega";
+
   document.querySelectorAll('input[name="checkoutDeliveryType"]').forEach((input) => {
     input.checked = input.value === savedDelivery;
   });
 
   const savedPayment = localStorage.getItem("cb_checkout_payment_method") || "PIX";
+
   document.querySelectorAll('input[name="checkoutPaymentMethod"]').forEach((input) => {
     input.checked = input.value === savedPayment;
   });
@@ -48,6 +80,7 @@ function fillCheckoutFormFromStorage() {
 }
 
 function setupCheckoutFieldPersistence() {
+
   const fieldMap = [
     ["checkoutName", "cb_customer_name"],
     ["checkoutPhone", "cb_customer_phone"],
@@ -59,89 +92,138 @@ function setupCheckoutFieldPersistence() {
   ];
 
   fieldMap.forEach(([id, key]) => {
+
     const el = document.getElementById(id);
     if (!el) return;
 
     el.addEventListener("input", () => {
       localStorage.setItem(key, el.value.trim());
     });
+
   });
 
   document.querySelectorAll('input[name="checkoutDeliveryType"]').forEach((input) => {
+
     input.addEventListener("change", () => {
+
       localStorage.setItem("cb_delivery_type", input.value);
       updateCheckoutDeliveryUI();
+
     });
+
   });
 
   document.querySelectorAll('input[name="checkoutPaymentMethod"]').forEach((input) => {
+
     input.addEventListener("change", () => {
+
       localStorage.setItem("cb_checkout_payment_method", input.value);
+
     });
+
   });
 }
 
+/* ================================
+RENDER CHECKOUT
+================================ */
+
 function renderCheckoutPage() {
+
   const itemsWrap = document.getElementById("checkoutItems");
   const subtotalEl = document.getElementById("checkoutSubtotal");
   const totalEl = document.getElementById("checkoutTotal");
   const shippingEl = document.getElementById("checkoutShippingValue");
 
-  if (!itemsWrap || !subtotalEl || !totalEl || !shippingEl) return;
+  if (!itemsWrap) return;
 
   const items = getCartItems();
+
   itemsWrap.innerHTML = "";
 
   if (!items.length) {
+
     itemsWrap.innerHTML = `<div class="emptyState">Seu carrinho está vazio.</div>`;
+
     subtotalEl.textContent = brl(0);
     totalEl.textContent = brl(0);
+
     shippingEl.textContent = "A combinar";
+
     return;
   }
 
   items.forEach(({ product, qty }) => {
+
     const item = document.createElement("div");
+
     item.className = "checkoutItem";
+
     item.innerHTML = `
       <div class="checkoutItem__info">
         <span class="checkoutItem__name">${product.name}</span>
         <span class="checkoutItem__meta">${qty}x ${brl(product.price)}</span>
       </div>
-      <strong class="checkoutItem__value">${brl(product.price * qty)}</strong>
+
+      <strong class="checkoutItem__value">
+        ${brl(product.price * qty)}
+      </strong>
     `;
+
     itemsWrap.appendChild(item);
+
   });
 
   const subtotal = cartSubtotal();
+
   subtotalEl.textContent = brl(subtotal);
   totalEl.textContent = brl(subtotal);
   shippingEl.textContent = "A combinar";
 }
 
+/* ================================
+BUILD DATA
+================================ */
+
 function buildCheckoutData() {
+
   return {
+
     name: (document.getElementById("checkoutName")?.value || "").trim(),
     phone: (document.getElementById("checkoutPhone")?.value || "").trim(),
     email: (document.getElementById("checkoutEmail")?.value || "").trim(),
+
     deliveryType: getCheckoutDeliveryType(),
+
     address: (document.getElementById("checkoutAddress")?.value || "").trim(),
     complement: (document.getElementById("checkoutComplement")?.value || "").trim(),
+
     zip: onlyDigits(document.getElementById("checkoutZip")?.value || ""),
+
     paymentMethod: getCheckoutPaymentMethod(),
+
     notes: (document.getElementById("checkoutNotes")?.value || "").trim(),
+
     items: getCartItems().map(({ product, qty }) => ({
       id: product.id,
       name: product.name,
       price: product.price,
       qty
     })),
+
     subtotal: cartSubtotal(),
     total: cartSubtotal()
+
   };
+
 }
 
+/* ================================
+VALIDAÇÃO
+================================ */
+
 function validateCheckoutData(data) {
+
   if (!data.items.length) {
     alert("Seu carrinho está vazio.");
     return false;
@@ -149,178 +231,136 @@ function validateCheckoutData(data) {
 
   if (!data.name) {
     alert("Informe seu nome.");
-    document.getElementById("checkoutName")?.focus();
     return false;
   }
 
   if (!data.phone) {
     alert("Informe seu telefone.");
-    document.getElementById("checkoutPhone")?.focus();
     return false;
   }
 
   if (data.deliveryType === "Entrega" && !data.address) {
     alert("Informe o endereço de entrega.");
-    document.getElementById("checkoutAddress")?.focus();
     return false;
   }
 
   return true;
 }
 
-function setLeadButtonLoading(isLoading) {
-  const whatsBtn = document.getElementById("checkoutWhatsBtn");
-  if (!whatsBtn) return;
-
-  if (isLoading) {
-    whatsBtn.disabled = true;
-    whatsBtn.dataset.originalText = whatsBtn.textContent;
-    whatsBtn.textContent = "Enviando orçamento...";
-    whatsBtn.style.opacity = "0.85";
-    whatsBtn.style.cursor = "wait";
-  } else {
-    whatsBtn.disabled = false;
-    whatsBtn.textContent = whatsBtn.dataset.originalText || "Enviar orçamento no WhatsApp";
-    whatsBtn.style.opacity = "";
-    whatsBtn.style.cursor = "";
-  }
-}
-
-function setCheckoutModeUI() {
-  const payBtn = document.getElementById("checkoutPayBtn");
-  const whatsBtn = document.getElementById("checkoutWhatsBtn");
-
-  if (payBtn) {
-    payBtn.style.display = CHECKOUT_ONLINE_ATIVO ? "block" : "none";
-  }
-
-  if (whatsBtn) {
-    whatsBtn.style.display = "block";
-    whatsBtn.textContent = "Enviar orçamento no WhatsApp";
-  }
-}
+/* ================================
+ENVIO DO ORÇAMENTO
+================================ */
 
 async function sendBudgetToWhatsApp() {
+
   const data = buildCheckoutData();
 
   if (!validateCheckoutData(data)) return;
 
-  console.log("Dados enviados para distribuição:", data);
-  setLeadButtonLoading(true);
+  const btn = document.getElementById("checkoutWhatsBtn");
 
-  try {
-    const response = await fetch(`${BACKEND_URL}/distribuir-lead`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(data)
-});
-
-    const text = await response.text();
-    console.log("Resposta bruta do backend:", text);
-
-    let result;
-    try {
-      result = JSON.parse(text);
-    } catch {
-      setLeadButtonLoading(false);
-      alert("O backend respondeu, mas não retornou JSON válido.");
-      return;
-    }
-
-    console.log("Resposta do backend:", result);
-
-    if (!response.ok || !result.success) {
-      setLeadButtonLoading(false);
-      alert(result.message || "Não foi possível distribuir o orçamento.");
-      return;
-    }
-
-    const whatsappUrl = String(result.whatsapp_url || "").trim();
-
-    if (!whatsappUrl) {
-      setLeadButtonLoading(false);
-      alert("O backend não retornou a URL do WhatsApp.");
-      return;
-    }
-
-    console.log("Lead distribuído para:", result.vendedor);
-    console.log("Abrindo WhatsApp:", whatsappUrl);
-
-    window.open(whatsappUrl, "_blank");
-    setLeadButtonLoading(false);
-  } catch (error) {
-    console.error("Erro ao conectar com o backend:", error);
-    setLeadButtonLoading(false);
-    alert("Erro ao conectar com o backend. Verifique se o backend publicado está online.");
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "Enviando orçamento...";
   }
-}
-
-async function proceedToPayment() {
-  const data = buildCheckoutData();
-
-  if (!validateCheckoutData(data)) return;
 
   try {
-    const response = await fetch(`${BACKEND_URL}/create-checkout`, {
+
+    const response = await fetch(`${BACKEND_URL}/distribuir-lead`, {
+
       method: "POST",
+
       headers: {
         "Content-Type": "application/json"
       },
+
       body: JSON.stringify(data)
+
     });
 
     const result = await response.json();
 
-    if (!response.ok || !result.success) {
-      alert(result.message || "Não foi possível criar o checkout.");
+    if (!result.success) {
+
+      alert(result.message || "Erro ao enviar orçamento.");
       return;
+
     }
 
-    const checkoutUrl = String(result.checkout_url || "").trim();
+    const whatsappUrl = result.whatsapp_url;
 
-    if (!checkoutUrl) {
-      alert("URL de checkout não recebida.");
+    if (!whatsappUrl) {
+
+      alert("Vendedor não retornou link de WhatsApp.");
       return;
+
     }
 
-    window.open(checkoutUrl, "_self");
+    window.open(whatsappUrl, "_blank");
+
   } catch (error) {
-    console.error("Erro ao conectar com o backend:", error);
-    alert("Erro ao conectar com o backend.");
+
+    console.error("Erro:", error);
+
+    alert("Erro ao conectar com o servidor.");
+
   }
+
+  if (btn) {
+
+    btn.disabled = false;
+    btn.innerText = "Enviar orçamento no WhatsApp";
+
+  }
+
 }
 
+/* ================================
+BOTÕES
+================================ */
+
 function editCart() {
+
   localStorage.setItem("openCart", "true");
+
   window.location.href = "./index.html";
+
 }
 
 function goBackPage() {
+
   if (document.referrer) {
+
     history.back();
+
   } else {
+
     window.location.href = "./index.html";
+
   }
+
 }
 
+/* ================================
+INIT
+================================ */
+
 function setupCheckoutPage() {
-  const payBtn = document.getElementById("checkoutPayBtn");
-  const whatsBtn = document.getElementById("checkoutWhatsBtn");
 
   fillCheckoutFormFromStorage();
-  setupCheckoutFieldPersistence();
-  renderCheckoutPage();
-  setCheckoutModeUI();
 
-  if (CHECKOUT_ONLINE_ATIVO && payBtn) {
-    payBtn.addEventListener("click", proceedToPayment);
-  }
+  setupCheckoutFieldPersistence();
+
+  renderCheckoutPage();
+
+  const whatsBtn = document.getElementById("checkoutWhatsBtn");
 
   if (whatsBtn) {
+
     whatsBtn.addEventListener("click", sendBudgetToWhatsApp);
+
   }
+
 }
 
 document.addEventListener("DOMContentLoaded", setupCheckoutPage);
