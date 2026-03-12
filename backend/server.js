@@ -8,141 +8,195 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-/* CONTROLE DE DISTRIBUIÇÃO */
+/*
+  false = sempre roda entre todos os vendedores ativos
+  true  = se o mesmo telefone mandar lead recente, mantém o mesmo vendedor
+*/
 const REUTILIZAR_MESMO_VENDEDOR = false;
 
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
 
 const vendedoresFile = path.join(__dirname, "vendedores.json");
 const leadsFile = path.join(__dirname, "leads.json");
 const filaFile = path.join(__dirname, "fila.json");
 
-/* UTILIDADES */
+/* =========================
+   UTILITÁRIOS
+========================= */
 
-function readJson(file, fallback) {
-  if (!fs.existsSync(file)) {
-    fs.writeFileSync(file, JSON.stringify(fallback, null, 2));
-    return fallback;
+function ensureFile(filePath, fallbackData) {
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify(fallbackData, null, 2), "utf-8");
   }
-  return JSON.parse(fs.readFileSync(file));
 }
 
-function writeJson(file, data) {
-  fs.writeFileSync(file, JSON.stringify(data, null, 2));
+function readJson(filePath, fallbackData) {
+  try {
+    ensureFile(filePath, fallbackData);
+    const raw = fs.readFileSync(filePath, "utf-8");
+    return JSON.parse(raw || JSON.stringify(fallbackData));
+  } catch (error) {
+    console.error(`Erro ao ler ${filePath}:`, error);
+    return fallbackData;
+  }
+}
+
+function writeJson(filePath, data) {
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+  } catch (error) {
+    console.error(`Erro ao escrever ${filePath}:`, error);
+  }
+}
+
+function onlyDigits(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+function normalizePhone(phone) {
+  const digits = onlyDigits(phone);
+  if (!digits) return "";
+  if (digits.startsWith("55")) return digits;
+  return `55${digits}`;
 }
 
 function brl(value) {
-  return Number(value).toLocaleString("pt-BR", {
+  return Number(value || 0).toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL"
   });
 }
 
-function onlyDigits(v) {
-  return String(v || "").replace(/\D/g, "");
+function sanitizeItems(items) {
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .filter((item) => item && Number(item.qty) > 0 && Number(item.price) > 0)
+    .map((item) => {
+      const quantidade = Number(item.qty);
+      const precoUnitario = Number(item.price);
+
+      return {
+        id: item.id,
+        nome: String(item.name || "Item sem nome").trim(),
+        quantidade,
+        preco_unitario: precoUnitario,
+        subtotal: Number((quantidade * precoUnitario).toFixed(2))
+      };
+    });
 }
 
-function normalizePhone(phone) {
-  const digits = onlyDigits(phone);
-  if (digits.startsWith("55")) return digits;
-  return `55${digits}`;
+function generateLeadId(existingLeads) {
+  const nextNumber = (existingLeads?.length || 0) + 1;
+  return `lead-${String(nextNumber).padStart(4, "0")}`;
 }
 
-/* DADOS */
+/* =========================
+   LEITURA / ESCRITA
+========================= */
 
-function getVendedores() {
-  const data = readJson(vendedoresFile, { vendedores: [] });
-  return data.vendedores.filter(v => v.ativo);
+function getVendedoresData() {
+  return readJson(vendedoresFile, { vendedores: [] });
 }
 
-function getLeads() {
+function getLeadsData() {
   return readJson(leadsFile, { leads: [] });
 }
 
-function saveLead(lead) {
-  const leads = getLeads();
-  leads.leads.push(lead);
-  writeJson(leadsFile, leads);
-}
-
-function getFila() {
+function getFilaData() {
   return readJson(filaFile, { ultimo_vendedor_id: 0 });
 }
 
-function saveFila(data) {
+function saveLeadsData(data) {
+  writeJson(leadsFile, data);
+}
+
+function saveFilaData(data) {
   writeJson(filaFile, data);
 }
 
-/* RODÍZIO */
+/* =========================
+   VENDEDORES / FILA
+========================= */
+
+function getActiveVendedores() {
+  const data = getVendedoresData();
+
+  return (data.vendedores || [])
+    .filter((vendedor) => vendedor.ativo === true)
+    .sort((a, b) => Number(a.ordem) - Number(b.ordem));
+}
 
 function pickNextVendedor() {
+  const vendedores = getActiveVendedores();
+  const fila = getFilaData();
 
-  const vendedores = getVendedores();
-  const fila = getFila();
+  if (!vendedores.length) return null;
 
-  const indexAtual = vendedores.findIndex(v => v.id === fila.ultimo_vendedor_id);
+  const ultimoId = Number(fila.ultimo_vendedor_id || 0);
+  const currentIndex = vendedores.findIndex(
+    (vendedor) => Number(vendedor.id) === ultimoId
+  );
 
-  const nextIndex =
-    indexAtual === -1
-      ? 0
-      : (indexAtual + 1) % vendedores.length;
+  let nextVendedor;
 
-  const vendedor = vendedores[nextIndex];
+  if (currentIndex === -1) {
+    nextVendedor = vendedores[0];
+  } else {
+    nextVendedor = vendedores[(currentIndex + 1) % vendedores.length];
+  }
 
-  saveFila({
-    ultimo_vendedor_id: vendedor.id
+  saveFilaData({
+    ultimo_vendedor_id: Number(nextVendedor.id)
   });
 
-  return vendedor;
+  return nextVendedor;
 }
 
-/* BUSCA LEAD RECENTE */
+/* =========================
+   REGRAS DE DUPLICIDADE
+========================= */
 
 function getRecentLeadByPhone(phone) {
+  const normalizedPhone = normalizePhone(phone);
+  if (!normalizedPhone) return null;
 
-  const leads = getLeads().leads;
-
-  const normalized = normalizePhone(phone);
-
-  const limiteTempo = 30 * 60 * 1000;
-
+  const leadsData = getLeadsData();
   const now = Date.now();
+  const timeWindowMs = 30 * 60 * 1000; // 30 minutos
 
-  return leads.find(lead => {
+  const found = (leadsData.leads || [])
+    .filter((lead) => normalizePhone(lead?.cliente?.telefone) === normalizedPhone)
+    .filter((lead) => {
+      const createdAt = new Date(lead.created_at).getTime();
+      return !Number.isNaN(createdAt) && now - createdAt <= timeWindowMs;
+    })
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-    if (!lead.cliente) return false;
-
-    if (normalizePhone(lead.cliente.telefone) !== normalized) return false;
-
-    const created = new Date(lead.created_at).getTime();
-
-    return now - created <= limiteTempo;
-
-  });
-
+  return found[0] || null;
 }
 
-/* ESCOLHER VENDEDOR */
-
 function chooseVendedor(phone) {
-
   if (REUTILIZAR_MESMO_VENDEDOR) {
-
     const recentLead = getRecentLeadByPhone(phone);
 
     if (recentLead?.vendedor_responsavel?.id) {
-
-      const vendedores = getVendedores();
-
-      const vendedor = vendedores.find(
-        v => v.id === recentLead.vendedor_responsavel.id
+      const vendedores = getActiveVendedores();
+      const sameVendedor = vendedores.find(
+        (vendedor) => Number(vendedor.id) === Number(recentLead.vendedor_responsavel.id)
       );
 
-      if (vendedor) {
+      if (sameVendedor) {
         return {
-          vendedor,
-          reused: true
+          vendedor: sameVendedor,
+          reused: true,
+          previousLeadId: recentLead.id
         };
       }
     }
@@ -152,125 +206,205 @@ function chooseVendedor(phone) {
 
   return {
     vendedor,
-    reused: false
+    reused: false,
+    previousLeadId: null
   };
-
 }
 
-/* MENSAGEM WHATSAPP */
+/* =========================
+   LEAD / MENSAGEM
+========================= */
 
-function buildWhatsMessage(data, vendedor) {
+function buildLeadRecord(body, vendedor, reused = false) {
+  const leadsData = getLeadsData();
+  const safeItems = sanitizeItems(body.items);
 
-  const items = data.itens
-    .map(i => `• ${i.quantidade}x ${i.nome} — ${brl(i.subtotal)}`)
+  const total = Number(
+    safeItems.reduce((sum, item) => sum + Number(item.subtotal), 0).toFixed(2)
+  );
+
+  return {
+    id: generateLeadId(leadsData.leads || []),
+    created_at: new Date().toISOString(),
+    cliente: {
+      nome: String(body.name || "").trim(),
+      telefone: normalizePhone(body.phone),
+      email: String(body.email || "").trim()
+    },
+    entrega: {
+      tipo: body.deliveryType || "Entrega",
+      endereco: String(body.address || "").trim(),
+      complemento: String(body.complement || "").trim(),
+      cep: String(body.zip || "").trim()
+    },
+    pagamento: {
+      metodo: body.paymentMethod || "PIX"
+    },
+    itens: safeItems,
+    resumo: {
+      subtotal: total,
+      frete: "A combinar",
+      total
+    },
+    observacoes: String(body.notes || "").trim(),
+    vendedor_responsavel: {
+      id: vendedor.id,
+      nome: vendedor.nome,
+      telefone: vendedor.telefone
+    },
+    status: "novo",
+    reutilizado_mesmo_vendedor: reused
+  };
+}
+
+function saveLead(leadRecord) {
+  const leadsData = getLeadsData();
+  leadsData.leads.push(leadRecord);
+  saveLeadsData(leadsData);
+}
+
+function buildWhatsAppMessage(data, vendedor) {
+  const itemsText = (data.itens || [])
+    .map((item) => `• ${item.quantidade}x ${item.nome} — ${brl(item.subtotal)}`)
     .join("\n");
 
-  const endereco =
+  const enderecoEntrega =
     data.entrega.tipo === "Entrega"
-      ? `${data.entrega.endereco}`
+      ? `${data.entrega.endereco}${data.entrega.complemento ? `, ${data.entrega.complemento}` : ""}${data.entrega.cep ? ` | CEP: ${data.entrega.cep}` : ""}`
       : "Retirada na loja";
 
-  return `*Olá ${vendedor.nome}, chegou um novo orçamento do site.*
+  return `Olá ${vendedor.nome}, chegou um novo orçamento do site.
 
-*Cliente:* ${data.cliente.nome}
-*Telefone:* ${data.cliente.telefone}
+Cliente: ${data.cliente.nome}
+Telefone: ${data.cliente.telefone}
+E-mail: ${data.cliente.email || "Não informado"}
 
-*Itens do pedido:*
-${items}
+Itens do pedido:
+${itemsText}
 
-*Total estimado:* ${brl(data.resumo.total)}
-
-*Forma de pagamento:* ${data.pagamento.metodo}
-
-*Recebimento:* ${data.entrega.tipo}
-
-*Endereço:* ${endereco}
-`;
-
+Total estimado: ${brl(data.resumo.total)}
+Forma de pagamento: ${data.pagamento.metodo}
+Recebimento: ${data.entrega.tipo}
+Endereço de entrega: ${enderecoEntrega}
+${data.observacoes ? `Observações: ${data.observacoes}` : ""}`;
 }
 
-/* ROTA PRINCIPAL */
+/* =========================
+   ROTAS
+========================= */
+
+app.get("/", (req, res) => {
+  res.send("Backend de distribuição de leads online");
+});
+
+app.get("/vendedores", (req, res) => {
+  const data = getVendedoresData();
+
+  res.json({
+    success: true,
+    vendedores: data.vendedores || []
+  });
+});
+
+app.get("/leads", (req, res) => {
+  const data = getLeadsData();
+
+  res.json({
+    success: true,
+    leads: data.leads || []
+  });
+});
 
 app.post("/distribuir-lead", (req, res) => {
-
   try {
+    const {
+      name,
+      phone,
+      email,
+      deliveryType,
+      address,
+      complement,
+      zip,
+      paymentMethod,
+      notes,
+      items
+    } = req.body;
 
-    const body = req.body;
+    const safeItems = sanitizeItems(items);
 
-    const items = body.items.map(item => ({
-      id: item.id,
-      nome: item.name,
-      quantidade: item.qty,
-      preco: item.price,
-      subtotal: item.qty * item.price
-    }));
+    if (!safeItems.length) {
+      return res.status(400).json({
+        success: false,
+        message: "Carrinho vazio."
+      });
+    }
 
-    const total = items.reduce((sum, i) => sum + i.subtotal, 0);
+    if (!name || !String(name).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Nome é obrigatório."
+      });
+    }
 
-    const escolha = chooseVendedor(body.phone);
+    if (!phone || !String(phone).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Telefone é obrigatório."
+      });
+    }
 
-    const vendedor = escolha.vendedor;
+    if (deliveryType === "Entrega" && (!address || !String(address).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: "Endereço é obrigatório para entrega."
+      });
+    }
 
-    const lead = {
+    const escolha = chooseVendedor(phone);
 
-      id: `lead-${Date.now()}`,
+    if (!escolha.vendedor) {
+      return res.status(500).json({
+        success: false,
+        message: "Nenhum vendedor ativo disponível."
+      });
+    }
 
-      created_at: new Date().toISOString(),
+    const leadRecord = buildLeadRecord(req.body, escolha.vendedor, escolha.reused);
+    saveLead(leadRecord);
 
-      cliente: {
-        nome: body.name,
-        telefone: normalizePhone(body.phone),
-        email: body.email || ""
-      },
+    const message = buildWhatsAppMessage(leadRecord, escolha.vendedor);
+    const whatsappUrl = `https://wa.me/${escolha.vendedor.telefone}?text=${encodeURIComponent(message)}`;
 
-      entrega: {
-        tipo: body.deliveryType,
-        endereco: body.address,
-        cep: body.zip
-      },
-
-      pagamento: {
-        metodo: body.paymentMethod
-      },
-
-      itens: items,
-
-      resumo: {
-        total
-      },
-
-      vendedor_responsavel: {
-        id: vendedor.id,
-        nome: vendedor.nome,
-        telefone: vendedor.telefone
-      }
-
-    };
-
-    saveLead(lead);
-
-    const message = buildWhatsMessage(lead, vendedor);
-
-    const whatsappUrl =
-      `https://wa.me/${vendedor.telefone}?text=${encodeURIComponent(message)}`;
-
-    res.json({
-      success: true,
-      vendedor,
-      whatsapp_url: whatsappUrl
+    console.log("NOVO LEAD DISTRIBUÍDO:");
+    console.log({
+      lead_id: leadRecord.id,
+      cliente: leadRecord.cliente.nome,
+      telefone: leadRecord.cliente.telefone,
+      vendedor: escolha.vendedor.nome,
+      vendedor_id: escolha.vendedor.id,
+      reutilizado_mesmo_vendedor: escolha.reused
     });
 
+    return res.json({
+      success: true,
+      lead_id: leadRecord.id,
+      vendedor: {
+        id: escolha.vendedor.id,
+        nome: escolha.vendedor.nome,
+        telefone: escolha.vendedor.telefone
+      },
+      reused_previous_seller: escolha.reused,
+      whatsapp_url: whatsappUrl,
+      message
+    });
   } catch (error) {
+    console.error("ERRO EM /distribuir-lead:", error);
 
-    console.error(error);
-
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Erro interno ao distribuir lead."
     });
-
   }
-
 });
 
 app.listen(PORT, () => {
