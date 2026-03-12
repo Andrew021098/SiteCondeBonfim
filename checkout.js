@@ -210,12 +210,12 @@ async function sendBudgetToWhatsApp() {
 
   try {
     const response = await fetch(`${BACKEND_URL}/distribuir-lead`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(data)
+});
 
     const text = await response.text();
     console.log("Resposta bruta do backend:", text);
