@@ -25,6 +25,7 @@ app.use(express.json());
 const vendedoresFile = path.join(__dirname, "vendedores.json");
 const leadsFile = path.join(__dirname, "leads.json");
 const filaFile = path.join(__dirname, "fila.json");
+const productsFile = path.join(__dirname, "products.json");
 
 /* =========================
    UTILITÁRIOS
@@ -111,6 +112,10 @@ function getLeadsData() {
 
 function getFilaData() {
   return readJson(filaFile, { ultimo_vendedor_id: 0 });
+}
+
+function getProductsData() {
+  return readJson(productsFile, []);
 }
 
 function saveLeadsData(data) {
@@ -315,6 +320,109 @@ app.get("/leads", (req, res) => {
   });
 });
 
+app.get("/api/products", (req, res) => {
+  try {
+    const products = getProductsData();
+
+    res.json({
+      success: true,
+      total: products.length,
+      products
+    });
+  } catch (error) {
+    console.error("ERRO EM /api/products:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Erro ao carregar produtos."
+    });
+  }
+});
+
+app.get("/api/products/featured", (req, res) => {
+  try {
+    const products = getProductsData();
+    const featuredProducts = products.filter((product) => product.featured === true);
+
+    res.json({
+      success: true,
+      total: featuredProducts.length,
+      products: featuredProducts
+    });
+  } catch (error) {
+    console.error("ERRO EM /api/products/featured:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Erro ao carregar produtos em destaque."
+    });
+  }
+});
+
+app.get("/api/products/category/:category", (req, res) => {
+  try {
+    const products = getProductsData();
+    const categoryParam = String(req.params.category || "").trim().toLowerCase();
+
+    const filteredProducts = products.filter(
+      (product) => String(product.category || "").trim().toLowerCase() === categoryParam
+    );
+
+    res.json({
+      success: true,
+      total: filteredProducts.length,
+      products: filteredProducts
+    });
+  } catch (error) {
+    console.error("ERRO EM /api/products/category/:category:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Erro ao filtrar produtos por categoria."
+    });
+  }
+});
+
+app.get("/api/products/search", (req, res) => {
+  try {
+    const products = getProductsData();
+    const query = String(req.query.q || "").trim().toLowerCase();
+
+    if (!query) {
+      return res.json({
+        success: true,
+        total: products.length,
+        products
+      });
+    }
+
+    const filteredProducts = products.filter((product) => {
+      const name = String(product.name || "").toLowerCase();
+      const category = String(product.category || "").toLowerCase();
+      const description = String(product.description || "").toLowerCase();
+
+      return (
+        name.includes(query) ||
+        category.includes(query) ||
+        description.includes(query)
+      );
+    });
+
+    res.json({
+      success: true,
+      total: filteredProducts.length,
+      products: filteredProducts
+    });
+  } catch (error) {
+    console.error("ERRO EM /api/products/search:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Erro ao buscar produtos."
+    });
+  }
+});
+
 app.post("/distribuir-lead", (req, res) => {
   try {
     const {
@@ -408,5 +516,5 @@ app.post("/distribuir-lead", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em https://sitecondebonfim.onrender.com:${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
