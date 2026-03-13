@@ -42,6 +42,11 @@ function updateCheckoutDeliveryUI() {
   addressWrap.style.display =
     deliveryType === "Retirada" ? "none" : "block";
 }
+const btnPagamento = document.getElementById("btnFinalizarPagamento");
+
+if (!ATIVAR_PAGAMENTO) {
+  btnPagamento.style.display = "none";
+}
 
 /* ================================
 PERSISTÊNCIA LOCAL
