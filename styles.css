@@ -1725,3 +1725,157 @@ textarea{font-family:inherit}
     padding:0 14px;
   }
 }
+.catalogSidebar--marketplace{
+  padding:0;
+  border:none;
+  background:transparent;
+  box-shadow:none;
+}
+
+.filterSection{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px 16px;
+  margin-bottom:14px;
+  box-shadow:0 6px 18px rgba(16,24,40,.04);
+}
+
+.filterSection__title{
+  margin:0 0 14px;
+  font-size:16px;
+  font-weight:800;
+  color:#111827;
+}
+
+.filterLinkItem,
+.filterCheckItem{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:10px;
+  color:#475467;
+  font-size:15px;
+  cursor:pointer;
+  line-height:1.4;
+}
+
+.filterLinkItem:last-child,
+.filterCheckItem:last-child{
+  margin-bottom:0;
+}
+
+.filterLinkItem span,
+.filterCheckItem span{
+  transition:.15s ease;
+}
+
+.filterLinkItem:hover span,
+.filterCheckItem:hover span{
+  color:var(--blue);
+}
+
+.filterLinkBtn{
+  border:none;
+  background:transparent;
+  color:#3483fa;
+  font-size:15px;
+  cursor:pointer;
+  padding:0;
+  margin-top:4px;
+  text-align:left;
+}
+
+.filterLinkBtn:hover{
+  text-decoration:underline;
+}
+
+.filterLinkBtn--muted{
+  display:block;
+  color:#475467;
+  margin-bottom:10px;
+}
+
+.filterLinkBtn--muted:hover{
+  color:var(--blue);
+  text-decoration:none;
+}
+
+.officialStoresGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.officialStoreCard{
+  min-height:50px;
+  border:1px solid #d8dde6;
+  background:#fff;
+  border-radius:8px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:8px;
+  font-size:11px;
+  font-weight:700;
+  color:#555;
+  box-shadow:0 2px 6px rgba(16,24,40,.05);
+}
+
+.officialStoreCard:hover{
+  border-color:#b9c5db;
+  transform:translateY(-1px);
+}
+
+.priceRangeBox{
+  display:grid;
+  grid-template-columns:1fr auto 1fr 34px;
+  gap:8px;
+  align-items:center;
+  margin-top:10px;
+}
+
+.priceRangeBox input{
+  width:100%;
+  height:36px;
+  border:1px solid #c7ced9;
+  border-radius:8px;
+  padding:0 10px;
+  outline:none;
+  background:#fff;
+}
+
+.priceRangeBox input:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(31,75,184,.10);
+}
+
+.priceRangeSeparator{
+  color:#98a2b3;
+  font-weight:700;
+}
+
+.priceApplyBtn{
+  width:34px;
+  height:34px;
+  border:none;
+  border-radius:999px;
+  background:#e5e7eb;
+  color:#fff;
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.priceApplyBtn:hover{
+  background:#cfd4dc;
+}
+
+@media (max-width: 900px){
+  .officialStoresGrid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}

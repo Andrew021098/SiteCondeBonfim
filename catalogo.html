@@ -38,61 +38,71 @@
   </div>
 
   <header class="header">
-  <div class="container header__inner header__inner--store">
-    <a class="brand brand--store" href="./index.html" aria-label="Ir para o início">
-      <div class="brand__logoWrap">
-        <img class="brand__logo" src="/assets/logo.jpg" alt="Conde de Bonfim">
-      </div>
+    <div class="container header__inner header__inner--store">
+      <a class="brand brand--store" href="./index.html" aria-label="Ir para o início">
+        <div class="brand__logoWrap">
+          <img class="brand__logo" src="./assets/logo.jpg" alt="Conde de Bonfim">
+        </div>
 
-      <div class="brand__text">
-        <span>Eletro Ferragens</span>
-        <strong>Conde de Bonfim</strong>
-      </div>
-    </a>
-
-    <form class="search search--store" role="search" aria-label="Buscar produtos">
-      <div class="search__field">
-        <span class="search__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18">
-            <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
-            <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </span>
-        <input type="search" placeholder="Buscar produtos, marcas e categorias..." autocomplete="off">
-      </div>
-
-      <button class="btn btn--yellow search__button" type="button">Buscar</button>
-    </form>
-
-    <div class="headerActions">
-      <a href="https://wa.me/5521959039201" class="whatsBtn" target="_blank" rel="noreferrer">
-        WhatsApp
+        <div class="brand__text">
+          <span>Eletro Ferragens</span>
+          <strong>Conde de Bonfim</strong>
+        </div>
       </a>
 
-      <button class="cartBtn" id="openCart" type="button" aria-label="Abrir carrinho">
-        <span class="cartBtn__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22">
-            <path d="M6 6h15l-2 9H7L5 3H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <circle cx="9" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
-            <circle cx="18" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
-          </svg>
-        </span>
-        <span class="cartBtn__badge" id="cartCount">0</span>
-      </button>
-    </div>
-  </div>
+      <form
+        class="search search--store"
+        id="searchForm"
+        role="search"
+        aria-label="Buscar produtos"
+      >
+        <div class="search__field">
+          <span class="search__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="Buscar produtos, marcas e categorias..."
+            autocomplete="off"
+          >
+        </div>
 
-  <div class="headerMenu">
-    <div class="container headerMenu__inner">
-      <nav class="menu" aria-label="Menu principal">
-        <a href="./index.html" class="menu__link">Início</a>
-        <a href="./catalogo.html" class="menu__link is-active">Catálogo</a>
-        <a href="./index.html#ofertas" class="menu__link">Promoções</a>
-        <a href="./index.html#contato" class="menu__link">Contato</a>
-      </nav>
+        <button class="btn btn--yellow search__button" type="submit">Buscar</button>
+      </form>
+
+      <div class="headerActions">
+        <a href="https://wa.me/5521959039201" class="whatsBtn" target="_blank" rel="noreferrer">
+          WhatsApp
+        </a>
+
+        <button class="cartBtn" id="openCart" type="button" aria-label="Abrir carrinho">
+          <span class="cartBtn__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22">
+              <path d="M6 6h15l-2 9H7L5 3H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <circle cx="9" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="18" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          <span class="cartBtn__badge" id="cartCount">0</span>
+        </button>
+      </div>
     </div>
-  </div>
-</header>
+
+    <div class="headerMenu">
+      <div class="container headerMenu__inner">
+        <nav class="menu" aria-label="Menu principal">
+          <a href="./index.html" class="menu__link">Início</a>
+          <a href="./catalogo.html" class="menu__link is-active">Catálogo</a>
+          <a href="./index.html#ofertas" class="menu__link">Promoções</a>
+          <a href="./index.html#contato" class="menu__link">Contato</a>
+        </nav>
+      </div>
+    </div>
+  </header>
 
   <main class="catalogPage">
     <div class="container">
@@ -104,67 +114,169 @@
       <p class="catalogCount"><span id="catalogCount">0</span> produtos encontrados</p>
 
       <div class="catalogLayout">
-        <aside class="catalogSidebar">
-          <h3 class="filterTitle">Filtros</h3>
+        <aside class="catalogSidebar catalogSidebar--marketplace">
+          <div class="filterSection">
 
-          <div class="filterGroup">
-            <strong>Categorias</strong>
+          <div class="filterSection">
+            <h3 class="filterSection__title">Categorias</h3>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Todos" checked>
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Todos" checked hidden>
               <span>Todos</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Materiais de Construção">
-              <span>Materiais de Construção</span>
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Materiais de Construção" hidden>
+              <span>Construção</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Cimento e Concreto">
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Cimento e Concreto" hidden>
               <span>Cimento e Concreto</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Blocos e Tijolos">
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Blocos e Tijolos" hidden>
               <span>Blocos e Tijolos</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Ferragens">
-              <span>Ferragens</span>
-            </label>
-
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Materiais Elétricos">
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Materiais Elétricos" hidden>
               <span>Materiais Elétricos</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Materiais Hidráulicos">
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Materiais Hidráulicos" hidden>
               <span>Materiais Hidráulicos</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Tintas e Acessórios">
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Tintas e Acessórios" hidden>
               <span>Tintas e Acessórios</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Ferramentas">
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Ferramentas" hidden>
               <span>Ferramentas</span>
             </label>
 
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Portas e Janelas">
-              <span>Portas e Janelas</span>
-            </label>
-
-            <label class="filterItem">
-              <input type="radio" name="categoryFilter" value="Banheiros e Acessórios">
+            <label class="filterCheckItem">
+              <input type="radio" name="categoryFilter" value="Banheiros e Acessórios" hidden>
               <span>Banheiros e Acessórios</span>
             </label>
           </div>
+
+                    <div class="filterSection">
+            <h3 class="filterSection__title">Descontos</h3>
+
+            <label class="filterCheckItem">
+              <input type="radio" name="discountFilter" value="0" checked>
+              <span>Todos</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="radio" name="discountFilter" value="10">
+              <span>Mais de 10% OFF</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="radio" name="discountFilter" value="15">
+              <span>Mais de 15% OFF</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="radio" name="discountFilter" value="20">
+              <span>Mais de 20% OFF</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="radio" name="discountFilter" value="30">
+              <span>Mais de 30% OFF</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="radio" name="discountFilter" value="40">
+              <span>Mais de 40% OFF</span>
+            </label>
+
+          </div>
+
+          <div class="filterSection">
+            <h3 class="filterSection__title">Preço</h3>
+
+            <button type="button" class="filterLinkBtn filterLinkBtn--muted" data-price-range="0-150">
+              Até R$ 150
+            </button>
+
+            <button type="button" class="filterLinkBtn filterLinkBtn--muted" data-price-range="150-250">
+              R$ 150 a R$ 250
+            </button>
+
+            <button type="button" class="filterLinkBtn filterLinkBtn--muted" data-price-range="250+">
+              Mais de R$ 250
+            </button>
+
+            <div class="priceRangeBox">
+              <input type="number" id="priceMin" placeholder="Mínimo">
+              <span class="priceRangeSeparator">—</span>
+              <input type="number" id="priceMax" placeholder="Máximo">
+              <button type="button" id="applyPriceRange" class="priceApplyBtn">›</button>
+            </div>
+          </div>
+
+          <div class="filterSection">
+            <h3 class="filterSection__title">Tipo de promoção</h3>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" id="filterFlashOffer">
+              <span>Oferta relâmpago</span>
+            </label>
+          </div>
+
+          <div class="filterSection">
+            <h3 class="filterSection__title">Marca</h3>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Votorantim">
+              <span>Votorantim</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Tigre">
+              <span>Tigre</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Suvinil">
+              <span>Suvinil</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Tramontina">
+              <span>Tramontina</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Deca">
+              <span>Deca</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Gerdau">
+              <span>Gerdau</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Portobello">
+              <span>Portobello</span>
+            </label>
+
+            <label class="filterCheckItem">
+              <input type="checkbox" name="brandFilter" value="Atlas">
+              <span>Atlas</span>
+            </label>
+          </div>
+
         </aside>
 
         <div class="catalogProducts">
@@ -195,122 +307,75 @@
       <span class="floatingCart__badge" id="floatingCartCount">0</span>
     </button>
 
-    <!-- MODAL DE PRODUTO -->
-<div class="productModal" id="productModal" aria-hidden="true">
+    <div class="productModal" id="productModal" aria-hidden="true">
+      <div class="productModal__backdrop" id="productModalBackdrop"></div>
 
-  <div class="productModal__backdrop" id="productModalBackdrop"></div>
+      <div class="productModal__panel">
+        <div class="productModal__head">
+          <strong id="modalProductName">Produto</strong>
 
-  <div class="productModal__panel">
+          <button class="iconBtn" id="closeProductModal" type="button">
+            ✕
+          </button>
+        </div>
 
-    <div class="productModal__head">
-      <strong id="modalProductName">Produto</strong>
+        <div class="productModal__body">
+          <div class="productModal__grid">
+            <div class="productModal__image" id="modalProductImage"></div>
 
-      <button
-        class="iconBtn"
-        id="closeProductModal"
-        type="button"
-      >
-        ✕
-      </button>
-    </div>
+            <div class="productModal__content">
+              <div class="productModal__category" id="modalProductCategory">
+                Categoria
+              </div>
 
-    <div class="productModal__body">
+              <div class="productModal__priceOld" id="modalProductOldPrice"></div>
 
-      <div class="productModal__grid">
+              <div class="productModal__price" id="modalProductPrice">
+                R$ 0,00
+              </div>
 
-        <div
-          class="productModal__image"
-          id="modalProductImage"
-        ></div>
+              <p class="productModal__description" id="modalProductDescription">
+                Descrição do produto
+              </p>
 
-        <div class="productModal__content">
+              <div class="productModal__qtyBlock">
+                <span class="productModal__qtyLabel">
+                  Quantidade
+                </span>
 
-          <div
-            class="productModal__category"
-            id="modalProductCategory"
-          >
-            Categoria
-          </div>
+                <div class="modalQty">
+                  <button class="modalQtyBtn" id="modalQtyMinus" type="button">
+                    −
+                  </button>
 
-          <div
-            class="productModal__priceOld"
-            id="modalProductOldPrice"
-          ></div>
+                  <input
+                    type="number"
+                    id="modalQtyInput"
+                    class="modalQtyInput"
+                    value="1"
+                    min="1"
+                  >
 
-          <div
-            class="productModal__price"
-            id="modalProductPrice"
-          >
-            R$ 0,00
-          </div>
+                  <button class="modalQtyBtn" id="modalQtyPlus" type="button">
+                    +
+                  </button>
+                </div>
+              </div>
 
-          <p
-            class="productModal__description"
-            id="modalProductDescription"
-          >
-            Descrição do produto
-          </p>
+              <div class="productModal__actions">
+                <button class="btn btn--yellow" id="modalAddToCart" type="button">
+                  Adicionar ao carrinho
+                </button>
 
-          <!-- QUANTIDADE -->
-          <div class="productModal__qtyBlock">
-
-            <span class="productModal__qtyLabel">
-              Quantidade
-            </span>
-
-            <div class="modalQty">
-
-              <button
-                class="modalQtyBtn"
-                id="modalQtyMinus"
-                type="button"
-              >
-                −
-              </button>
-
-              <input
-                type="number"
-                id="modalQtyInput"
-                class="modalQtyInput"
-                value="1"
-                min="1"
-              >
-
-              <button
-                class="modalQtyBtn"
-                id="modalQtyPlus"
-                type="button"
-              >
-                +
-              </button>
-
+                <button class="btn btn--outline" id="modalBuyNow" type="button">
+                  Comprar agora
+                </button>
+              </div>
             </div>
-
-          </div>
-
-          <div class="productModal__actions">
-
-            <button
-              class="btn btn--yellow"
-              id="modalAddToCart"
-              type="button"
-            >
-              Adicionar ao carrinho
-            </button>
-
-            <button
-              class="btn btn--outline"
-              id="modalBuyNow"
-              type="button"
-            >
-              Comprar agora
-            </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
     <div class="drawer" id="drawer" aria-hidden="true">
       <div class="drawer__backdrop" id="drawerBackdrop"></div>
@@ -331,52 +396,52 @@
         </div>
 
         <div class="cartFooter">
-  <div class="cartSubtotal">
-    <span>Subtotal</span>
-    <strong id="cartSubtotal">R$ 0,00</strong>
-  </div>
+          <div class="cartSubtotal">
+            <span>Subtotal</span>
+            <strong id="cartSubtotal">R$ 0,00</strong>
+          </div>
 
-  <div class="cartCustomerFields">
-    <label class="cartField">
-      <span>Seu nome</span>
-      <input type="text" id="customerName" placeholder="Digite seu nome" autocomplete="name" />
-    </label>
+          <div class="cartCustomerFields">
+            <label class="cartField">
+              <span>Seu nome</span>
+              <input type="text" id="customerName" placeholder="Digite seu nome" autocomplete="name" />
+            </label>
 
-    <label class="cartField">
-      <span>Telefone</span>
-      <input type="tel" id="customerPhone" placeholder="(21) 99999-9999" autocomplete="tel" />
-    </label>
+            <label class="cartField">
+              <span>Telefone</span>
+              <input type="tel" id="customerPhone" placeholder="(21) 99999-9999" autocomplete="tel" />
+            </label>
 
-    <div class="cartField">
-      <span>Como deseja receber?</span>
+            <div class="cartField">
+              <span>Como deseja receber?</span>
 
-      <div class="deliveryOptions">
-        <label class="deliveryOption">
-          <input type="radio" name="deliveryType" value="Entrega" checked />
-          <span>Entrega</span>
-        </label>
+              <div class="deliveryOptions">
+                <label class="deliveryOption">
+                  <input type="radio" name="deliveryType" value="Entrega" checked />
+                  <span>Entrega</span>
+                </label>
 
-        <label class="deliveryOption">
-          <input type="radio" name="deliveryType" value="Retirada" />
-          <span>Retirar na loja</span>
-        </label>
-      </div>
-    </div>
+                <label class="deliveryOption">
+                  <input type="radio" name="deliveryType" value="Retirada" />
+                  <span>Retirar na loja</span>
+                </label>
+              </div>
+            </div>
 
-    <label class="cartField" id="addressField">
-      <span>Endereço para entrega</span>
-      <textarea id="customerAddress" placeholder="Rua, número, bairro, complemento" rows="3" autocomplete="street-address"></textarea>
-    </label>
-  </div>
+            <label class="cartField" id="addressField">
+              <span>Endereço para entrega</span>
+              <textarea id="customerAddress" placeholder="Rua, número, bairro, complemento" rows="3" autocomplete="street-address"></textarea>
+            </label>
+          </div>
 
-  <button id="continueShoppingBtn" class="continueShoppingBtn" type="button">
-    Continuar comprando
-  </button>
+          <button id="continueShoppingBtn" class="continueShoppingBtn" type="button">
+            Continuar comprando
+          </button>
 
-  <button id="goCheckoutBtn" class="checkoutBtn checkoutBtn--blue" type="button">
-    Finalizar compra
-  </button>
-</div>
+          <button id="goCheckoutBtn" class="checkoutBtn checkoutBtn--blue" type="button">
+            Finalizar compra
+          </button>
+        </div>
       </aside>
     </div>
   </main>

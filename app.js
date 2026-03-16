@@ -56,6 +56,16 @@ const DELIVERY_TYPE_KEY = "cb_delivery_type";
 
 const cart = new Map();
 
+const catalogFilters = {
+  minPrice: null,
+  maxPrice: null,
+  minDiscount: 0,
+  flashOffer: false,
+  brands: [],
+  saleFormat: "Todos",
+  installmentsNoInterest: false
+};
+
 function brl(value) {
   return Number(value || 0).toLocaleString("pt-BR", {
     style: "currency",
@@ -269,23 +279,23 @@ function getFilteredProducts() {
   if (searchTerm.trim()) {
     const term = searchTerm.toLowerCase();
     result = result.filter((product) =>
-      product.name.toLowerCase().includes(term) ||
-      product.category.toLowerCase().includes(term)
+      String(product.name || "").toLowerCase().includes(term) ||
+      String(product.category || "").toLowerCase().includes(term)
     );
   }
 
   switch (sortBy) {
     case "price-asc":
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
       break;
     case "price-desc":
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
       break;
     case "name-asc":
-      result.sort((a, b) => a.name.localeCompare(b.name));
+      result.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
       break;
     case "name-desc":
-      result.sort((a, b) => b.name.localeCompare(a.name));
+      result.sort((a, b) => String(b.name || "").localeCompare(String(a.name || "")));
       break;
     default:
       break;
@@ -336,6 +346,7 @@ function renderCategories() {
 function productCard(product) {
   const hasOff = typeof product.offPct === "number" && product.offPct > 0;
   const hasOld = typeof product.oldPrice === "number" && product.oldPrice > product.price;
+  const brandLabel = product.brand ? `<div class="pCategory">${product.brand}</div>` : `<div class="pCategory">${product.category}</div>`;
 
   const card = document.createElement("div");
   card.className = "pCard";
@@ -346,7 +357,7 @@ function productCard(product) {
     </div>
 
     <div class="pBody">
-      <div class="pCategory">${product.category}</div>
+      ${brandLabel}
       <p class="pName">${product.name}</p>
 
       <div class="pPrices">
@@ -886,25 +897,58 @@ function setupProductModal() {
 function getCatalogFilteredProducts() {
   let products = [...PRODUCTS];
 
-  const selectedCategory = document.querySelector('input[name="categoryFilter"]:checked')?.value;
+  const selectedCategory =
+    document.querySelector('input[name="categoryFilter"]:checked')?.value || "Todos";
   const selectedSort = document.getElementById("catalogSort")?.value || "default";
 
-  if (selectedCategory && selectedCategory !== "Todos") {
+  if (selectedCategory !== "Todos") {
     products = products.filter((product) => product.category === selectedCategory);
+  }
+
+  if (catalogFilters.minPrice !== null) {
+    products = products.filter((product) => Number(product.price || 0) >= catalogFilters.minPrice);
+  }
+
+  if (catalogFilters.maxPrice !== null) {
+    products = products.filter((product) => Number(product.price || 0) <= catalogFilters.maxPrice);
+  }
+
+  if (catalogFilters.minDiscount > 0) {
+    products = products.filter((product) => Number(product.offPct || 0) >= catalogFilters.minDiscount);
+  }
+
+  if (catalogFilters.flashOffer) {
+    products = products.filter((product) => Boolean(product.flashOffer));
+  }
+
+  if (catalogFilters.brands.length) {
+    products = products.filter((product) =>
+      catalogFilters.brands.includes(product.brand)
+    );
+  }
+
+  if (catalogFilters.saleFormat !== "Todos") {
+    products = products.filter((product) =>
+      (product.saleFormat || "Unidade") === catalogFilters.saleFormat
+    );
+  }
+
+  if (catalogFilters.installmentsNoInterest) {
+    products = products.filter((product) => Boolean(product.installmentsNoInterest));
   }
 
   switch (selectedSort) {
     case "price-asc":
-      products.sort((a, b) => a.price - b.price);
+      products.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
       break;
     case "price-desc":
-      products.sort((a, b) => b.price - a.price);
+      products.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
       break;
     case "name-asc":
-      products.sort((a, b) => a.name.localeCompare(b.name));
+      products.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
       break;
     case "name-desc":
-      products.sort((a, b) => b.name.localeCompare(a.name));
+      products.sort((a, b) => String(b.name || "").localeCompare(String(a.name || "")));
       break;
     default:
       break;
@@ -937,6 +981,90 @@ function renderCatalog() {
   });
 }
 
+function setupAdvancedCatalogFilters() {
+  const discountInputs = document.querySelectorAll('input[name="discountFilter"]');
+  const brandInputs = document.querySelectorAll('input[name="brandFilter"]');
+  const saleFormatInputs = document.querySelectorAll('input[name="saleFormatFilter"]');
+  const flashOfferInput = document.getElementById("filterFlashOffer");
+  const installmentsInput = document.getElementById("filterInstallmentsNoInterest");
+  const priceMinInput = document.getElementById("priceMin");
+  const priceMaxInput = document.getElementById("priceMax");
+  const applyPriceBtn = document.getElementById("applyPriceRange");
+  const priceRangeButtons = document.querySelectorAll("[data-price-range]");
+
+  discountInputs.forEach((input) => {
+    input.addEventListener("change", () => {
+      catalogFilters.minDiscount = Number(input.value || 0);
+      renderCatalog();
+    });
+  });
+
+  brandInputs.forEach((input) => {
+    input.addEventListener("change", () => {
+      catalogFilters.brands = [...brandInputs]
+        .filter((item) => item.checked)
+        .map((item) => item.value);
+
+      renderCatalog();
+    });
+  });
+
+  saleFormatInputs.forEach((input) => {
+    input.addEventListener("change", () => {
+      catalogFilters.saleFormat = input.value || "Todos";
+      renderCatalog();
+    });
+  });
+
+  if (flashOfferInput) {
+    flashOfferInput.addEventListener("change", () => {
+      catalogFilters.flashOffer = flashOfferInput.checked;
+      renderCatalog();
+    });
+  }
+
+  if (installmentsInput) {
+    installmentsInput.addEventListener("change", () => {
+      catalogFilters.installmentsNoInterest = installmentsInput.checked;
+      renderCatalog();
+    });
+  }
+
+  priceRangeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const value = button.dataset.priceRange || "";
+
+      if (value === "0-150") {
+        catalogFilters.minPrice = 0;
+        catalogFilters.maxPrice = 150;
+      } else if (value === "150-250") {
+        catalogFilters.minPrice = 150;
+        catalogFilters.maxPrice = 250;
+      } else if (value === "250+") {
+        catalogFilters.minPrice = 250;
+        catalogFilters.maxPrice = null;
+      }
+
+      if (priceMinInput) priceMinInput.value = catalogFilters.minPrice ?? "";
+      if (priceMaxInput) priceMaxInput.value = catalogFilters.maxPrice ?? "";
+
+      renderCatalog();
+    });
+  });
+
+  if (applyPriceBtn) {
+    applyPriceBtn.addEventListener("click", () => {
+      const minRaw = priceMinInput?.value?.trim() || "";
+      const maxRaw = priceMaxInput?.value?.trim() || "";
+
+      catalogFilters.minPrice = minRaw ? Number(minRaw) : null;
+      catalogFilters.maxPrice = maxRaw ? Number(maxRaw) : null;
+
+      renderCatalog();
+    });
+  }
+}
+
 function setupCatalog() {
   const grid = document.getElementById("catalogGrid");
   if (!grid) return;
@@ -952,6 +1080,7 @@ function setupCatalog() {
     sortSelect.addEventListener("change", renderCatalog);
   }
 
+  setupAdvancedCatalogFilters();
   renderCatalog();
 }
 

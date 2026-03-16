@@ -1,15 +1,16 @@
 [
   {
     "id": 1,
-    "name": "Cimento Portland CP II 50kg",
-    "category": "Cimento e Concreto",
-    "price": 32.90,
-    "oldPrice": 39.90,
-    "offPct": 17,
-    "freeShip": true,
-    "image": "/assets/oferta-cimento.jpg",
-    "featured": true,
-    "description": "Cimento indicado para obras em geral, com excelente resistência e ótimo rendimento."
+  "name": "Cimento Votorantim 50kg",
+  "category": "Cimento e Concreto",
+  "brand": "Votorantim",
+  "saleFormat": "Unidade",
+  "installmentsNoInterest": true,
+  "flashOffer": false,
+  "price": 39.90,
+  "oldPrice": 49.90,
+  "offPct": 20,
+  "image": "./assets/cimento.jpg"
   },
   {
     "id": 2,
