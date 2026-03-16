@@ -125,20 +125,33 @@ async function fetchProducts() {
     }
 
     PRODUCTS = data.products;
+
+    window.dispatchEvent(new CustomEvent("cb:productsLoaded", {
+      detail: { products: PRODUCTS }
+    }));
+
     return PRODUCTS;
   } catch (error) {
     console.error("Erro ao carregar produtos:", error);
     PRODUCTS = [];
+
+    window.dispatchEvent(new CustomEvent("cb:productsLoaded", {
+      detail: { products: PRODUCTS }
+    }));
+
     return [];
   }
 }
 
 function loadCart() {
+  cart.clear();
+
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return;
 
   try {
     const data = JSON.parse(raw);
+
     Object.entries(data).forEach(([id, qty]) => {
       const parsedId = Number(id);
       const parsedQty = Number(qty);
@@ -157,7 +170,12 @@ function saveCart() {
   cart.forEach((qty, id) => {
     data[id] = qty;
   });
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+  window.dispatchEvent(new CustomEvent("cb:cartUpdated", {
+    detail: { count: cartCount(), subtotal: cartSubtotal() }
+  }));
 }
 
 function cartCount() {
@@ -172,8 +190,8 @@ function cartSubtotal() {
   let total = 0;
 
   cart.forEach((qty, id) => {
-    const product = PRODUCTS.find((p) => p.id === id);
-    if (product) total += product.price * qty;
+    const product = PRODUCTS.find((p) => Number(p.id) === Number(id));
+    if (product) total += Number(product.price || 0) * qty;
   });
 
   return total;
@@ -183,8 +201,10 @@ function getCartItems() {
   const items = [];
 
   cart.forEach((qty, id) => {
-    const product = PRODUCTS.find((p) => p.id === id);
-    if (product) items.push({ product, qty });
+    const product = PRODUCTS.find((p) => Number(p.id) === Number(id));
+    if (product) {
+      items.push({ product, qty });
+    }
   });
 
   return items;
@@ -722,22 +742,33 @@ function openProductModal(productId) {
 
   currentModalProduct = product;
 
-  document.getElementById("modalProductName").textContent = product.name;
-  document.getElementById("modalProductCategory").textContent = product.category;
-  document.getElementById("modalProductPrice").textContent = brl(product.price);
-  document.getElementById("modalProductDescription").textContent =
-    product.description || "Produto sem descrição.";
-  document.getElementById("modalQtyInput").value = "1";
-
+  const modalProductName = document.getElementById("modalProductName");
+  const modalProductCategory = document.getElementById("modalProductCategory");
+  const modalProductPrice = document.getElementById("modalProductPrice");
+  const modalProductDescription = document.getElementById("modalProductDescription");
+  const modalQtyInput = document.getElementById("modalQtyInput");
   const oldPriceEl = document.getElementById("modalProductOldPrice");
-  if (typeof product.oldPrice === "number" && product.oldPrice > product.price) {
-    oldPriceEl.textContent = brl(product.oldPrice);
-  } else {
-    oldPriceEl.textContent = "";
+  const imageEl = document.getElementById("modalProductImage");
+
+  if (modalProductName) modalProductName.textContent = product.name;
+  if (modalProductCategory) modalProductCategory.textContent = product.category;
+  if (modalProductPrice) modalProductPrice.textContent = brl(product.price);
+  if (modalProductDescription) {
+    modalProductDescription.textContent = product.description || "Produto sem descrição.";
+  }
+  if (modalQtyInput) modalQtyInput.value = "1";
+
+  if (oldPriceEl) {
+    if (typeof product.oldPrice === "number" && product.oldPrice > product.price) {
+      oldPriceEl.textContent = brl(product.oldPrice);
+    } else {
+      oldPriceEl.textContent = "";
+    }
   }
 
-  const imageEl = document.getElementById("modalProductImage");
-  imageEl.style.backgroundImage = `url('${product.image || "./assets/product-placeholder.jpg"}')`;
+  if (imageEl) {
+    imageEl.style.backgroundImage = `url('${product.image || "./assets/product-placeholder.jpg"}')`;
+  }
 
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
@@ -924,9 +955,58 @@ function setupCatalog() {
   renderCatalog();
 }
 
+function exposeAppApi() {
+  window.CondeBonfimApp = {
+    STORE,
+    PAYMENT_CONFIG,
+    STORAGE_KEY,
+    CUSTOMER_NAME_KEY,
+    CUSTOMER_PHONE_KEY,
+    CUSTOMER_ADDRESS_KEY,
+    DELIVERY_TYPE_KEY,
+    get products() {
+      return PRODUCTS;
+    },
+    fetchProducts,
+    loadCart,
+    saveCart,
+    cartCount,
+    cartSubtotal,
+    getCartItems,
+    addToCart,
+    setCartQuantity,
+    removeFromCart,
+    brl,
+    onlyDigits,
+    normalizePhoneBR,
+    priceToCents,
+    generateOrderNSU,
+    splitStreetAndNumber,
+    waLink,
+    renderCart,
+    openDrawer,
+    closeDrawer
+  };
+
+  window.editCart = function editCartGlobal() {
+    localStorage.setItem("openCart", "true");
+    window.location.href = "./index.html";
+  };
+
+  window.goBackPage = function goBackPageGlobal() {
+    if (document.referrer) {
+      history.back();
+    } else {
+      window.location.href = "./index.html";
+    }
+  };
+}
+
 async function init() {
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  exposeAppApi();
 
   loadCart();
   renderBrands();
@@ -950,6 +1030,11 @@ async function init() {
     openDrawer();
     localStorage.removeItem("openCart");
   }
+
+  return {
+    productsLoaded: products.length > 0,
+    products
+  };
 }
 
-init();
+window.__CB_APP_READY__ = init();

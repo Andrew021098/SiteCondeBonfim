@@ -10,15 +10,44 @@ const CHECKOUT_ONLINE_ATIVO = false;
 UTILS
 ================================ */
 
+function getAppApi() {
+  return window.CondeBonfimApp || null;
+}
+
 function onlyDigits(value) {
+  const app = getAppApi();
+  if (app?.onlyDigits) return app.onlyDigits(value);
   return String(value || "").replace(/\D/g, "");
 }
 
 function brl(value) {
+  const app = getAppApi();
+  if (app?.brl) return app.brl(value);
+
   return Number(value || 0).toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL"
   });
+}
+
+function getCartItemsSafe() {
+  const app = getAppApi();
+  return app?.getCartItems ? app.getCartItems() : [];
+}
+
+function cartSubtotalSafe() {
+  const app = getAppApi();
+  return app?.cartSubtotal ? app.cartSubtotal() : 0;
+}
+
+function cartCountSafe() {
+  const app = getAppApi();
+  return app?.cartCount ? app.cartCount() : 0;
+}
+
+function loadCartSafe() {
+  const app = getAppApi();
+  if (app?.loadCart) app.loadCart();
 }
 
 /* ================================
@@ -39,13 +68,18 @@ function updateCheckoutDeliveryUI() {
 
   if (!addressWrap) return;
 
-  addressWrap.style.display =
-    deliveryType === "Retirada" ? "none" : "block";
+  addressWrap.style.display = deliveryType === "Retirada" ? "none" : "block";
 }
-const btnPagamento = document.getElementById("btnFinalizarPagamento");
 
-if (!ATIVAR_PAGAMENTO) {
-  btnPagamento.style.display = "none";
+function setupPaymentButtonVisibility() {
+  const btnPagamento = document.getElementById("btnFinalizarPagamento");
+  if (!btnPagamento) return;
+
+  if (!ATIVAR_PAGAMENTO || !CHECKOUT_ONLINE_ATIVO) {
+    btnPagamento.style.display = "none";
+  } else {
+    btnPagamento.style.display = "";
+  }
 }
 
 /* ================================
@@ -86,7 +120,7 @@ function fillCheckoutFormFromStorage() {
 }
 
 function setupCheckoutFieldPersistence() {
-
+  
   const fieldMap = [
     ["checkoutName", "cb_customer_name"],
     ["checkoutPhone", "cb_customer_phone"],
@@ -141,9 +175,9 @@ function renderCheckoutPage() {
   const totalEl = document.getElementById("checkoutTotal");
   const shippingEl = document.getElementById("checkoutShippingValue");
 
-  if (!itemsWrap) return;
+  if (!itemsWrap || !subtotalEl || !totalEl || !shippingEl) return;
 
-  const items = getCartItems();
+  const items = getCartItemsSafe();
 
   itemsWrap.innerHTML = "";
 
@@ -172,7 +206,7 @@ function renderCheckoutPage() {
       </div>
 
       <strong class="checkoutItem__value">
-        ${brl(product.price * qty)}
+        ${brl(Number(product.price || 0) * qty)}
       </strong>
     `;
 
@@ -180,7 +214,7 @@ function renderCheckoutPage() {
 
   });
 
-  const subtotal = cartSubtotal();
+  const subtotal = cartSubtotalSafe();
 
   subtotalEl.textContent = brl(subtotal);
   totalEl.textContent = brl(subtotal);
@@ -209,17 +243,14 @@ function buildCheckoutData() {
     paymentMethod: getCheckoutPaymentMethod(),
 
     notes: (document.getElementById("checkoutNotes")?.value || "").trim(),
-
-    items: getCartItems().map(({ product, qty }) => ({
+    items: getCartItemsSafe().map(({ product, qty }) => ({
       id: product.id,
       name: product.name,
       price: product.price,
       qty
     })),
-
-    subtotal: cartSubtotal(),
-    total: cartSubtotal()
-
+    subtotal: cartSubtotalSafe(),
+    total: cartSubtotalSafe()
   };
 
 }
@@ -237,16 +268,19 @@ function validateCheckoutData(data) {
 
   if (!data.name) {
     alert("Informe seu nome.");
+    document.getElementById("checkoutName")?.focus();
     return false;
   }
 
   if (!data.phone) {
     alert("Informe seu telefone.");
+    document.getElementById("checkoutPhone")?.focus();
     return false;
   }
 
   if (data.deliveryType === "Entrega" && !data.address) {
     alert("Informe o endereço de entrega.");
+    document.getElementById("checkoutAddress")?.focus();
     return false;
   }
 
@@ -302,21 +336,17 @@ async function sendBudgetToWhatsApp() {
 
     }
 
-    window.open(whatsappUrl, "_blank");
-
+    window.open(whatsappUrl, "_blank", "noreferrer");
   } catch (error) {
 
     console.error("Erro:", error);
 
     alert("Erro ao conectar com o servidor.");
-
-  }
-
-  if (btn) {
-
-    btn.disabled = false;
-    btn.innerText = "Enviar orçamento no WhatsApp";
-
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = "Enviar orçamento no WhatsApp";
+    }
   }
 
 }
@@ -325,48 +355,65 @@ async function sendBudgetToWhatsApp() {
 BOTÕES
 ================================ */
 
-function editCart() {
+function bindCheckoutButtons() {
+  const whatsBtn = document.getElementById("checkoutWhatsBtn");
+  const paymentBtn = document.getElementById("btnFinalizarPagamento");
 
-  localStorage.setItem("openCart", "true");
-
-  window.location.href = "./index.html";
-
-}
-
-function goBackPage() {
-
-  if (document.referrer) {
-
-    history.back();
-
-  } else {
-
-    window.location.href = "./index.html";
-
+  if (whatsBtn) {
+    whatsBtn.addEventListener("click", sendBudgetToWhatsApp);
   }
 
+  if (paymentBtn) {
+    paymentBtn.addEventListener("click", () => {
+      alert("Pagamento online ainda não está ativado.");
+    });
+  }
+}
+
+/* ================================
+APP READY
+================================ */
+
+async function waitForAppReady() {
+  if (window.__CB_APP_READY__ && typeof window.__CB_APP_READY__.then === "function") {
+    try {
+      await window.__CB_APP_READY__;
+      return;
+    } catch (error) {
+      console.error("Erro aguardando app.js:", error);
+    }
+  }
+
+  await new Promise((resolve) => {
+    const timeoutId = setTimeout(resolve, 4000);
+
+    window.addEventListener("cb:productsLoaded", () => {
+      clearTimeout(timeoutId);
+      resolve();
+    }, { once: true });
+  });
 }
 
 /* ================================
 INIT
 ================================ */
 
-function setupCheckoutPage() {
-
+async function setupCheckoutPage() {
+  setupPaymentButtonVisibility();
   fillCheckoutFormFromStorage();
 
   setupCheckoutFieldPersistence();
+  bindCheckoutButtons();
 
+  loadCartSafe();
+  await waitForAppReady();
+  loadCartSafe();
   renderCheckoutPage();
 
-  const whatsBtn = document.getElementById("checkoutWhatsBtn");
-
-  if (whatsBtn) {
-
-    whatsBtn.addEventListener("click", sendBudgetToWhatsApp);
-
-  }
-
+  window.addEventListener("cb:cartUpdated", () => {
+    loadCartSafe();
+    renderCheckoutPage();
+  });
 }
 
 document.addEventListener("DOMContentLoaded", setupCheckoutPage);
