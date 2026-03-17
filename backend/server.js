@@ -203,7 +203,7 @@ function getLeadsData() {
 function getFilaData() {
   return readJson(filaFile, { ultimo_vendedor_id: 0 });
   }
-    
+
 function saveLeadsData(data) {
   writeJson(leadsFile, data);
 }
@@ -433,20 +433,30 @@ app.get("/api/products", (req, res) => {
     const raw = fs.readFileSync(path.join(__dirname, "products.json"), "utf-8");
     const data = JSON.parse(raw);
 
-    const products = (data.products || []).filter(p => Number(p.ativo) === 1);
+    const products = (data.products || [])
+      .filter(p => Number(p.ativo) === 1)
+      .map(p => ({
+        id: p.id_produto,
+        name: p.nome_produto,
+        category: p.categoria,
+        brand: p.marca || "Genérico",
+        saleFormat: "Unidade",
+        installmentsNoInterest: true,
+        flashOffer: false,
+        price: p.preco_promocional || p.preco,
+        oldPrice: p.preco_promocional ? p.preco : null,
+        offPct: p.preco_promocional
+          ? Math.round(((p.preco - p.preco_promocional) / p.preco) * 100)
+          : 0,
+        image: p.imagem_url || "./assets/placeholder.png",
+        estoque: p.estoque
+      }));
 
-    res.json({
-      success: true,  
-      products
-    });
+    res.json(products);
 
-  } catch (error) { 
-    console.error("Erro ao ler products.json:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Erro ao carregar produtos."
-    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao carregar produtos" });
   }
 });
 

@@ -29,11 +29,7 @@ const CATEGORIES = [
 
 let PRODUCTS = [];
 
-const API_BASE_URL =
-  ["localhost", "127.0.0.1"].includes(window.location.hostname)
-    ? "http://localhost:3000"
-    : "https://sitecondebonfim.onrender.com";
-
+const API_BASE_URL = "https://sitecondebonfim.onrender.com";
 const PRODUCTS_ENDPOINT = `${API_BASE_URL}/api/products`;
 
 const BRANDS = [
