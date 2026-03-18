@@ -1,6 +1,6 @@
 [
   {
-    "id": 1,
+  "id": 1,
   "name": "Cimento Votorantim 50kg",
   "category": "Cimento e Concreto",
   "brand": "Votorantim",
@@ -10,7 +10,9 @@
   "price": 39.90,
   "oldPrice": 49.90,
   "offPct": 20,
-  "image": "./assets/cimento.jpg"
+  "image": "/assets/cimento-cp3.jpg",
+  "featured": false,
+  "description": "Sem descrição disponível para este produto."
   },
   {
     "id": 2,
