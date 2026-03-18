@@ -277,11 +277,21 @@ function getFilteredProducts() {
   }
 
   if (searchTerm.trim()) {
-    const term = searchTerm.toLowerCase();
-    result = result.filter((product) =>
-      String(product.name || "").toLowerCase().includes(term) ||
-      String(product.category || "").toLowerCase().includes(term)
-    );
+    const term = normalizeText(searchTerm);
+
+    result = result.filter((product) => {
+      const name = normalizeText(product.name);
+      const category = normalizeText(product.category);
+      const brand = normalizeText(product.brand);
+      const description = normalizeText(product.description);
+
+      return (
+        name.includes(term) ||
+        category.includes(term) ||
+        brand.includes(term) ||
+        description.includes(term)
+      );
+    });
   }
 
   switch (sortBy) {
@@ -550,22 +560,110 @@ function renderAllSections() {
 function setupSearch() {
   const form = document.getElementById("searchForm");
   const input = document.getElementById("searchInput");
+  const suggestionsBox = document.getElementById("searchSuggestions");
+
   if (!form || !input) return;
+
+  function hideSuggestions() {
+    if (!suggestionsBox) return;
+    suggestionsBox.innerHTML = "";
+    suggestionsBox.style.display = "none";
+  }
+
+  function renderSuggestions(term) {
+    if (!suggestionsBox) return;
+
+    const normalizedTerm = normalizeText(term);
+
+    if (!normalizedTerm) {
+      hideSuggestions();
+      return;
+    }
+
+    const suggestions = PRODUCTS.filter((product) => {
+      const name = normalizeText(product.name);
+      const category = normalizeText(product.category);
+      const brand = normalizeText(product.brand);
+
+      return (
+        name.includes(normalizedTerm) ||
+        category.includes(normalizedTerm) ||
+        brand.includes(normalizedTerm)
+      );
+    }).slice(0, 6);
+
+    if (!suggestions.length) {
+      hideSuggestions();
+      return;
+    }
+
+    suggestionsBox.innerHTML = suggestions.map((product) => `
+      <div class="searchSuggestionItem" data-name="${product.name}">
+        <strong>${product.name}</strong>
+        <span>${product.brand || "Sem marca"} • ${product.category || "Sem categoria"}</span>
+      </div>
+    `).join("");
+
+    suggestionsBox.style.display = "block";
+
+    suggestionsBox.querySelectorAll(".searchSuggestionItem").forEach((item) => {
+      item.addEventListener("click", () => {
+        const selectedName = item.dataset.name || "";
+        input.value = selectedName;
+        searchTerm = selectedName;
+        renderAllSections();
+        hideSuggestions();
+        document.getElementById("ofertas")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+    });
+  }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     searchTerm = input.value.trim();
     renderAllSections();
+    hideSuggestions();
+
     document.getElementById("ofertas")?.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
   });
 
+  let debounceTimer;
+
   input.addEventListener("input", () => {
     searchTerm = input.value.trim();
     renderAllSections();
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      renderSuggestions(input.value);
+    }, 120);
   });
+
+  input.addEventListener("focus", () => {
+    if (input.value.trim()) {
+      renderSuggestions(input.value);
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".search__field")) {
+      hideSuggestions();
+    }
+  });
+}
+
+function normalizeText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 }
 
 function setupSort() {

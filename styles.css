@@ -118,11 +118,11 @@ textarea{font-family:inherit}
   height:44px;
   padding:0 14px;
   border-radius:10px;
-  background:#f5f7fb;
+  background:#00000007;
   border:1px solid #eef1f7;
 }
 .search__icon{
-  color:#667085;
+  color:#014ae7;
   display:grid;
   place-items:center;
 }
@@ -1878,4 +1878,49 @@ textarea{font-family:inherit}
   .officialStoresGrid{
     grid-template-columns:repeat(2,1fr);
   }
+}
+.search__field{
+  position: relative;
+}
+
+.searchSuggestions{
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+  display: none;
+  z-index: 50;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.searchSuggestionItem{
+  padding: 12px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+
+.searchSuggestionItem:last-child{
+  border-bottom: none;
+}
+
+.searchSuggestionItem:hover{
+  background: #f8fafc;
+}
+
+.searchSuggestionItem strong{
+  display: block;
+  color: #111827;
+}
+
+.searchSuggestionItem span{
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
 }

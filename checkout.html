@@ -51,19 +51,27 @@
       </div>
     </a>
 
-    <form class="search search--store" role="search" aria-label="Buscar produtos">
-      <div class="search__field">
-        <span class="search__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18">
-            <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
-            <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </span>
-        <input type="search" placeholder="Buscar produtos, marcas e categorias..." id="searchInput" autocomplete="off">
-      </div>
+    <form id="searchForm" class="search search--store" role="search" aria-label="Buscar produtos">
+  <div class="search__field">
+    <span class="search__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18">
+        <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
 
-      <button class="btn btn--yellow search__button" type="submit">Buscar</button>
-    </form>
+    <input
+      type="search"
+      placeholder="Buscar produtos, marcas e categorias..."
+      id="searchInput"
+      autocomplete="off"
+    >
+
+    <div id="searchSuggestions" class="searchSuggestions"></div>
+  </div>
+
+  <button class="btn btn--yellow search__button" type="submit">Buscar</button>
+</form>
 
     <div class="headerActions">
       <a href="https://wa.me/5521959039201" class="whatsBtn" target="_blank" rel="noreferrer">
