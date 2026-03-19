@@ -120,6 +120,14 @@ function waLink(message) {
   return `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(message)}`;
 }
 
+function normalizeText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
 async function fetchProducts() {
   try {
     const response = await fetch(PRODUCTS_ENDPOINT);
@@ -282,7 +290,7 @@ function getFilteredProducts() {
     result = result.filter((product) => {
       const name = normalizeText(product.name);
       const category = normalizeText(product.category);
-      "const brand = normalizeText(product.brand);"
+      const brand = normalizeText(product.brand);
       const description = normalizeText(product.description);
 
       return (
@@ -356,7 +364,9 @@ function renderCategories() {
 function productCard(product) {
   const hasOff = typeof product.offPct === "number" && product.offPct > 0;
   const hasOld = typeof product.oldPrice === "number" && product.oldPrice > product.price;
-  const brandLabel = product.brand ? `<div class="pCategory">${product.brand}</div>` : `<div class="pCategory">${product.category}</div>`;
+  const brandLabel = product.brand
+    ? `<div class="pCategory">${product.brand}</div>`
+    : `<div class="pCategory">${product.category}</div>`;
 
   const card = document.createElement("div");
   card.className = "pCard";
@@ -375,9 +385,7 @@ function productCard(product) {
         <div class="newPrice">${brl(product.price)}</div>
       </div>
 
-      ${
-        ""
-      }
+      ${""}
 
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:auto;">
         <button class="btn btn--outline productDetailsBtn" type="button">Ver detalhes</button>
@@ -672,14 +680,7 @@ function setupSearch() {
       hideSuggestions();
     }
   });
-}
 
-function normalizeText(value) {
-  return String(value || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
 }
 
 function setupSort() {
