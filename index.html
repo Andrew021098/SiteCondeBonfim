@@ -37,70 +37,70 @@
     </div>
   </div>
 
-<header class="header">
-  <div class="container header__inner header__inner--store">
-    <a class="brand brand--store" href="./index.html" aria-label="Ir para o início">
-      <div class="brand__logoWrap">
-        <img class="brand__logo" src="/assets/logo.jpg" alt="Conde de Bonfim">
-      </div>
+  <header class="header">
+    <div class="container header__inner header__inner--store">
+      <a class="brand brand--store" href="./index.html" aria-label="Ir para o início">
+        <div class="brand__logoWrap">
+          <img class="brand__logo" src="/assets/logo.jpg" alt="Conde de Bonfim">
+        </div>
 
-      <div class="brand__text">
-        <span>Eletro Ferragens</span>
-        <strong>Conde de Bonfim</strong>
-      </div>
-    </a>
-
-    <form id="searchForm" class="search search--store" role="search" aria-label="Buscar produtos">
-  <div class="search__field">
-    <span class="search__icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="18" height="18">
-        <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
-        <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </span>
-
-    <input
-      type="search"
-      placeholder="Buscar produtos, marcas e categorias..."
-      id="searchInput"
-      autocomplete="off"
-    >
-
-    <div id="searchSuggestions" class="searchSuggestions"></div>
-  </div>
-
-  <button class="btn btn--yellow search__button" type="submit">Buscar</button>
-</form>
-
-    <div class="headerActions">
-      <a href="https://wa.me/5521959039201" class="whatsBtn" target="_blank" rel="noreferrer">
-        WhatsApp
+        <div class="brand__text">
+          <span>Eletro Ferragens</span>
+          <strong>Conde de Bonfim</strong>
+        </div>
       </a>
 
-      <button class="cartBtn" id="openCart" type="button" aria-label="Abrir carrinho">
-        <span class="cartBtn__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22">
-            <path d="M6 6h15l-2 9H7L5 3H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <circle cx="9" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
-            <circle cx="18" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
-          </svg>
-        </span>
-        <span class="cartBtn__badge" id="cartCount">0</span>
-      </button>
-    </div>
-  </div>
+      <form id="searchForm" class="search search--store" role="search" aria-label="Buscar produtos">
+        <div class="search__field">
+          <span class="search__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
 
-  <div class="headerMenu">
-    <div class="container headerMenu__inner">
-      <nav class="menu" aria-label="Menu principal">
-        <a href="./index.html" class="menu__link is-active">Início</a>
-        <a href="./catalogo.html" class="menu__link">Catálogo</a>
-        <a href="#ofertas" class="menu__link">Promoções</a>
-        <a href="#contato" class="menu__link">Contato</a>
-      </nav>
+          <input
+            type="search"
+            placeholder="Buscar produtos, marcas e categorias..."
+            id="searchInput"
+            autocomplete="off"
+          >
+
+          <div id="searchSuggestions" class="searchSuggestions"></div>
+        </div>
+
+        <button class="btn btn--yellow search__button" type="submit">Buscar</button>
+      </form>
+
+      <div class="headerActions">
+        <a href="https://wa.me/5521959039201" class="whatsBtn" target="_blank" rel="noreferrer">
+          WhatsApp
+        </a>
+
+        <button class="cartBtn" id="openCart" type="button" aria-label="Abrir carrinho">
+          <span class="cartBtn__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22">
+              <path d="M6 6h15l-2 9H7L5 3H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <circle cx="9" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="18" cy="20" r="1.7" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </span>
+          <span class="cartBtn__badge" id="cartCount">0</span>
+        </button>
+      </div>
     </div>
-  </div>
-</header>
+
+    <div class="headerMenu">
+      <div class="container headerMenu__inner">
+        <nav class="menu" aria-label="Menu principal">
+          <a href="./index.html" class="menu__link is-active">Início</a>
+          <a href="./catalogo.html" class="menu__link">Catálogo</a>
+          <a href="#ofertas" class="menu__link">Promoções</a>
+          <a href="#contato" class="menu__link">Contato</a>
+        </nav>
+      </div>
+    </div>
+  </header>
 
   <main id="inicio">
     <section class="hero">
@@ -206,6 +206,12 @@
 
       <div class="container">
         <div class="productsGrid" id="offersGrid"></div>
+
+        <div id="offersLoader" style="text-align:center; padding:20px 0; font-weight:600;">
+          Role para carregar mais
+        </div>
+
+        <div id="offersInfiniteSentinel" style="height:1px;"></div>
       </div>
     </section>
 
@@ -249,7 +255,7 @@
         <div class="footer__col" id="sobre">
           <div class="footerBrand">
             <div class="logoIcon">
-                 <img src="/assets/logo.jpg" alt="Conde de Bonfim">
+              <img src="/assets/logo.jpg" alt="Conde de Bonfim">
             </div>
             <div>
               <span>Eletro Ferragens</span>
@@ -374,12 +380,8 @@
           </div>
 
           <div class="cartCustomerFields">
-           
             <div class="cartField">
-             
-              <div class="deliveryOptions">
-                
-              </div>
+              <div class="deliveryOptions"></div>
             </div>
           </div>
 

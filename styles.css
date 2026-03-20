@@ -1935,3 +1935,45 @@ textarea{font-family:inherit}
   color: #6b7280;
   margin-top: 2px;
 }
+
+#offersLoader,
+#catalogLoader {
+  display: none;
+  width: 100%;
+  text-align: center;
+  margin-top: 18px;
+  margin-bottom: 10px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e3a8a;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+}
+
+#offersLoader::before,
+#catalogLoader::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  vertical-align: -4px;
+  border: 2px solid rgba(37, 99, 235, 0.2);
+  border-top-color: #2563eb;
+  border-radius: 999px;
+  animation: cbSpin 0.8s linear infinite;
+}
+
+#offersInfiniteSentinel,
+#catalogInfiniteSentinel {
+  width: 100%;
+  height: 1px;
+}
+
+@keyframes cbSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

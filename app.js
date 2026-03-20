@@ -29,8 +29,24 @@ const CATEGORIES = [
 
 let PRODUCTS = [];
 
-const API_BASE_URL = "https://sitecondebonfim.onrender.com";
-const PRODUCTS_ENDPOINT = `${API_BASE_URL}/api/products`;
+let offersLoadedProducts = [];
+let catalogLoadedProducts = [];
+
+let catalogPage = 1;
+let catalogLimit = 100;
+let catalogLoading = false;
+let catalogHasMore = true;
+
+let offersPage = 1;
+let offersLimit = 10;
+let offersLoading = false;
+let offersHasMore = true;
+
+let isCatalogObserverStarted = false;
+let isOffersObserverStarted = false;
+
+const API_BASE_URL = "http://localhost:3000";
+const PRODUCTS_ENDPOINT = `${API_BASE_URL}/api/products-db`;
 
 const BRANDS = [
   "Votorantim",
@@ -128,9 +144,21 @@ function normalizeText(value) {
     .trim();
 }
 
-async function fetchProducts() {
+function mergeProductsIntoStore(products) {
+  if (!Array.isArray(products) || !products.length) return;
+
+  const byId = new Map(PRODUCTS.map((product) => [Number(product.id), product]));
+
+  products.forEach((product) => {
+    byId.set(Number(product.id), product);
+  });
+
+  PRODUCTS = Array.from(byId.values());
+}
+
+async function fetchProductsPage(page = 1, limit = 100) {
   try {
-    const response = await fetch(PRODUCTS_ENDPOINT);
+    const response = await fetch(`${PRODUCTS_ENDPOINT}?page=${page}&limit=${limit}`);
 
     if (!response.ok) {
       throw new Error(`Erro HTTP: ${response.status}`);
@@ -142,23 +170,103 @@ async function fetchProducts() {
       throw new Error("Resposta inválida da API.");
     }
 
-    PRODUCTS = data.products;
-
-    window.dispatchEvent(new CustomEvent("cb:productsLoaded", {
-      detail: { products: PRODUCTS }
-    }));
-
-    return PRODUCTS;
+    return {
+      products: data.products,
+      hasMore: Boolean(data.hasMore),
+      total: Number(data.total || 0),
+      page: Number(data.page || page),
+      limit: Number(data.limit || limit)
+    };
   } catch (error) {
-    console.error("Erro ao carregar produtos:", error);
-    PRODUCTS = [];
-
-    window.dispatchEvent(new CustomEvent("cb:productsLoaded", {
-      detail: { products: PRODUCTS }
-    }));
-
-    return [];
+    console.error("Erro ao carregar página de produtos:", error);
+    return {
+      products: [],
+      hasMore: false,
+      total: 0,
+      page,
+      limit
+    };
   }
+}
+
+async function fetchProducts() {
+  const firstPage = await fetchProductsPage(1, 300);
+
+  PRODUCTS = firstPage.products || [];
+
+  window.dispatchEvent(new CustomEvent("cb:productsLoaded", {
+    detail: { products: PRODUCTS }
+  }));
+
+  return PRODUCTS;
+}
+
+async function loadCatalogPage(reset = false) {
+  if (catalogLoading) return;
+
+  if (reset) {
+    catalogPage = 1;
+    catalogHasMore = true;
+    catalogLoadedProducts = [];
+  }
+
+  if (!catalogHasMore) {
+    renderCatalog();
+    return;
+  }
+
+  catalogLoading = true;
+  renderCatalog();
+
+  const result = await fetchProductsPage(catalogPage, catalogLimit);
+
+  if (reset) {
+    catalogLoadedProducts = [...result.products];
+  } else {
+    catalogLoadedProducts = [...catalogLoadedProducts, ...result.products];
+  }
+
+  mergeProductsIntoStore(result.products);
+
+  catalogHasMore = result.hasMore;
+  catalogPage += 1;
+  catalogLoading = false;
+
+  renderCatalog();
+}
+
+async function loadOffersPage(reset = false) {
+  if (offersLoading) return;
+
+  if (reset) {
+    offersPage = 1;
+    offersHasMore = true;
+    offersLoadedProducts = [];
+  }
+
+  if (!offersHasMore) {
+    renderOffersInfinite();
+    return;
+  }
+
+  offersLoading = true;
+  renderOffersInfinite();
+
+  const result = await fetchProductsPage(offersPage, offersLimit);
+
+  if (reset) {
+    offersLoadedProducts = [...result.products];
+  } else {
+    offersLoadedProducts = [...offersLoadedProducts, ...result.products];
+  }
+
+  mergeProductsIntoStore(result.products);
+
+  offersHasMore = result.hasMore;
+  offersPage += 1;
+  offersLoading = false;
+
+  renderOffersInfinite();
 }
 
 function loadCart() {
@@ -385,7 +493,7 @@ function productCard(product) {
         <div class="newPrice">${brl(product.price)}</div>
       </div>
 
-      ${""}
+       ${""}
 
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:auto;">
         <button class="btn btn--outline productDetailsBtn" type="button">Ver detalhes</button>
@@ -428,12 +536,34 @@ function renderProductsInGrid(gridId, products, emptyMessage) {
   });
 }
 
+function renderOffersInfinite() {
+  const grid = document.getElementById("offersGrid");
+  const loader = document.getElementById("offersLoader");
+
+  if (!grid) return;
+
+  const promoProducts = [...offersLoadedProducts]
+    .filter((product) => typeof product.offPct === "number" && product.offPct > 0)
+    .sort((a, b) => Number(b.offPct || 0) - Number(a.offPct || 0));
+
+  grid.innerHTML = "";
+
+  if (!promoProducts.length && !offersLoading) {
+    grid.innerHTML = `<div class="emptyState">Nenhuma oferta encontrada para esse filtro.</div>`;
+  } else {
+    promoProducts.forEach((product) => {
+      grid.appendChild(productCard(product));
+    });
+  }
+
+  if (loader) {
+    loader.style.display = offersHasMore || offersLoading ? "block" : "none";
+    loader.textContent = offersLoading ? "Carregando mais promoções..." : "Role para carregar mais";
+  }
+}
+
 function renderOffers() {
-  renderProductsInGrid(
-    "offersGrid",
-    getOfferProducts(),
-    "Nenhuma oferta encontrada para esse filtro."
-  );
+  renderOffersInfinite();
 }
 
 function renderFeatured() {
@@ -570,7 +700,10 @@ function setupSearch() {
   function applySearchAndRender() {
     searchTerm = input.value.trim();
     renderAllSections();
-    renderCatalog();
+
+    if (document.getElementById("catalogGrid")) {
+      loadCatalogPage(true);
+    }
   }
 
   function renderSuggestions(term) {
@@ -616,7 +749,11 @@ function setupSearch() {
         searchTerm = selectedName;
 
         renderAllSections();
-        renderCatalog();
+
+        if (document.getElementById("catalogGrid")) {
+          loadCatalogPage(true);
+        }
+
         hideSuggestions();
 
         const catalogGrid = document.getElementById("catalogGrid");
@@ -685,12 +822,21 @@ function setupSearch() {
 
 function setupSort() {
   const select = document.getElementById("sortSelect");
-  if (!select) return;
+  
+  const catalogSort = document.getElementById("catalogSort");
 
-  select.addEventListener("change", () => {
-    sortBy = select.value;
-    renderAllSections();
-  });
+  if (select) {
+    select.addEventListener("change", () => {
+      sortBy = select.value;
+      renderAllSections();
+    });
+  }
+
+  if (catalogSort) {
+    catalogSort.addEventListener("change", () => {
+      renderCatalog();
+    });
+  }
 }
 
 function getSelectedDeliveryType() {
@@ -861,7 +1007,7 @@ function setupDrawer() {
 }
 
 function openProductModal(productId) {
-  const product = PRODUCTS.find((p) => p.id === productId);
+  const product = PRODUCTS.find((p) => Number(p.id) === Number(productId));
   const modal = document.getElementById("productModal");
 
   if (!product || !modal) return;
@@ -1010,7 +1156,7 @@ function setupProductModal() {
 }
 
 function getCatalogFilteredProducts() {
-  let products = [...PRODUCTS];
+  let products = [...catalogLoadedProducts];
 
   const selectedCategory =
     document.querySelector('input[name="categoryFilter"]:checked')?.value || "Todos";
@@ -1055,9 +1201,7 @@ function getCatalogFilteredProducts() {
   }
 
   if (catalogFilters.brands.length) {
-    products = products.filter((product) =>
-      catalogFilters.brands.includes(product.brand)
-    );
+    products = products.filter((product) => catalogFilters.brands.includes(product.brand));
   }
 
   if (catalogFilters.saleFormat !== "Todos") {
@@ -1093,6 +1237,7 @@ function getCatalogFilteredProducts() {
 function renderCatalog() {
   const grid = document.getElementById("catalogGrid");
   const count = document.getElementById("catalogCount");
+  const loader = document.getElementById("catalogLoader");
 
   if (!grid) return;
 
@@ -1106,12 +1251,60 @@ function renderCatalog() {
 
   if (!products.length) {
     grid.innerHTML = `<div class="emptyState">Nenhum produto encontrado para esse filtro.</div>`;
-    return;
+  } else {
+    products.forEach((product) => {
+      grid.appendChild(productCard(product));
+    });
   }
 
-  products.forEach((product) => {
-    grid.appendChild(productCard(product));
+  if (loader) {
+    loader.style.display = catalogHasMore || catalogLoading ? "block" : "none";
+    loader.textContent = catalogLoading ? "Carregando mais produtos..." : "Role para carregar mais";
+  }
+}
+
+function setupCatalogInfiniteScroll() {
+  if (isCatalogObserverStarted) return;
+
+  const sentinel = document.getElementById("catalogInfiniteSentinel");
+  if (!sentinel) return;
+
+  const observer = new IntersectionObserver(async (entries) => {
+    const entry = entries[0];
+    if (!entry.isIntersecting) return;
+    if (catalogLoading || !catalogHasMore) return;
+
+    await loadCatalogPage(false);
+  }, {
+    root: null,
+    rootMargin: "300px 0px",
+    threshold: 0
   });
+
+  observer.observe(sentinel);
+  isCatalogObserverStarted = true;
+}
+
+function setupOffersInfiniteScroll() {
+  if (isOffersObserverStarted) return;
+
+  const sentinel = document.getElementById("offersInfiniteSentinel");
+  if (!sentinel) return;
+
+  const observer = new IntersectionObserver(async (entries) => {
+    const entry = entries[0];
+    if (!entry.isIntersecting) return;
+    if (offersLoading || !offersHasMore) return;
+
+    await loadOffersPage(false);
+  }, {
+    root: null,
+    rootMargin: "300px 0px",
+    threshold: 0
+  });
+
+  observer.observe(sentinel);
+  isOffersObserverStarted = true;
 }
 
 function setupAdvancedCatalogFilters() {
@@ -1128,7 +1321,7 @@ function setupAdvancedCatalogFilters() {
   discountInputs.forEach((input) => {
     input.addEventListener("change", () => {
       catalogFilters.minDiscount = Number(input.value || 0);
-      renderCatalog();
+      loadCatalogPage(true);
     });
   });
 
@@ -1138,28 +1331,28 @@ function setupAdvancedCatalogFilters() {
         .filter((item) => item.checked)
         .map((item) => item.value);
 
-      renderCatalog();
+      loadCatalogPage(true);
     });
   });
 
   saleFormatInputs.forEach((input) => {
     input.addEventListener("change", () => {
       catalogFilters.saleFormat = input.value || "Todos";
-      renderCatalog();
+      loadCatalogPage(true);
     });
   });
 
   if (flashOfferInput) {
     flashOfferInput.addEventListener("change", () => {
       catalogFilters.flashOffer = flashOfferInput.checked;
-      renderCatalog();
+      loadCatalogPage(true);
     });
   }
 
   if (installmentsInput) {
     installmentsInput.addEventListener("change", () => {
       catalogFilters.installmentsNoInterest = installmentsInput.checked;
-      renderCatalog();
+      loadCatalogPage(true);
     });
   }
 
@@ -1181,7 +1374,7 @@ function setupAdvancedCatalogFilters() {
       if (priceMinInput) priceMinInput.value = catalogFilters.minPrice ?? "";
       if (priceMaxInput) priceMaxInput.value = catalogFilters.maxPrice ?? "";
 
-      renderCatalog();
+      loadCatalogPage(true);
     });
   });
 
@@ -1193,7 +1386,7 @@ function setupAdvancedCatalogFilters() {
       catalogFilters.minPrice = minRaw ? Number(minRaw) : null;
       catalogFilters.maxPrice = maxRaw ? Number(maxRaw) : null;
 
-      renderCatalog();
+      loadCatalogPage(true);
     });
   }
 }
@@ -1207,7 +1400,7 @@ function setupCatalog() {
 
   categoryInputs.forEach((input) => {
     input.addEventListener("change", () => {
-      renderCatalog();
+      loadCatalogPage(true);
     });
   });
 
@@ -1218,7 +1411,6 @@ function setupCatalog() {
   }
 
   setupAdvancedCatalogFilters();
-  renderCatalog();
 }
 
 function exposeAppApi() {
@@ -1234,6 +1426,9 @@ function exposeAppApi() {
       return PRODUCTS;
     },
     fetchProducts,
+    fetchProductsPage,
+    loadCatalogPage,
+    loadOffersPage,
     loadCart,
     saveCart,
     cartCount,
@@ -1281,16 +1476,31 @@ async function init() {
   setupDrawer();
   setupProductModal();
 
-  const products = await fetchProducts();
+  const isCatalogPage = Boolean(document.getElementById("catalogGrid"));
+  const isHomeOffers = Boolean(document.getElementById("offersGrid"));
 
-  if (products.length) {
+  if (isCatalogPage) {
     renderBrands();
-    renderAllSections();
     setupCatalog();
+    await loadCatalogPage(true);
+    setupCatalogInfiniteScroll();
     renderCart();
   } else {
-    console.error("Nenhum produto carregado.");
-    renderCart();
+    const products = await fetchProducts();
+
+    if (products.length) {
+      renderBrands();
+      renderAllSections();
+      renderCart();
+    } else {
+      console.error("Nenhum produto carregado.");
+      renderCart();
+    }
+  }
+
+  if (isHomeOffers) {
+    await loadOffersPage(true);
+    setupOffersInfiniteScroll();
   }
 
   if (localStorage.getItem("openCart") === "true") {
@@ -1299,8 +1509,8 @@ async function init() {
   }
 
   return {
-    productsLoaded: products.length > 0,
-    products
+    productsLoaded: PRODUCTS.length > 0,
+    products: PRODUCTS
   };
 }
 

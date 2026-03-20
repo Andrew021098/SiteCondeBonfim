@@ -14,9 +14,9 @@ const PORT = process.env.PORT || 3000;
 ========================= */
 
 const dbOptions = {
-  host: "192.168.88.225",
+  host: "192.168.88.247",
   port: 3050,
-  database: "C:\\CAMINHO\\SEU_BANCO.fdb", // AJUSTAR
+  database: "/opt/firebird/bancos/MIAUTOMEC.FDB",
   user: "SYSDBA",
   password: "masterkey",
   lowercase_keys: true
@@ -251,6 +251,10 @@ app.get("/api/products", (req, res) => {
 
 app.get("/api/products-db", async (req, res) => {
   try {
+    const page = Math.max(1, Number(req.query.page || 1));
+    const limit = Math.max(1, Number(req.query.limit || 100));
+    const offset = (page - 1) * limit;
+
     const rows = await queryFirebird(`
       SELECT
         ID,
@@ -262,14 +266,26 @@ app.get("/api/products-db", async (req, res) => {
         PRICE,
         PROMO_PRICE
       FROM BANCOSQL
+      ORDER BY NAME
+      ROWS ${offset + 1} TO ${offset + limit}
     `);
+
+    const countRows = await queryFirebird(`
+      SELECT COUNT(*) AS TOTAL
+      FROM BANCOSQL
+    `);
+
+    const total = Number(countRows?.[0]?.total || 0);
 
     const products = mapDbProducts(rows);
 
     res.json({
       success: true,
       source: "firebird",
-      total: products.length,
+      page,
+      limit,
+      total,
+      hasMore: offset + products.length < total,
       products
     });
   } catch (error) {
