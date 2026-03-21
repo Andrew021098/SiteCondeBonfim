@@ -14,11 +14,11 @@ const PORT = process.env.PORT || 3000;
 ========================= */
 
 const dbOptions = {
-  host: process.env.FIREBIRD_HOST || "192.168.88.247",
-  port: Number(process.env.FIREBIRD_PORT || 3050),
-  database: process.env.FIREBIRD_DATABASE || "/opt/firebird/bancos/MIAUTOMEC.FDB",
-  user: process.env.FIREBIRD_USER || "SYSDBA",
-  password: process.env.FIREBIRD_PASSWORD || "masterkey",
+  host: "192.168.88.247",
+  port: 3050,
+  database: "/opt/firebird/bancos/MIAUTOMEC.FDB",
+  user: "SYSDBA",
+  password: "masterkey",
   lowercase_keys: true
 };
 
@@ -28,36 +28,13 @@ const dbOptions = {
 
 const REUTILIZAR_MESMO_VENDEDOR = false;
 
-const allowedOrigins = [
-  "http://localhost:5500",
-  "http://127.0.0.1:5500",
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-  "https://site-original-nu.vercel.app",
-  "https://sitecondebonfim.onrender.com"
-];
-
 app.use(cors({
-  origin(origin, callback) {
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(new URL(origin).hostname)) {
-      return callback(null, true);
-    }
-
-    return callback(null, true);
-  },
-  methods: ["GET", "POST", "OPTIONS"],
+  origin: "*",
+  methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"]
 }));
 
 app.use(express.json());
-
-/* =========================
-   ARQUIVOS ESTÁTICOS
-========================= */
-
-app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 const vendedoresFile = path.join(__dirname, "vendedores.json");
 const leadsFile = path.join(__dirname, "leads.json");
@@ -103,31 +80,14 @@ function sanitizeItems(items) {
   if (!Array.isArray(items)) return [];
 
   return items
-    .filter((item) => item && Number(item.qty) > 0 && Number(item.price) > 0)
-    .map((item) => ({
+    .filter(item => item && Number(item.qty) > 0 && Number(item.price) > 0)
+    .map(item => ({
       id: item.id,
       nome: String(item.name || "").trim(),
       quantidade: Number(item.qty),
       preco_unitario: Number(item.price),
       subtotal: Number((Number(item.qty) * Number(item.price)).toFixed(2))
     }));
-}
-
-function getBaseUrl(req) {
-  const envBaseUrl = process.env.BASE_URL;
-  if (envBaseUrl) {
-    return envBaseUrl.replace(/\/$/, "");
-  }
-
-  return `${req.protocol}://${req.get("host")}`;
-}
-
-function safeFileName(filePathValue) {
-  return String(filePathValue || "").split(/[/\\]/).pop();
-}
-
-function escapeSql(value) {
-  return String(value || "").replace(/'/g, "''");
 }
 
 /* =========================
@@ -163,7 +123,7 @@ function saveFilaData(data) {
 ========================= */
 
 function getActiveVendedores() {
-  return (getVendedoresData().vendedores || []).filter((v) => v.ativo);
+  return (getVendedoresData().vendedores || []).filter(v => v.ativo);
 }
 
 function pickNextVendedor() {
@@ -172,13 +132,8 @@ function pickNextVendedor() {
 
   if (!vendedores.length) return null;
 
-  const index = vendedores.findIndex(
-    (v) => Number(v.id) === Number(fila.ultimo_vendedor_id)
-  );
-
-  const next = index === -1
-    ? vendedores[0]
-    : vendedores[(index + 1) % vendedores.length];
+  const index = vendedores.findIndex(v => Number(v.id) === Number(fila.ultimo_vendedor_id));
+  const next = index === -1 ? vendedores[0] : vendedores[(index + 1) % vendedores.length];
 
   saveFilaData({ ultimo_vendedor_id: next.id });
   return next;
@@ -208,7 +163,7 @@ function queryFirebird(sql) {
   });
 }
 
-function mapDbProducts(rows, baseUrl) {
+function mapDbProducts(rows) {
   return rows.map((row) => {
     const price = Number(row.price || 0);
     const promo = Number(row.promo_price || 0);
@@ -223,63 +178,20 @@ function mapDbProducts(rows, baseUrl) {
       offPct = Math.round(((price - promo) / price) * 100);
     }
 
-    const imageFile = safeFileName(row.image);
-    const imageUrl = imageFile
-      ? `${baseUrl}/assets/produtos/${imageFile}`
-      : `${baseUrl}/assets/no-image.jpg`;
-
     return {
       id: row.id,
-      name: row.name || "Produto sem nome",
-      category: row.category || "Sem categoria",
-      brand: row.brand || "",
-      saleFormat: row.sale_format || "Unidade",
-      installmentsNoInterest: Boolean(row.installments_no_interest),
-      flashOffer: Boolean(row.flash_offer),
+      name: row.name,
+      category: row.category,
       price: finalPrice,
       oldPrice,
       offPct,
       freeShip: false,
-      image: imageUrl,
-      featured: Number(offPct || 0) > 0,
-      description: row.description || "Produto sem descrição.",
+      image: row.image
+        ? `/assets/produtos/${String(row.image).split("\\").pop()}`
+        : "/assets/no-image.jpg",
+      featured: false,
+      description: row.description,
       stock: Number(row.stock || 0)
-    };
-  });
-}
-
-function normalizeJsonProducts(products, baseUrl) {
-  return products.map((product) => {
-    const imageFile = safeFileName(product.image);
-    const isAbsolute = /^https?:\/\//i.test(String(product.image || ""));
-    const price = Number(product.price || 0);
-    const oldPrice = product.oldPrice != null ? Number(product.oldPrice) : null;
-    const offPct = product.offPct != null
-      ? Number(product.offPct)
-      : oldPrice && oldPrice > price
-      ? Math.round(((oldPrice - price) / oldPrice) * 100)
-      : null;
-
-    return {
-      id: product.id,
-      name: product.name || "Produto sem nome",
-      category: product.category || "Sem categoria",
-      brand: product.brand || "",
-      saleFormat: product.saleFormat || "Unidade",
-      installmentsNoInterest: Boolean(product.installmentsNoInterest),
-      flashOffer: Boolean(product.flashOffer),
-      price,
-      oldPrice,
-      offPct,
-      freeShip: Boolean(product.freeShip),
-      image: isAbsolute
-        ? product.image
-        : imageFile
-        ? `${baseUrl}/assets/produtos/${imageFile}`
-        : `${baseUrl}/assets/no-image.jpg`,
-      featured: Boolean(product.featured || Number(offPct || 0) > 0),
-      description: product.description || "Produto sem descrição.",
-      stock: Number(product.stock || 0)
     };
   });
 }
@@ -290,14 +202,6 @@ function normalizeJsonProducts(products, baseUrl) {
 
 app.get("/", (req, res) => {
   res.send("Backend rodando");
-});
-
-app.get("/health", (req, res) => {
-  res.json({
-    ok: true,
-    service: "sitecondebonfim",
-    timestamp: new Date().toISOString()
-  });
 });
 
 app.get("/vendedores", (req, res) => {
@@ -319,21 +223,17 @@ app.get("/leads", (req, res) => {
 });
 
 /* =========================
-   PRODUTOS JSON
+   PRODUTOS JSON (SITE SEGUE FUNCIONANDO)
 ========================= */
 
 app.get("/api/products", (req, res) => {
   try {
-    const baseUrl = getBaseUrl(req);
-    const products = normalizeJsonProducts(getProductsData(), baseUrl);
+    const products = getProductsData();
 
     res.json({
       success: true,
       source: "json",
-      page: 1,
-      limit: products.length,
       total: products.length,
-      hasMore: false,
       products
     });
   } catch (error) {
@@ -346,31 +246,14 @@ app.get("/api/products", (req, res) => {
 });
 
 /* =========================
-   PRODUTOS FIREBIRD / FALLBACK
+   PRODUTOS FIREBIRD (TESTE)
 ========================= */
 
 app.get("/api/products-db", async (req, res) => {
-  const page = Math.max(1, Number(req.query.page || 1));
-  const limit = Math.max(1, Number(req.query.limit || 100));
-  const offset = (page - 1) * limit;
-  const search = String(req.query.search || "").trim();
-  const category = String(req.query.category || "").trim();
-  const baseUrl = getBaseUrl(req);
-
   try {
-    const where = [];
-
-    if (search) {
-      const safeSearch = escapeSql(search);
-      where.push(`UPPER(NAME) CONTAINING UPPER('${safeSearch}')`);
-    }
-
-    if (category && category !== "Todos") {
-      const safeCategory = escapeSql(category);
-      where.push(`UPPER(CATEGORY) = UPPER('${safeCategory}')`);
-    }
-
-    const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
+    const page = Math.max(1, Number(req.query.page || 1));
+    const limit = Math.max(1, Number(req.query.limit || 100));
+    const offset = (page - 1) * limit;
 
     const rows = await queryFirebird(`
       SELECT
@@ -383,7 +266,6 @@ app.get("/api/products-db", async (req, res) => {
         PRICE,
         PROMO_PRICE
       FROM BANCOSQL
-      ${whereSql}
       ORDER BY NAME
       ROWS ${offset + 1} TO ${offset + limit}
     `);
@@ -391,76 +273,28 @@ app.get("/api/products-db", async (req, res) => {
     const countRows = await queryFirebird(`
       SELECT COUNT(*) AS TOTAL
       FROM BANCOSQL
-      ${whereSql}
     `);
 
     const total = Number(countRows?.[0]?.total || 0);
-    const products = mapDbProducts(rows, baseUrl);
 
-    return res.json({
+    const products = mapDbProducts(rows);
+
+    res.json({
       success: true,
       source: "firebird",
       page,
       limit,
       total,
       hasMore: offset + products.length < total,
-      search,
-      category,
       products
     });
-    
   } catch (error) {
-    console.error("Erro no Firebird, usando fallback JSON:", error.message || error);
-
-    try {
-      let products = normalizeJsonProducts(getProductsData(), baseUrl);
-
-      if (search) {
-        const normalizedSearch = search.toLowerCase();
-        products = products.filter((product) => {
-          const name = String(product.name || "").toLowerCase();
-          const categoryValue = String(product.category || "").toLowerCase();
-          const brand = String(product.brand || "").toLowerCase();
-          const description = String(product.description || "").toLowerCase();
-
-          return (
-            name.includes(normalizedSearch) ||
-            categoryValue.includes(normalizedSearch) ||
-            brand.includes(normalizedSearch) ||
-            description.includes(normalizedSearch)
-          );
-        });
-      }
-
-      if (category && category !== "Todos") {
-        const normalizedCategory = category.toLowerCase();
-        products = products.filter(
-          (product) => String(product.category || "").toLowerCase() === normalizedCategory
-        );
-      }
-
-      const paginated = products.slice(offset, offset + limit);
-
-      return res.json({
-        success: true,
-        source: "json-fallback",
-        page,
-        limit,
-        total: products.length,
-        hasMore: offset + paginated.length < products.length,
-        search,
-        category,
-        products: paginated
-      });
-    } catch (jsonError) {
-      console.error("Erro também no fallback JSON:", jsonError);
-
-      return res.status(500).json({
-        success: false,
-        message: "Erro ao carregar produtos.",
-        details: String(jsonError.message || jsonError)
-      });
-    }
+    console.error("Erro em /api/products-db:", error);
+    res.status(500).json({
+      success: false,
+      message: "Erro ao carregar produtos do Firebird.",
+      details: String(error.message || error)
+    });
   }
 });
 
@@ -503,17 +337,6 @@ app.post("/distribuir-lead", (req, res) => {
       message: "Erro ao distribuir lead."
     });
   }
-});
-
-/* =========================
-   404
-========================= */
-
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Rota não encontrada: ${req.method} ${req.originalUrl}`
-  });
 });
 
 /* =========================
