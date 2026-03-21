@@ -47,7 +47,7 @@ let isOffersObserverStarted = false;
 const API_BASE_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:3000"
-    : "http://localhost:3000"; // mantém local por enquanto
+    : "https://sitecondebonfim.onrender.com";
 
 const PRODUCTS_ENDPOINT = `${API_BASE_URL}/api/products-db`;
 
