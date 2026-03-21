@@ -28,9 +28,26 @@ const dbOptions = {
 
 const REUTILIZAR_MESMO_VENDEDOR = false;
 
+const allowedOrigins = [
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://site-original-nu.vercel.app",
+  "https://sitecondebonfim.onrender.com"
+];
+
 app.use(cors({
-  origin: "https://sitecondebonfim.onrender.com",
-  methods: ["GET", "POST"],
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(new URL(origin).hostname)) {
+      return callback(null, true);
+    }
+
+    return callback(null, true);
+  },
+  methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
 }));
 
@@ -107,6 +124,10 @@ function getBaseUrl(req) {
 
 function safeFileName(filePathValue) {
   return String(filePathValue || "").split(/[/\\]/).pop();
+}
+
+function escapeSql(value) {
+  return String(value || "").replace(/'/g, "''");
 }
 
 /* =========================
@@ -220,9 +241,45 @@ function mapDbProducts(rows, baseUrl) {
       offPct,
       freeShip: false,
       image: imageUrl,
-      featured: false,
+      featured: Number(offPct || 0) > 0,
       description: row.description || "Produto sem descrição.",
       stock: Number(row.stock || 0)
+    };
+  });
+}
+
+function normalizeJsonProducts(products, baseUrl) {
+  return products.map((product) => {
+    const imageFile = safeFileName(product.image);
+    const isAbsolute = /^https?:\/\//i.test(String(product.image || ""));
+    const price = Number(product.price || 0);
+    const oldPrice = product.oldPrice != null ? Number(product.oldPrice) : null;
+    const offPct = product.offPct != null
+      ? Number(product.offPct)
+      : oldPrice && oldPrice > price
+      ? Math.round(((oldPrice - price) / oldPrice) * 100)
+      : null;
+
+    return {
+      id: product.id,
+      name: product.name || "Produto sem nome",
+      category: product.category || "Sem categoria",
+      brand: product.brand || "",
+      saleFormat: product.saleFormat || "Unidade",
+      installmentsNoInterest: Boolean(product.installmentsNoInterest),
+      flashOffer: Boolean(product.flashOffer),
+      price,
+      oldPrice,
+      offPct,
+      freeShip: Boolean(product.freeShip),
+      image: isAbsolute
+        ? product.image
+        : imageFile
+        ? `${baseUrl}/assets/produtos/${imageFile}`
+        : `${baseUrl}/assets/no-image.jpg`,
+      featured: Boolean(product.featured || Number(offPct || 0) > 0),
+      description: product.description || "Produto sem descrição.",
+      stock: Number(product.stock || 0)
     };
   });
 }
@@ -233,6 +290,14 @@ function mapDbProducts(rows, baseUrl) {
 
 app.get("/", (req, res) => {
   res.send("Backend rodando");
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    ok: true,
+    service: "sitecondebonfim",
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.get("/vendedores", (req, res) => {
@@ -259,28 +324,17 @@ app.get("/leads", (req, res) => {
 
 app.get("/api/products", (req, res) => {
   try {
-    const products = getProductsData();
     const baseUrl = getBaseUrl(req);
-
-    const normalizedProducts = products.map((product) => {
-      const imageFile = safeFileName(product.image);
-      const isAbsolute = /^https?:\/\//i.test(String(product.image || ""));
-
-      return {
-        ...product,
-        image: isAbsolute
-          ? product.image
-          : imageFile
-          ? `${baseUrl}/assets/produtos/${imageFile}`
-          : `${baseUrl}/assets/no-image.jpg`
-      };
-    });
+    const products = normalizeJsonProducts(getProductsData(), baseUrl);
 
     res.json({
       success: true,
       source: "json",
-      total: normalizedProducts.length,
-      products: normalizedProducts
+      page: 1,
+      limit: products.length,
+      total: products.length,
+      hasMore: false,
+      products
     });
   } catch (error) {
     console.error("Erro em /api/products:", error);
@@ -292,38 +346,121 @@ app.get("/api/products", (req, res) => {
 });
 
 /* =========================
-   PRODUTOS FIREBIRD
+   PRODUTOS FIREBIRD / FALLBACK
 ========================= */
 
 app.get("/api/products-db", async (req, res) => {
+  const page = Math.max(1, Number(req.query.page || 1));
+  const limit = Math.max(1, Number(req.query.limit || 100));
+  const offset = (page - 1) * limit;
+  const search = String(req.query.search || "").trim();
+  const category = String(req.query.category || "").trim();
+  const baseUrl = getBaseUrl(req);
+
   try {
-    // tenta Firebird
+    const where = [];
+
+    if (search) {
+      const safeSearch = escapeSql(search);
+      where.push(`UPPER(NAME) CONTAINING UPPER('${safeSearch}')`);
+    }
+
+    if (category && category !== "Todos") {
+      const safeCategory = escapeSql(category);
+      where.push(`UPPER(CATEGORY) = UPPER('${safeCategory}')`);
+    }
+
+    const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
+
     const rows = await queryFirebird(`
-      SELECT ID, NAME, IMAGE, DESCRIPTION, CATEGORY, STOCK, PRICE, PROMO_PRICE
+      SELECT
+        ID,
+        NAME,
+        IMAGE,
+        DESCRIPTION,
+        CATEGORY,
+        STOCK,
+        PRICE,
+        PROMO_PRICE
       FROM BANCOSQL
-      ROWS 1 TO 100
+      ${whereSql}
+      ORDER BY NAME
+      ROWS ${offset + 1} TO ${offset + limit}
     `);
 
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const countRows = await queryFirebird(`
+      SELECT COUNT(*) AS TOTAL
+      FROM BANCOSQL
+      ${whereSql}
+    `);
+
+    const total = Number(countRows?.[0]?.total || 0);
     const products = mapDbProducts(rows, baseUrl);
 
     return res.json({
       success: true,
       source: "firebird",
+      page,
+      limit,
+      total,
+      hasMore: offset + products.length < total,
+      search,
+      category,
       products
     });
-
+    
   } catch (error) {
-    console.error("🔥 Firebird caiu, usando JSON:", error.message);
+    console.error("Erro no Firebird, usando fallback JSON:", error.message || error);
 
-    // fallback JSON
-    const products = getProductsData();
+    try {
+      let products = normalizeJsonProducts(getProductsData(), baseUrl);
 
-    return res.json({
-      success: true,
-      source: "json-fallback",
-      products
-    });
+      if (search) {
+        const normalizedSearch = search.toLowerCase();
+        products = products.filter((product) => {
+          const name = String(product.name || "").toLowerCase();
+          const categoryValue = String(product.category || "").toLowerCase();
+          const brand = String(product.brand || "").toLowerCase();
+          const description = String(product.description || "").toLowerCase();
+
+          return (
+            name.includes(normalizedSearch) ||
+            categoryValue.includes(normalizedSearch) ||
+            brand.includes(normalizedSearch) ||
+            description.includes(normalizedSearch)
+          );
+        });
+      }
+
+      if (category && category !== "Todos") {
+        const normalizedCategory = category.toLowerCase();
+        products = products.filter(
+          (product) => String(product.category || "").toLowerCase() === normalizedCategory
+        );
+      }
+
+      const paginated = products.slice(offset, offset + limit);
+
+      return res.json({
+        success: true,
+        source: "json-fallback",
+        page,
+        limit,
+        total: products.length,
+        hasMore: offset + paginated.length < products.length,
+        search,
+        category,
+        products: paginated
+      });
+    } catch (jsonError) {
+      console.error("Erro também no fallback JSON:", jsonError);
+
+      return res.status(500).json({
+        success: false,
+        message: "Erro ao carregar produtos.",
+        details: String(jsonError.message || jsonError)
+      });
+    }
   }
 });
 
@@ -366,6 +503,17 @@ app.post("/distribuir-lead", (req, res) => {
       message: "Erro ao distribuir lead."
     });
   }
+});
+
+/* =========================
+   404
+========================= */
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Rota não encontrada: ${req.method} ${req.originalUrl}`
+  });
 });
 
 /* =========================
