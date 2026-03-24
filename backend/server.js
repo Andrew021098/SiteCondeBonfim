@@ -392,6 +392,15 @@ app.post("/distribuir-lead", (req, res) => {
       created_at: new Date().toISOString(),
       cliente: req.body.name,
       telefone: normalizePhone(req.body.phone),
+      email: req.body.email || "",
+      entrega: req.body.deliveryType || "",
+      endereco: req.body.address || "",
+      complemento: req.body.complement || "",
+      cep: req.body.zip || "",
+      pagamento: req.body.paymentMethod || "",
+      observacoes: req.body.notes || "",
+      subtotal: Number(req.body.subtotal || 0),
+      total: Number(req.body.total || 0),
       itens: sanitizeItems(req.body.items),
       vendedor,
       reutilizar_mesmo_vendedor: REUTILIZAR_MESMO_VENDEDOR
@@ -401,17 +410,45 @@ app.post("/distribuir-lead", (req, res) => {
     leads.leads.push(lead);
     saveLeadsData(leads);
 
-    const itensTexto = lead.itens
-      .map(item => `- ${item.name} x${item.qty}`)
-      .join("\n");
+    const itensTexto = lead.itens.length
+      ? lead.itens
+          .map(item => `- ${item.nome} x${item.quantidade} — R$ ${item.preco_unitario.toFixed(2)}`)
+          .join("\n")
+      : "- Nenhum item informado";
+
+    const formaRecebimento =
+      lead.entrega === "pickup" || lead.entrega === "Retirada"
+        ? "Retirada na loja"
+        : "Entrega";
+
+    const enderecoTexto =
+      formaRecebimento === "Retirada na loja"
+        ? "Retirada na loja"
+        : [
+            lead.endereco,
+            lead.complemento,
+            lead.cep ? `CEP: ${lead.cep}` : ""
+          ]
+            .filter(Boolean)
+            .join(" | ");
 
     const mensagem = `Novo orçamento:
 
 Cliente: ${lead.cliente}
 Telefone: ${lead.telefone}
+E-mail: ${lead.email || "Não informado"}
+
+Forma de recebimento: ${formaRecebimento}
+Endereço: ${enderecoTexto || "Não informado"}
+Forma de pagamento: ${lead.pagamento || "Não informado"}
 
 Itens:
-${itensTexto}`;
+${itensTexto}
+
+Subtotal: R$ ${lead.subtotal.toFixed(2)}
+Total: R$ ${lead.total.toFixed(2)}
+
+Observações: ${lead.observacoes || "Nenhuma"}`;
 
     const whatsappLink = `https://wa.me/${telefoneVendedor}?text=${encodeURIComponent(mensagem)}`;
 
