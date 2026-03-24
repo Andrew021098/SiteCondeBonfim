@@ -401,34 +401,28 @@ app.post("/distribuir-lead", (req, res) => {
     leads.leads.push(lead);
     saveLeadsData(leads);
 
-    // 🔥 monta mensagem
     const itensTexto = lead.itens
       .map(item => `- ${item.name} x${item.qty}`)
       .join("\n");
 
-    const mensagem = `
-Novo orçamento:
+    const mensagem = `Novo orçamento:
 
 Cliente: ${lead.cliente}
 Telefone: ${lead.telefone}
 
 Itens:
-${itensTexto}
-    `;
+${itensTexto}`;
 
-    // 🔥 monta link
     const whatsappLink = `https://wa.me/${telefoneVendedor}?text=${encodeURIComponent(mensagem)}`;
 
-    // 🔥 resposta correta
-    res.json({
+    return res.json({
       success: true,
       vendedor,
       whatsapp_url: whatsappLink
     });
-
   } catch (error) {
     console.error("Erro em /distribuir-lead:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Erro ao distribuir lead."
     });
