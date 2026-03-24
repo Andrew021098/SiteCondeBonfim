@@ -292,7 +292,6 @@ ENVIO DO ORÇAMENTO
 ================================ */
 
 async function sendBudgetToWhatsApp() {
-
   const data = buildCheckoutData();
 
   if (!validateCheckoutData(data)) return;
@@ -305,42 +304,32 @@ async function sendBudgetToWhatsApp() {
   }
 
   try {
-
     const response = await fetch(`${BACKEND_URL}/distribuir-lead`, {
-
       method: "POST",
-
       headers: {
         "Content-Type": "application/json"
       },
-
       body: JSON.stringify(data)
-
     });
 
     const result = await response.json();
+    console.log("Resposta do backend:", result);
 
     if (!result.success) {
-
       alert(result.message || "Erro ao enviar orçamento.");
       return;
-
     }
 
-    const whatsappUrl = result.whatsapp_url;
+    const whatsappUrl = result.whatsapp_url || result.whatsappLink || result.link;
 
     if (!whatsappUrl) {
-
       alert("Vendedor não retornou link de WhatsApp.");
       return;
-
     }
 
     window.open(whatsappUrl, "_blank", "noreferrer");
   } catch (error) {
-
     console.error("Erro:", error);
-
     alert("Erro ao conectar com o servidor.");
   } finally {
     if (btn) {
@@ -348,7 +337,6 @@ async function sendBudgetToWhatsApp() {
       btn.innerText = "Enviar orçamento no WhatsApp";
     }
   }
-
 }
 
 /* ================================
