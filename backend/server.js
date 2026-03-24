@@ -437,7 +437,7 @@ const enderecoTexto =
 
 👤 *Cliente:* ${lead.cliente}
 📞 *Telefone:* ${lead.telefone}
-📧 *E-mail:* ${lead.email || "Não informado"}
+✉️ *E-mail:* ${lead.email || "Não informado"}
 
 📦 *ITENS:*
 ${itensTexto}
@@ -449,7 +449,7 @@ ${formaRecebimento}
 
 💳 *Pagamento:* ${lead.pagamento || "Não informado"}
 
-📝 *Observações:* ${lead.observacoes || "Nenhuma"}
+📃 *Observações:* ${lead.observacoes || "Nenhuma"}
 
 ⚠️ *Cliente aguardando retorno*`;
 
