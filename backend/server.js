@@ -4,30 +4,11 @@ const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-const Firebird = require("node-firebird");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-/* =========================
-   FIREBIRD CONFIG
-========================= */
-
-const dbOptions = {
-  host: process.env.FIREBIRD_HOST || "192.168.88.247",
-  port: Number(process.env.FIREBIRD_PORT || 3050),
-  database: process.env.FIREBIRD_DATABASE || "/opt/firebird/bancos/MIAUTOMEC.FDB",
-  user: process.env.FIREBIRD_USER || "SYSDBA",
-  password: process.env.FIREBIRD_PASSWORD || "masterkey",
-  lowercase_keys: true
-};
-
-/* =========================
-   CONFIG
-========================= */
-
 const REUTILIZAR_MESMO_VENDEDOR = false;
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutos
 
 app.use(cors({
   origin: "*",
@@ -43,14 +24,6 @@ const vendedoresFile = path.join(__dirname, "vendedores.json");
 const leadsFile = path.join(__dirname, "leads.json");
 const filaFile = path.join(__dirname, "fila.json");
 const productsFile = path.join(__dirname, "products.json");
-
-const productsCache = {
-  items: null,
-  source: null,
-  updatedAt: null,
-  expiresAt: null,
-  lastError: null
-};
 
 /* =========================
    UTILITÁRIOS
@@ -91,7 +64,7 @@ function sanitizeItems(items) {
   if (!Array.isArray(items)) return [];
 
   return items
-    .filter((item) => item && Number(item.qty) > 0 && Number(item.price) > 0)
+    .filter((item) => item && Number(item.qty) > 0 && Number(item.price) >= 0)
     .map((item) => ({
       id: item.id,
       nome: String(item.name || "").trim(),
@@ -101,22 +74,48 @@ function sanitizeItems(items) {
     }));
 }
 
-function safeFileName(filePathValue) {
-  return String(filePathValue || "").split(/[/\\]/).pop();
+function normalizeProduct(product, baseUrl) {
+  const imageValue = String(product.image || "").trim();
+  const isAbsolute = /^https?:\/\//i.test(imageValue);
+
+  let finalImage = `${baseUrl}/assets/no-image.jpg`;
+
+  if (imageValue) {
+    if (isAbsolute) {
+      finalImage = imageValue;
+    } else if (imageValue.startsWith("/assets/")) {
+      finalImage = `${baseUrl}${imageValue}`;
+    } else if (imageValue.startsWith("./assets/")) {
+      finalImage = `${baseUrl}${imageValue.replace(".", "")}`;
+    } else {
+      const fileName = imageValue.split(/[/\\]/).pop();
+      finalImage = `${baseUrl}/assets/produtos/${fileName}`;
+    }
+  }
+
+  return {
+    id: product.id,
+    name: product.name || "Produto sem nome",
+    category: product.category || "Sem categoria",
+    brand: product.brand || "",
+    saleFormat: product.saleFormat || "Unidade",
+    installmentsNoInterest: Boolean(product.installmentsNoInterest),
+    flashOffer: Boolean(product.flashOffer),
+    price: Number(product.price || 0),
+    oldPrice: product.oldPrice != null ? Number(product.oldPrice) : null,
+    offPct: product.offPct != null ? Number(product.offPct) : null,
+    freeShip: Boolean(product.freeShip),
+    image: finalImage,
+    featured: Boolean(product.featured),
+    description: product.description || "Produto sem descrição.",
+    stock: product.stock != null ? Number(product.stock) : 0
+  };
 }
 
 function getBaseUrl(req) {
   const envBaseUrl = process.env.BASE_URL;
-  if (envBaseUrl) {
-    return envBaseUrl.replace(/\/$/, "");
-  }
+  if (envBaseUrl) return envBaseUrl.replace(/\/$/, "");
   return `${req.protocol}://${req.get("host")}`;
-}
-
-function isCacheValid() {
-  return Array.isArray(productsCache.items) &&
-    productsCache.expiresAt &&
-    Date.now() < productsCache.expiresAt;
 }
 
 /* =========================
@@ -124,19 +123,29 @@ function isCacheValid() {
 ========================= */
 
 function getVendedoresData() {
-  return readJson(vendedoresFile, { vendedores: [] });
+  const data = readJson(vendedoresFile, { vendedores: [] });
+  if (Array.isArray(data)) return { vendedores: data };
+  return { vendedores: Array.isArray(data.vendedores) ? data.vendedores : [] };
 }
 
 function getLeadsData() {
-  return readJson(leadsFile, { leads: [] });
+  const data = readJson(leadsFile, { leads: [] });
+  if (Array.isArray(data)) return { leads: data };
+  return { leads: Array.isArray(data.leads) ? data.leads : [] };
 }
 
 function getFilaData() {
-  return readJson(filaFile, { ultimo_vendedor_id: 0 });
+  const data = readJson(filaFile, { ultimo_vendedor_id: 0 });
+  return {
+    ultimo_vendedor_id: Number(data.ultimo_vendedor_id || 0)
+  };
 }
 
 function getProductsData() {
-  return readJson(productsFile, []);
+  const data = readJson(productsFile, []);
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.products)) return data.products;
+  return [];
 }
 
 function saveLeadsData(data) {
@@ -152,7 +161,9 @@ function saveFilaData(data) {
 ========================= */
 
 function getActiveVendedores() {
-  return (getVendedoresData().vendedores || []).filter((v) => v.ativo);
+  return (getVendedoresData().vendedores || [])
+    .filter((v) => v && v.ativo)
+    .sort((a, b) => Number(a.ordem || 0) - Number(b.ordem || 0));
 }
 
 function pickNextVendedor() {
@@ -161,168 +172,28 @@ function pickNextVendedor() {
 
   if (!vendedores.length) return null;
 
+  if (REUTILIZAR_MESMO_VENDEDOR && fila.ultimo_vendedor_id) {
+    const mesmo = vendedores.find(
+      (v) => Number(v.id) === Number(fila.ultimo_vendedor_id)
+    );
+    if (mesmo) return mesmo;
+  }
+
   const index = vendedores.findIndex(
     (v) => Number(v.id) === Number(fila.ultimo_vendedor_id)
   );
 
-  const next = index === -1
-    ? vendedores[0]
-    : vendedores[(index + 1) % vendedores.length];
+  const next =
+    index === -1
+      ? vendedores[0]
+      : vendedores[(index + 1) % vendedores.length];
 
   saveFilaData({ ultimo_vendedor_id: next.id });
   return next;
 }
 
 /* =========================
-   FIREBIRD HELPERS
-========================= */
-
-function queryFirebird(sql) {
-  return new Promise((resolve, reject) => {
-    Firebird.attach(dbOptions, (attachError, db) => {
-      if (attachError) {
-        return reject(attachError);
-      }
-
-      db.query(sql, (queryError, result) => {
-        db.detach();
-
-        if (queryError) {
-          return reject(queryError);
-        }
-
-        resolve(result);
-      });
-    });
-  });
-}
-
-function mapDbProducts(rows, baseUrl) {
-  return rows.map((row) => {
-    const price = Number(row.price || 0);
-    const promo = Number(row.promo_price || 0);
-
-    let finalPrice = price;
-    let oldPrice = null;
-    let offPct = null;
-
-    if (promo && promo > 0 && promo < price) {
-      finalPrice = promo;
-      oldPrice = price;
-      offPct = Math.round(((price - promo) / price) * 100);
-    }
-
-    const imageFile = safeFileName(row.image);
-    const imageUrl = imageFile
-      ? `${baseUrl}/assets/produtos/${imageFile}`
-      : `${baseUrl}/assets/no-image.jpg`;
-
-    return {
-      id: row.id,
-      name: row.name || "Produto sem nome",
-      category: row.category || "Sem categoria",
-      brand: row.brand || "",
-      saleFormat: row.sale_format || "Unidade",
-      installmentsNoInterest: Boolean(row.installments_no_interest),
-      flashOffer: Boolean(row.flash_offer),
-      price: finalPrice,
-      oldPrice,
-      offPct,
-      freeShip: false,
-      image: imageUrl,
-      featured: false,
-      description: row.description || "Produto sem descrição.",
-      stock: Number(row.stock || 0)
-    };
-  });
-}
-
-async function fetchProductsFromDB(req) {
-  const baseUrl = getBaseUrl(req);
-
-  const rows = await queryFirebird(`
-    SELECT
-      ID,
-      NAME,
-      IMAGE,
-      DESCRIPTION,
-      CATEGORY,
-      STOCK,
-      PRICE,
-      PROMO_PRICE
-    FROM BANCOSQL
-    ORDER BY NAME
-    ROWS 1 TO 200
-  `);
-
-  return mapDbProducts(rows, baseUrl);
-}
-
-async function refreshProductsCache(req) {
-  try {
-    const products = await fetchProductsFromDB(req);
-
-    productsCache.items = products;
-    productsCache.source = "firebird";
-    productsCache.updatedAt = new Date().toISOString();
-    productsCache.expiresAt = Date.now() + CACHE_TTL_MS;
-    productsCache.lastError = null;
-
-    return {
-      success: true,
-      source: "firebird",
-      total: products.length,
-      updatedAt: productsCache.updatedAt,
-      expiresAt: new Date(productsCache.expiresAt).toISOString(),
-      products
-    };
-  } catch (error) {
-    console.error("Erro Firebird:", error.message);
-    productsCache.lastError = error.message;
-
-    if (Array.isArray(productsCache.items)) {
-      return {
-        success: true,
-        source: "cache-stale",
-        warning: "Firebird offline, usando cache anterior",
-        total: productsCache.items.length,
-        updatedAt: productsCache.updatedAt,
-        expiresAt: productsCache.expiresAt
-          ? new Date(productsCache.expiresAt).toISOString()
-          : null,
-        products: productsCache.items
-      };
-    }
-
-    const fallback = getProductsData();
-    const baseUrl = getBaseUrl(req);
-
-    const normalizedFallback = fallback.map((product) => {
-      const imageFile = safeFileName(product.image);
-      const isAbsolute = /^https?:\/\//i.test(String(product.image || ""));
-
-      return {
-        ...product,
-        image: isAbsolute
-          ? product.image
-          : imageFile
-          ? `${baseUrl}/assets/produtos/${imageFile}`
-          : `${baseUrl}/assets/no-image.jpg`
-      };
-    });
-
-    return {
-      success: true,
-      source: "json-fallback",
-      warning: "Firebird offline, usando JSON",
-      total: normalizedFallback.length,
-      products: normalizedFallback
-    };
-  }
-}
-
-/* =========================
-   ROTAS
+   ROTAS BÁSICAS
 ========================= */
 
 app.get("/", (req, res) => {
@@ -348,71 +219,7 @@ app.get("/leads", (req, res) => {
 });
 
 /* =========================
-   PRODUTOS COM CACHE
-========================= */
-
-app.get("/api/products", async (req, res) => {
-  try {
-    if (isCacheValid()) {
-      return res.json({
-        success: true,
-        source: "cache",
-        total: productsCache.items.length,
-        updatedAt: productsCache.updatedAt,
-        expiresAt: new Date(productsCache.expiresAt).toISOString(),
-        products: productsCache.items
-      });
-    }
-
-    const result = await refreshProductsCache(req);
-    return res.json(result);
-  } catch (error) {
-    console.error("Erro /api/products:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Erro ao carregar produtos"
-    });
-  }
-});
-
-/* =========================
-   STATUS / REFRESH CACHE
-========================= */
-
-app.get("/api/cache/status", (req, res) => {
-  res.json({
-    success: true,
-    cache: {
-      valid: isCacheValid(),
-      source: productsCache.source,
-      updatedAt: productsCache.updatedAt,
-      expiresAt: productsCache.expiresAt
-        ? new Date(productsCache.expiresAt).toISOString()
-        : null,
-      total: Array.isArray(productsCache.items) ? productsCache.items.length : 0,
-      lastError: productsCache.lastError
-    }
-  });
-});
-
-app.post("/api/cache/refresh", async (req, res) => {
-  try {
-    const result = await refreshProductsCache(req);
-    res.json({
-      ...result,
-      refreshed: true
-    });
-  } catch (error) {
-    console.error("Erro /api/cache/refresh:", error);
-    res.status(500).json({
-      success: false,
-      message: "Erro ao atualizar cache"
-    });
-  }
-});
-
-/* =========================
-   PRODUTOS FIREBIRD DIRETO
+   PRODUTOS VIA JSON
 ========================= */
 
 app.get("/api/products", (req, res) => {
@@ -424,21 +231,27 @@ app.get("/api/products", (req, res) => {
     const search = String(req.query.search || "").trim().toLowerCase();
     const category = String(req.query.category || "").trim();
 
-    let products = getProductsData();
+    const baseUrl = getBaseUrl(req);
+
+    let products = getProductsData().map((product) =>
+      normalizeProduct(product, baseUrl)
+    );
 
     if (search) {
       products = products.filter((product) => {
         return (
           String(product.name || "").toLowerCase().includes(search) ||
           String(product.category || "").toLowerCase().includes(search) ||
-          String(product.description || "").toLowerCase().includes(search)
+          String(product.description || "").toLowerCase().includes(search) ||
+          String(product.brand || "").toLowerCase().includes(search)
         );
       });
     }
 
     if (category && category !== "Todos") {
-      products = products.filter((product) =>
-        String(product.category || "").toLowerCase() === category.toLowerCase()
+      products = products.filter(
+        (product) =>
+          String(product.category || "").toLowerCase() === category.toLowerCase()
       );
     }
 
@@ -466,7 +279,7 @@ app.get("/api/products", (req, res) => {
 });
 
 /* =========================
-   LEADS
+   LEADS / WHATSAPP
 ========================= */
 
 app.post("/distribuir-lead", (req, res) => {
@@ -501,7 +314,7 @@ app.post("/distribuir-lead", (req, res) => {
       pagamento: req.body.paymentMethod || "",
       observacoes: req.body.notes || "",
       subtotal: Number(req.body.subtotal || 0),
-      frete: req.body.shipping === "R$150,00" ? 0 : Number(req.body.shipping || 0),
+      frete: Number(req.body.shipping || 0),
       total: Number(req.body.total || 0),
       itens: sanitizeItems(req.body.items),
       vendedor,
@@ -514,46 +327,45 @@ app.post("/distribuir-lead", (req, res) => {
 
     const itensTexto = lead.itens.length
       ? lead.itens
-          .map(item => `- ${item.nome} x${item.quantidade} — R$ ${item.preco_unitario.toFixed(2)}`)
+          .map(
+            (item) =>
+              `- ${item.nome} x${item.quantidade} — R$ ${item.preco_unitario.toFixed(2)}`
+          )
           .join("\n")
       : "- Nenhum item informado";
 
     const formaRecebimento =
       lead.entrega === "pickup" || lead.entrega === "Retirada"
-        ? "Retirada na loja"
-        : "Entrega";
+        ? "🏪 Retirada na loja"
+        : "🚚 Entrega";
 
     const enderecoTexto =
       formaRecebimento.includes("Retirada")
-        ? "Retirada na loja"
-        : [
-            lead.endereco,
-            lead.complemento,
-            lead.cep ? `📍 CEP: ${lead.cep}` : ""
-          ]
+        ? "🏪 Retirada na loja"
+        : [lead.endereco, lead.complemento, lead.cep ? `📍 CEP: ${lead.cep}` : ""]
             .filter(Boolean)
             .join(" | ");
 
-    const mensagem = `*NOVO ORÇAMENTO*
+    const mensagem = `🔥 *NOVO ORÇAMENTO* 🔥
 
-*Cliente:* ${lead.cliente}
-*Telefone:* ${lead.telefone}
-*E-mail:* ${lead.email || "Não informado"}
+👤 *Cliente:* ${lead.cliente}
+📞 *Telefone:* ${lead.telefone}
+📧 *E-mail:* ${lead.email || "Não informado"}
 
-*ITENS:*
+📦 *ITENS:*
 ${itensTexto}
 
-*Subtotal:* R$ ${lead.subtotal.toFixed(2)}
-*Total:* R$ ${lead.total.toFixed(2)}
+💰 *Subtotal:* R$ ${lead.subtotal.toFixed(2)}
+💵 *Total:* R$ ${lead.total.toFixed(2)}
 
 ${formaRecebimento}
-*Endereço:* ${enderecoTexto || "Não informado"}
+📍 *Endereço:* ${enderecoTexto || "Não informado"}
 
-*Pagamento:* ${lead.pagamento || "Não informado"}
+💳 *Pagamento:* ${lead.pagamento || "Não informado"}
 
-*Observações:* ${lead.observacoes || "Nenhuma"}
+📝 *Observações:* ${lead.observacoes || "Nenhuma"}
 
-*Cliente aguardando retorno*`;
+⚠️ *Cliente aguardando retorno*`;
 
     const whatsappLink = `https://wa.me/${telefoneVendedor}?text=${encodeURIComponent(mensagem)}`;
 
@@ -578,25 +390,3 @@ ${formaRecebimento}
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-setInterval(async () => {
-  try {
-    const fakeReq = {
-      protocol: process.env.BASE_URL ? process.env.BASE_URL.split("://")[0] : "https",
-      get: (header) => {
-        if (header === "host") {
-          if (process.env.BASE_URL) {
-            return process.env.BASE_URL.replace(/^https?:\/\//, "");
-          }
-          return `localhost:${PORT}`;
-        }
-        return "";
-      }
-    };
-
-    await refreshProductsCache(fakeReq);
-    console.log("Cache de produtos atualizado automaticamente.");
-  } catch (error) {
-    console.error("Erro ao atualizar cache automaticamente:", error.message);
-  }
-}, CACHE_TTL_MS);
