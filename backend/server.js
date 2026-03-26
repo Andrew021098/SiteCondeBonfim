@@ -346,26 +346,26 @@ app.post("/distribuir-lead", (req, res) => {
             .filter(Boolean)
             .join(" | ");
 
-    const mensagem = `🔥 *NOVO ORÇAMENTO* 🔥
+    const mensagem = `*NOVO ORÇAMENTO*
 
-👤 *Cliente:* ${lead.cliente}
-📞 *Telefone:* ${lead.telefone}
-📧 *E-mail:* ${lead.email || "Não informado"}
+*Cliente:* ${lead.cliente}
+*Telefone:* ${lead.telefone}
+*E-mail:* ${lead.email || "Não informado"}
 
-📦 *ITENS:*
+*ITENS:*
 ${itensTexto}
 
-💰 *Subtotal:* R$ ${lead.subtotal.toFixed(2)}
-💵 *Total:* R$ ${lead.total.toFixed(2)}
+*Subtotal:* R$ ${lead.subtotal.toFixed(2)}
+*Total:* R$ ${lead.total.toFixed(2)}
 
 ${formaRecebimento}
-📍 *Endereço:* ${enderecoTexto || "Não informado"}
+*Endereço:* ${enderecoTexto || "Não informado"}
 
-💳 *Pagamento:* ${lead.pagamento || "Não informado"}
+*Pagamento:* ${lead.pagamento || "Não informado"}
 
-📝 *Observações:* ${lead.observacoes || "Nenhuma"}
+*Observações:* ${lead.observacoes || "Nenhuma"}
 
-⚠️ *Cliente aguardando retorno*`;
+*Cliente aguardando retorno*`;
 
     const whatsappLink = `https://wa.me/${telefoneVendedor}?text=${encodeURIComponent(mensagem)}`;
 
