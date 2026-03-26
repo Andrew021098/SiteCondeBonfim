@@ -336,12 +336,12 @@ app.post("/distribuir-lead", (req, res) => {
 
     const formaRecebimento =
       lead.entrega === "pickup" || lead.entrega === "Retirada"
-        ? "🏪 Retirada na loja"
-        : "🚚 Entrega";
+        ? "Retirada na loja"
+        : "Entrega";
 
     const enderecoTexto =
       formaRecebimento.includes("Retirada")
-        ? "🏪 Retirada na loja"
+        ? "Retirada na loja"
         : [lead.endereco, lead.complemento, lead.cep ? `📍 CEP: ${lead.cep}` : ""]
             .filter(Boolean)
             .join(" | ");
