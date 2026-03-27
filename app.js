@@ -13,20 +13,6 @@ const PAYMENT_CONFIG = {
   orderPrefix: "scdbinfinite"
 };
 
-const CATEGORIES = [
-  { name: "Todos", icon: "🧩" },
-  { name: "Materiais de Construção", icon: "🏗️" },
-  { name: "Cimento e Concreto", icon: "🧱" },
-  { name: "Blocos e Tijolos", icon: "🧱" },
-  { name: "Ferragens", icon: "🔩" },
-  { name: "Materiais Elétricos", icon: "⚡" },
-  { name: "Materiais Hidráulicos", icon: "💧" },
-  { name: "Tintas e Acessórios", icon: "🎨" },
-  { name: "Ferramentas", icon: "🛠️" },
-  { name: "Portas e Janelas", icon: "🚪" },
-  { name: "Banheiros e Acessórios", icon: "🚽" }
-];
-
 const BRANDS = [
   "Votorantim",
   "Tigre",
@@ -37,19 +23,6 @@ const BRANDS = [
   "Portobello",
   "Atlas"
 ];
-
-const CATEGORY_MAP = {
-  "Materiais de Construção": "METAIS",
-  "Cimento e Concreto": "CIMENTO",
-  "Blocos e Tijolos": "BLOCOS",
-  "Ferragens": "FERRAGENS",
-  "Materiais Elétricos": "MATERIAL ELETRICO",
-  "Materiais Hidráulicos": "VALVULA",
-  "Tintas e Acessórios": "TINTA",
-  "Ferramentas": "FERRAMENTAS",
-  "Portas e Janelas": "ALUMINIO",
-  "Banheiros e Acessórios": "VALVULA"
-};
 
 const API_BASE_URL =
   window.location.hostname === "localhost" ||
@@ -163,13 +136,22 @@ function normalizeText(value) {
     .trim();
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function mergeProductsIntoStore(products) {
   if (!Array.isArray(products) || !products.length) return;
 
-  const byId = new Map(PRODUCTS.map((product) => [Number(product.id), product]));
+  const byId = new Map(PRODUCTS.map((product) => [String(product.id), product]));
 
   products.forEach((product) => {
-    byId.set(Number(product.id), product);
+    byId.set(String(product.id), product);
   });
 
   PRODUCTS = Array.from(byId.values());
@@ -191,6 +173,104 @@ function getCurrentBaseProducts() {
   return PRODUCTS;
 }
 
+function getCategorySource() {
+  if (catalogLoadedProducts.length) return catalogLoadedProducts;
+  if (offersLoadedProducts.length) return offersLoadedProducts;
+  return PRODUCTS;
+}
+
+function getDynamicCategories() {
+  const source = getCategorySource();
+
+  const categories = [...new Set(
+    source
+      .map((product) => String(product.category || "").trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, "pt-BR", { sensitivity: "base" }));
+
+  return ["Todos", ...categories];
+}
+
+function getDynamicCategoriesWithCount() {
+  const source = getCategorySource();
+  const counts = new Map();
+
+  source.forEach((product) => {
+    const category = String(product.category || "").trim();
+    if (!category) return;
+    counts.set(category, (counts.get(category) || 0) + 1);
+  });
+
+  const sorted = Array.from(counts.entries())
+    .sort((a, b) => a[0].localeCompare(b[0], "pt-BR", { sensitivity: "base" }))
+    .map(([name, count]) => ({ name, count }));
+
+  return [{ name: "Todos", count: source.length }, ...sorted];
+}
+
+function ensureActiveCategoryIsValid() {
+  const categories = getDynamicCategories();
+  if (!categories.includes(activeCategory)) {
+    activeCategory = "Todos";
+  }
+}
+
+function findCatalogCategoryFiltersContainer() {
+  const explicitContainer = document.getElementById("catalogCategoryFilters");
+  if (explicitContainer) return explicitContainer;
+
+  const existingInputs = document.querySelectorAll('input[name="categoryFilter"]');
+  if (!existingInputs.length) return null;
+
+  const firstInput = existingInputs[0];
+  return (
+    firstInput.closest(".filtersCard__group") ||
+    firstInput.closest(".filtersCard") ||
+    firstInput.closest(".catalogFilters") ||
+    firstInput.parentElement
+  );
+}
+
+function syncCategoryFilterSelection() {
+  const inputs = document.querySelectorAll('input[name="categoryFilter"]');
+  inputs.forEach((input) => {
+    input.checked = input.value === activeCategory;
+  });
+}
+
+function renderCatalogCategoryFilters() {
+  const container = findCatalogCategoryFiltersContainer();
+  if (!container) return;
+
+  const categories = getDynamicCategoriesWithCount();
+  ensureActiveCategoryIsValid();
+
+  container.innerHTML = `
+    <h3 class="filtersCard__title">Categorias</h3>
+    <div class="filtersCard__options">
+      ${categories.map((category) => `
+        <label class="filterOption">
+          <input
+            type="radio"
+            name="categoryFilter"
+            value="${escapeHtml(category.name)}"
+            ${activeCategory === category.name ? "checked" : ""}
+          />
+          <span>${escapeHtml(category.name)}${typeof category.count === "number" ? ` (${category.count})` : ""}</span>
+        </label>
+      `).join("")}
+    </div>
+  `;
+
+  const categoryInputs = container.querySelectorAll('input[name="categoryFilter"]');
+  categoryInputs.forEach((input) => {
+    input.addEventListener("change", async () => {
+      activeCategory = input.value || "Todos";
+      await loadCatalogPage(true);
+    });
+  });
+}
+
 async function fetchProductsPage(page = 1, limit = 100, extraFilters = {}) {
   try {
     const params = new URLSearchParams({
@@ -203,8 +283,7 @@ async function fetchProductsPage(page = 1, limit = 100, extraFilters = {}) {
     }
 
     if (extraFilters.category?.trim() && extraFilters.category !== "Todos") {
-  const mappedCategory = CATEGORY_MAP[extraFilters.category] || extraFilters.category;
-  params.set("category", mappedCategory);
+      params.set("category", extraFilters.category.trim());
     }
 
     const url = `${PRODUCTS_ENDPOINT}?${params.toString()}`;
@@ -252,6 +331,8 @@ async function fetchProducts() {
   PRODUCTS = Array.isArray(firstPage.products) ? firstPage.products : [];
   isProductsReady = PRODUCTS.length > 0;
 
+  ensureActiveCategoryIsValid();
+
   window.dispatchEvent(new CustomEvent("cb:productsLoaded", {
     detail: { products: PRODUCTS }
   }));
@@ -263,7 +344,11 @@ async function loadCatalogPage(reset = false) {
   if (catalogLoading) return;
 
   const selectedCategory =
-    document.querySelector('input[name="categoryFilter"]:checked')?.value || "Todos";
+    document.querySelector('input[name="categoryFilter"]:checked')?.value ||
+    activeCategory ||
+    "Todos";
+
+  activeCategory = selectedCategory;
 
   if (reset) {
     catalogPage = 1;
@@ -273,6 +358,8 @@ async function loadCatalogPage(reset = false) {
   }
 
   if (!catalogHasMore && !reset) {
+    renderCatalogCategoryFilters();
+    renderCategories();
     renderCatalog(catalogLastTotal);
     return;
   }
@@ -282,7 +369,7 @@ async function loadCatalogPage(reset = false) {
 
   const result = await fetchProductsPage(catalogPage, catalogLimit, {
     search: searchTerm,
-    category: selectedCategory
+    category: activeCategory
   });
 
   console.log("result.products", result.products);
@@ -290,9 +377,9 @@ async function loadCatalogPage(reset = false) {
   if (reset) {
     catalogLoadedProducts = [...result.products];
   } else {
-    const map = new Map(catalogLoadedProducts.map((product) => [Number(product.id), product]));
+    const map = new Map(catalogLoadedProducts.map((product) => [String(product.id), product]));
     result.products.forEach((product) => {
-      map.set(Number(product.id), product);
+      map.set(String(product.id), product);
     });
     catalogLoadedProducts = Array.from(map.values());
   }
@@ -307,6 +394,10 @@ async function loadCatalogPage(reset = false) {
   catalogLoading = false;
   isProductsReady = PRODUCTS.length > 0 || catalogLoadedProducts.length > 0 || offersLoadedProducts.length > 0;
 
+  ensureActiveCategoryIsValid();
+  renderCatalogCategoryFilters();
+  renderCategories();
+  syncCategoryFilterSelection();
   renderCatalog(result.total);
 }
 
@@ -320,6 +411,7 @@ async function loadOffersPage(reset = false) {
   }
 
   if (!offersHasMore) {
+    renderCategories();
     renderOffersInfinite();
     return;
   }
@@ -335,9 +427,9 @@ async function loadOffersPage(reset = false) {
   if (reset) {
     offersLoadedProducts = [...result.products];
   } else {
-    const map = new Map(offersLoadedProducts.map((product) => [Number(product.id), product]));
+    const map = new Map(offersLoadedProducts.map((product) => [String(product.id), product]));
     result.products.forEach((product) => {
-      map.set(Number(product.id), product);
+      map.set(String(product.id), product);
     });
     offersLoadedProducts = Array.from(map.values());
   }
@@ -349,6 +441,8 @@ async function loadOffersPage(reset = false) {
   offersLoading = false;
   isProductsReady = PRODUCTS.length > 0 || offersLoadedProducts.length > 0;
 
+  ensureActiveCategoryIsValid();
+  renderCategories();
   renderOffersInfinite();
 }
 
@@ -362,10 +456,10 @@ function loadCart() {
     const data = JSON.parse(raw);
 
     Object.entries(data).forEach(([id, qty]) => {
-      const parsedId = Number(id);
       const parsedQty = Number(qty);
+      const parsedId = String(id);
 
-      if (!Number.isNaN(parsedId) && !Number.isNaN(parsedQty) && parsedQty > 0) {
+      if (parsedId && !Number.isNaN(parsedQty) && parsedQty > 0) {
         cart.set(parsedId, parsedQty);
       }
     });
@@ -399,7 +493,7 @@ function cartSubtotal() {
   let total = 0;
 
   cart.forEach((qty, id) => {
-    const product = PRODUCTS.find((p) => Number(p.id) === Number(id));
+    const product = PRODUCTS.find((p) => String(p.id) === String(id));
     if (product) total += Number(product.price || 0) * qty;
   });
 
@@ -410,7 +504,7 @@ function getCartItems() {
   const items = [];
 
   cart.forEach((qty, id) => {
-    const product = PRODUCTS.find((p) => Number(p.id) === Number(id));
+    const product = PRODUCTS.find((p) => String(p.id) === String(id));
     if (product) {
       items.push({ product, qty });
     }
@@ -420,13 +514,14 @@ function getCartItems() {
 }
 
 function addToCart(id, delta = 1) {
-  const current = cart.get(id) || 0;
+  const key = String(id);
+  const current = cart.get(key) || 0;
   const next = Math.max(0, current + delta);
 
   if (next === 0) {
-    cart.delete(id);
+    cart.delete(key);
   } else {
-    cart.set(id, next);
+    cart.set(key, next);
   }
 
   saveCart();
@@ -435,13 +530,13 @@ function addToCart(id, delta = 1) {
 
 function setCartQuantity(id, quantity) {
   const newQty = Math.max(1, quantity);
-  cart.set(id, newQty);
+  cart.set(String(id), newQty);
   saveCart();
   renderCart();
 }
 
 function removeFromCart(id) {
-  cart.delete(id);
+  cart.delete(String(id));
   saveCart();
   renderCart();
 }
@@ -472,7 +567,7 @@ function getFilteredProducts() {
   let result = [...getCurrentBaseProducts()];
 
   if (activeCategory !== "Todos") {
-    result = result.filter((product) => product.category === activeCategory);
+    result = result.filter((product) => String(product.category || "").trim() === activeCategory);
   }
 
   if (searchTerm.trim()) {
@@ -529,24 +624,24 @@ function renderCategories() {
 
   grid.innerHTML = "";
 
-  CATEGORIES.forEach((category) => {
+  const categories = getDynamicCategoriesWithCount();
+  ensureActiveCategoryIsValid();
+
+  categories.forEach((category) => {
     const card = document.createElement("button");
     card.className = "catCard" + (activeCategory === category.name ? " is-active" : "");
     card.type = "button";
 
     card.innerHTML = `
-      <div class="catIcon">${category.icon}</div>
-      <div class="catTitle">${category.name}</div>
+      <div class="catTitle">${escapeHtml(category.name)}</div>
+      <div class="catMeta">${typeof category.count === "number" ? `${category.count} itens` : ""}</div>
     `;
 
     card.addEventListener("click", async () => {
       activeCategory = category.name;
 
       if (document.getElementById("catalogGrid")) {
-        const matchingInput = document.querySelector(
-          `input[name="categoryFilter"][value="${CSS.escape(category.name)}"]`
-        );
-        if (matchingInput) matchingInput.checked = true;
+        syncCategoryFilterSelection();
         await loadCatalogPage(true);
       } else {
         renderAllSections();
@@ -566,8 +661,8 @@ function productCard(product) {
   const hasOff = typeof product.offPct === "number" && product.offPct > 0;
   const hasOld = typeof product.oldPrice === "number" && product.oldPrice > product.price;
   const brandLabel = product.brand
-    ? `<div class="pCategory">${product.brand}</div>`
-    : `<div class="pCategory">${product.category}</div>`;
+    ? `<div class="pCategory">${escapeHtml(product.brand)}</div>`
+    : `<div class="pCategory">${escapeHtml(product.category)}</div>`;
 
   const card = document.createElement("div");
   card.className = "pCard";
@@ -579,7 +674,7 @@ function productCard(product) {
 
     <div class="pBody">
       ${brandLabel}
-      <p class="pName">${product.name}</p>
+      <p class="pName">${escapeHtml(product.name)}</p>
 
       <div class="pPrices">
         ${hasOld ? `<div class="oldPrice">${brl(product.oldPrice)}</div>` : `<div class="oldPrice"></div>`}
@@ -647,7 +742,7 @@ function renderOffersInfinite() {
         normalizeText(product.description).includes(term)
       );
     })
-    .filter((product) => activeCategory === "Todos" || product.category === activeCategory)
+    .filter((product) => activeCategory === "Todos" || String(product.category || "").trim() === activeCategory)
     .sort((a, b) => Number(b.offPct || 0) - Number(a.offPct || 0));
 
   grid.innerHTML = "";
@@ -721,7 +816,7 @@ function renderCart() {
 
     item.innerHTML = `
       <div class="cartItem__info">
-        <strong>${product.name}</strong>
+        <strong>${escapeHtml(product.name)}</strong>
         <span>${brl(product.price)} cada</span>
         <small class="cartItem__total">Total do item: ${brl(product.price * qty)}</small>
         <button type="button" class="removeItemBtn" aria-label="Remover produto">Remover</button>
@@ -855,8 +950,8 @@ function setupSearch() {
 
     suggestionsBox.innerHTML = suggestions.map((product) => `
       <div class="searchSuggestionItem" data-name="${String(product.name || "").replace(/"/g, "&quot;")}">
-        <strong>${product.name}</strong>
-        <span>${product.brand || "Sem marca"} • ${product.category || "Sem categoria"}</span>
+        <strong>${escapeHtml(product.name)}</strong>
+        <span>${escapeHtml(product.brand || "Sem marca")} • ${escapeHtml(product.category || "Sem categoria")}</span>
       </div>
     `).join("");
 
@@ -1125,9 +1220,9 @@ function setupDrawer() {
 }
 
 function openProductModal(productId) {
-  const product = PRODUCTS.find((p) => Number(p.id) === Number(productId))
-    || catalogLoadedProducts.find((p) => Number(p.id) === Number(productId))
-    || offersLoadedProducts.find((p) => Number(p.id) === Number(productId));
+  const product = PRODUCTS.find((p) => String(p.id) === String(productId))
+    || catalogLoadedProducts.find((p) => String(p.id) === String(productId))
+    || offersLoadedProducts.find((p) => String(p.id) === String(productId));
 
   const modal = document.getElementById("productModal");
 
@@ -1491,14 +1586,9 @@ function setupCatalog() {
   const grid = document.getElementById("catalogGrid");
   if (!grid) return;
 
-  const categoryInputs = document.querySelectorAll('input[name="categoryFilter"]');
   const sortSelect = document.getElementById("catalogSort");
 
-  categoryInputs.forEach((input) => {
-    input.addEventListener("change", async () => {
-      await loadCatalogPage(true);
-    });
-  });
+  renderCatalogCategoryFilters();
 
   if (sortSelect) {
     sortSelect.addEventListener("change", () => {
@@ -1542,7 +1632,10 @@ function exposeAppApi() {
     waLink,
     renderCart,
     openDrawer,
-    closeDrawer
+    closeDrawer,
+    getDynamicCategories,
+    renderCategories,
+    renderCatalogCategoryFilters
   };
 
   window.editCart = function editCartGlobal() {
