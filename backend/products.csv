@@ -248,7 +248,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 04.0093;"MASSA F12 CASTANHO 200 GR";"ADESIVOS";"";"Unidade";false;false;16.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
 04.0094;"MASSA F12 CEREJEIRA 200 GR";"ADESIVOS";"";"Unidade";false;false;16.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
 04.0095;"MASSA F12 IMBUIA 200 GR";"ADESIVOS";"";"Unidade";false;false;16.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
-04.0096;"MASSA F12 IPE 200 GR";"ADESIVOS";"";"Unidade";false;true;16.50;20.10;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
+04.0096;"MASSA F12 IPE 200 GR";"ADESIVOS";"";"Unidade";false;true;16.50;20.10;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";7
 04.0097;"DISCO LIXA FERRO 16 X 41/2";"MATERIAIS DE PINTURA";"";"Unidade";false;true;5.32;6.56;19;false;"/assets/produtos/04.0097.jpg";false;"Produto sem descrição.";4
 04.0098;"CLORO GRANULADO HTH 10 KG AZUL";"PRODUTOS PISCINA";"";"Unidade";false;false;159.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4
 04.0099;"CLORO GRANULADO 2,5 KG";"PRODUTOS PISCINA";"";"Unidade";false;false;61.81;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -261,7 +261,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 804942;"REG BASE GAVETA DOCOL 1.1/4";"METAIS DIVERSOS 1";"";"Unidade";false;false;155.85;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 04.0107;"SILICONE SPRAY 300 ML";"ADESIVOS";"";"Unidade";false;true;16.00;23.59;32;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 04.0108;"SILICONE LIQUIDO  P/AUTO 120 ML";"ADESIVOS";"";"Unidade";false;true;6.38;8.15;22;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4
-04.0109;"MASSA F12 SUCUPIRA 200 GR";"ADESIVOS";"";"Unidade";false;true;16.50;20.10;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
+04.0109;"MASSA F12 SUCUPIRA 200 GR";"ADESIVOS";"";"Unidade";false;true;16.50;20.10;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";5
 04.0110;"MASSA F12 NO DE PINUS 200 GR FL";"ADESIVOS";"";"Unidade";false;true;16.50;20.00;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 04.0111;"ADESIVO MONTA E FIXA PL 500 BCA 085 GR";"ADESIVOS";"";"Unidade";false;false;23.92;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 04.0112;"COLA VINIL 17 GR";"ADESIVOS";"";"Unidade";false;false;10.48;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
@@ -469,13 +469,13 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 05.0005;"ARGILA EXPANDIDA SC 2 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;5.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";157
 05.0006;"REJ ACR PRETO GRAFITE QUARTZOLIT KG";"QUARTZOLIT";"";"Unidade";false;false;4.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-4
 05.0007;"REJUNTE QUARTZ CZ ARTICO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;12.00;;;false;"/assets/produtos/05.0007.png";false;"Produto sem descrição.";131
-05.0008;"QUALIMASSA 25 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;25.00;;;false;"/assets/produtos/05.0008.jpg";false;"Produto sem descrição.";383
+05.0008;"QUALIMASSA 25 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;25.00;;;false;"/assets/produtos/05.0008.jpg";false;"Produto sem descrição.";382
 05.0009;"REJUNTE QUARTZ CHOCOLATE KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;12.00;;;false;"/assets/produtos/05.0009.jpg";false;"Produto sem descrição.";0
 05.0010;"CIMENTO BRANCO KILO";"CIMENTO E AGREGADOS";"";"Unidade";false;false;5.52;;;false;"/assets/produtos/05.0010.jpg";false;"Produto sem descrição.";61
 05.0011;"CHUMBADOR QUIMICO WQ-I44 WALSIWA";"DRYWAL/GESSO";"";"Unidade";false;false;115.90;;;false;"/assets/produtos/05.0011.png";false;"Produto sem descrição.";0
 05.0012;"REJUNTE QUARTZ M TABACO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;12.00;;;false;"/assets/produtos/05.0012.png";false;"Produto sem descrição.";37
-05.0013;"CLAROFILITO SACO 17 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;9.00;;;false;"/assets/produtos/05.0013 clorofilito.jpg";false;"Produto sem descrição.";769
-05.0014;"AREIA LAVADA SACO GRANDE";"CIMENTO E AGREGADOS";"";"Unidade";false;false;4.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-13176
+05.0013;"CLAROFILITO SACO 17 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;9.00;;;false;"/assets/produtos/05.0013 clorofilito.jpg";false;"Produto sem descrição.";767
+05.0014;"AREIA LAVADA SACO GRANDE";"CIMENTO E AGREGADOS";"";"Unidade";false;false;4.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-13182
 05.0015;"CAL P/ PINTURA SACO 8 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;17.00;;;false;"/assets/produtos/05.0015.png";false;"Produto sem descrição.";398
 05.0016;"REJUNTE QUARTZ PORCEL BRANCO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;15.72;;;false;"/assets/produtos/05.0016.jpg";false;"Produto sem descrição.";1
 803233;"JG CHAVE FENDA/PHILLPS 6 PCS";"FERRAMENTAS";"";"Unidade";false;false;39.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
@@ -535,8 +535,8 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 05.0068;"ARGAMIL ARDOSIA/MARMORE/GRANITO 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;20.48;;;false;"/assets/produtos/05.0068.png";false;"Produto sem descrição.";0
 05.0070;"REJUNTE QUARTZ ACRILICO BRANCO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;35.00;;;false;"/assets/produtos/05.0070.jpg";false;"Produto sem descrição.";-3
 05.0071;"AREOLA MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;160.00;;;false;"/assets/produtos/05.0071.jpg";false;"Produto sem descrição.";3.5
-05.0072;"REJUNTE EPOXI PORTOKOL MARFIM KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0072.jpg";false;"Produto sem descrição.";3
-05.0073;"REJUNTE EPOXI PORTOKOL CZ PLATINA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0073.png";false;"Produto sem descrição.";14
+05.0072;"REJUNTE EPOXI PORTOKOL MARFIM KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0072.jpg";false;"Produto sem descrição.";2
+05.0073;"REJUNTE EPOXI PORTOKOL CZ PLATINA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0073.png";false;"Produto sem descrição.";13
 05.0074;"ARGAMASSA QUARTZ AC1 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;19.93;;;false;"/assets/produtos/05.0074.jpg";false;"Produto sem descrição.";713
 05.0075;"REJUNTE EPOXI PORTOKOL BCO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0075.png";false;"Produto sem descrição.";58
 05.0076;"CHAPISCO ROLADO QUARTZ 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;95.00;;;false;"/assets/produtos/05.0076.jpg";false;"Produto sem descrição.";77
@@ -593,7 +593,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 05.0805;"REMOVEDOR REJUNTE EPOXI";"MATERIAL DE LIMPEZA";"";"Unidade";false;false;143.84;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0807;"VOTOMASSA 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;true;18.00;34.05;47;false;"/assets/produtos/05.0807.jpg";false;"Produto sem descrição.";-30
 800010;"SALDO LUMINARIAS";"MATERIAL ELETRICO 1";"";"Unidade";false;true;9.90;90.00;89;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-05.0809;"LOCA��O DE CA�AMBA P/ ENTULHO POR 48h";"CIMENTO E AGREGADOS";"";"Unidade";false;false;470.00;;;false;"/assets/produtos/05.0809.png";false;"Produto sem descrição.";-318
+05.0809;"LOCA��O DE CA�AMBA P/ ENTULHO POR 48h";"CIMENTO E AGREGADOS";"";"Unidade";false;false;470.00;;;false;"/assets/produtos/05.0809.png";false;"Produto sem descrição.";-320
 803252;"METALON REDONDO 3 X 2,65 MM";"FERRO E A�O";"";"Unidade";false;false;506.77;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0810;"QUALIMASSA P/FACHADA 50 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;44.60;;;false;"/assets/produtos/05.0810.png";false;"Produto sem descrição.";173
 06.0001;"BRACO CURVO METAL 1/2";"ALUMINIO";"";"Unidade";false;true;12.01;23.54;49;false;"/assets/produtos/06.0001.png";false;"Produto sem descrição.";0
@@ -1723,7 +1723,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 23.0003;"XADREZ PRETO 250 GR";"CORANTES";"";"Unidade";false;false;12.87;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-8
 23.0004;"CORANTE LIQUIDO LARANJA";"CORANTES";"";"Unidade";false;true;5.94;6.02;1;false;"/assets/no-image.jpg";false;"Produto sem descrição.";9
 23.0005;"GLOBO FIX SACHE";"CORANTES";"";"Unidade";false;true;0.71;0.89;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-23.0006;"CORANTE LIQUIDO PRETO";"CORANTES";"";"Unidade";false;false;5.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";18
+23.0006;"CORANTE LIQUIDO PRETO";"CORANTES";"";"Unidade";false;false;5.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";17
 23.0007;"CORANTE LIQUIDO AZUL";"CORANTES";"";"Unidade";false;false;5.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";15
 803265;"ALICATE C/DIAGONAL 6  BELZER";"FERRAMENTAS";"";"Unidade";false;false;135.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 23.0008;"CORANTE LIQUIDO OCRE";"CORANTES";"";"Unidade";false;false;7.20;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";20
@@ -3262,7 +3262,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 31.0027;"DECK PINUS AUTOCLAV MODULAR 0,50X0,50";"FECHADURAS/CADEADOS";"";"Unidade";false;false;464.85;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 31.0029;"ESPELHO DE FECHADURA";"FECHADURAS/CADEADOS";"";"Unidade";false;true;2.50;5.00;50;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-3
 31.0030;"FECH ELETR SMART SOBREPOR IFR 1001 INTELBRAS";"FECHADURAS/CADEADOS";"";"Unidade";false;true;865.28;1291.62;33;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-31.0031;"CILINDRO FECH ALIANCA/PILLER";"FECHADURAS/CADEADOS";"";"Unidade";false;false;25.35;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";16
+31.0031;"CILINDRO FECH ALIANCA/PILLER";"FECHADURAS/CADEADOS";"";"Unidade";false;false;25.35;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
 31.0033;"PORTA ALUM VD LISO + VEN 3VD 210X60 ESQ";"PORTAS/JANELAS FERRO/ALUM";"";"Unidade";false;true;576.31;614.73;6;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 31.0034;"FECH ALIANCA EXT HOME 4171 BL";"FECHADURAS/CADEADOS";"";"Unidade";false;true;140.52;145.43;3;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 31.0037;"FECH ALIANCA INT ELEG 4142 BL";"FECHADURAS/CADEADOS";"";"Unidade";false;true;101.96;127.79;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
@@ -3298,7 +3298,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 31.0092;"FECH ALIANCA INT  2700/71 CR";"FECHADURAS/CADEADOS";"";"Unidade";false;false;39.61;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 31.0094;"FECH ALIANCA EXT 2400 IP";"FECHADURAS/CADEADOS";"";"Unidade";false;false;60.62;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
 31.0095;"CADEADO 50 MM";"FECHADURAS/CADEADOS";"";"Unidade";false;false;49.95;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-1
-31.0097;"CILINDRO FECH STAM";"FECHADURAS/CADEADOS";"";"Unidade";false;true;26.01;31.11;16;false;"/assets/no-image.jpg";false;"Produto sem descrição.";19
+31.0097;"CILINDRO FECH STAM";"FECHADURAS/CADEADOS";"";"Unidade";false;true;26.01;31.11;16;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 31.0098;"FECH DIVISORIA PRETA";"FECHADURAS/CADEADOS";"";"Unidade";false;false;78.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 31.0099;"CADEADO 60 MM";"FECHADURAS/CADEADOS";"";"Unidade";false;false;83.48;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 31.0101;"TRAVA SEGURANCA SIMPLES F2000 BL";"FECHADURAS/CADEADOS";"";"Unidade";false;false;95.03;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4
@@ -3445,7 +3445,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 33.0101;"ESPATULA FLEXIVEL 6 CM";"FERRAMENTAS";"";"Unidade";false;false;9.21;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";17
 33.0102;"ESPATULA FLEXIVEL 8 CM";"FERRAMENTAS";"";"Unidade";false;false;13.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";18
 33.0103;"ESPATULA FLEXIVEL 10 CM";"FERRAMENTAS";"";"Unidade";false;true;13.44;15.29;12;false;"/assets/no-image.jpg";false;"Produto sem descrição.";31
-33.0105;"ESPATULA FLEXIVEL 12 CM";"FERRAMENTAS";"";"Unidade";false;false;15.72;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";36
+33.0105;"ESPATULA FLEXIVEL 12 CM";"FERRAMENTAS";"";"Unidade";false;false;15.72;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";34
 33.0106;"ENXADAO 21/2 S/C";"FERRAMENTAS";"";"Unidade";false;true;30.00;36.67;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-1
 33.0107;"ENXADA ESTREITA 2 1/2 S/C";"FERRAMENTAS";"";"Unidade";false;false;48.61;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";10
 33.0108;"MACHADINHA C/ UNHA";"FERRAMENTAS";"";"Unidade";false;true;31.25;34.92;11;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -3725,7 +3725,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 33.0377;"CHAVE INGLESA 6";"FERRAMENTAS";"";"Unidade";false;false;40.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
 33.0378;"CHAVE INGLESA 8";"FERRAMENTAS";"";"Unidade";false;false;55.37;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 33.0379;"CHAVE INGLESA 10";"FERRAMENTAS";"";"Unidade";false;true;59.26;86.53;32;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-33.0380;"DESEMPENADEIRA ACO LISA";"FERRAMENTAS";"";"Unidade";false;false;12.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
+33.0380;"DESEMPENADEIRA ACO LISA";"FERRAMENTAS";"";"Unidade";false;false;12.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";5
 33.0383;"ADAPT GAS P/BUJAO GD";"FERRAGENS";"";"Unidade";false;true;12.25;18.00;32;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-1
 33.0384;"CHAVE COMBINADA  6 MM";"FERRAMENTAS";"";"Unidade";false;false;7.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 33.0385;"ADAPT TORN METAL 3/4X1/2";"METAIS BOGNAR";"";"Unidade";false;true;12.90;15.47;17;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-1
@@ -4860,7 +4860,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 39.0127;"LAMP LED TUBULAR (20)  9 W 6500K";"LAMPADAS";"";"Unidade";false;false;10.02;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";38
 800145;"KIT SOS SECA RAPIDO 50 GR";"ADESIVOS";"";"Unidade";false;false;14.74;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
 800055;"DISJUNTOR SIEMENS 2X16 B";"DISJ E QUADROS";"";"Unidade";false;false;57.69;;;false;"/assets/produtos/800055.jpg";false;"Produto sem descrição.";0
-39.0135;"LAMP LED TUBULAR (40) 18 W 6500K";"LAMPADAS";"";"Unidade";false;false;12.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";83
+39.0135;"LAMP LED TUBULAR (40) 18 W 6500K";"LAMPADAS";"";"Unidade";false;false;12.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";81
 803466;"MARTELETE ST SHR-263K-B 220/800 WTS";"FERRAMENTAS";"";"Unidade";false;true;776.60;880.14;12;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 39.0136;"LAMP LED PAR 20 7W 2,7K";"LAMPADAS";"";"Unidade";false;false;16.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
 39.0137;"LAMP LED PAR 20 7W 6500k";"LAMPADAS";"";"Unidade";false;true;16.00;17.27;7;false;"/assets/no-image.jpg";false;"Produto sem descrição.";9
@@ -5824,7 +5824,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 48.0045;"VITPOLI VERDE ECO CONJ";"INFLAMAVEL";"";"Unidade";false;true;533.10;676.62;21;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 48.0046;"PINCEL P/ESCOLARES 266 X 16";"MATERIAIS DE PINTURA";"";"Unidade";false;true;8.09;12.59;36;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
 48.0047;"KIT P/ PINTURA 7 PC LA TIGRE 1522";"MATERIAIS DE PINTURA";"";"Unidade";false;true;39.90;41.91;5;false;"/assets/no-image.jpg";false;"Produto sem descrição.";14
-48.0049;"TRINCHA TIGRE 695 - 2";"MATERIAIS DE PINTURA";"";"Unidade";false;false;7.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";13
+48.0049;"TRINCHA TIGRE 695 - 2";"MATERIAIS DE PINTURA";"";"Unidade";false;false;7.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";11
 48.0050;"CHAVE CANHAO 7 MM";"FERRAMENTAS";"";"Unidade";false;false;32.02;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 48.0051;"CHAVE CANHAO 11 MM";"FERRAMENTAS";"";"Unidade";false;false;37.36;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 48.0052;"KIT P/ PINTURA 5 PC LA TIGRE 1540";"MATERIAIS DE PINTURA";"";"Unidade";false;false;31.26;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4
@@ -8865,7 +8865,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 66.0004;"PAPELEIRA PVC EXT PS2 BR1";"MATERIAIS PLASTICOS";"";"Unidade";false;true;14.98;17.96;17;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 66.0005;"TELA FUTBOL (LARG 2 MT) MT LINEAR";"TELAS";"";"Unidade";false;true;56.00;75.00;25;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-49
 66.0006;"TELA ESTUQUE DUPLAER 1MT LINEAR";"TELAS";"";"Unidade";false;false;6852.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-243
-66.0007;"TELA GALINHEIRO GALV 1.50 MT";"TELAS";"";"Unidade";false;false;7.32;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";138.49999999999994
+66.0007;"TELA GALINHEIRO GALV 1.50 MT";"TELAS";"";"Unidade";false;false;7.32;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";130.49999999999994
 66.0008;"TELA GALINHEIRO GALV 1.80 MT";"TELAS";"";"Unidade";false;true;13.24;15.00;12;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-23
 66.0009;"TELA CIRANDA LINEAR 0.80 MT";"TELAS";"";"Unidade";false;false;32.59;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-5.000000000000009
 66.0010;"TELA CIRANDA LINEAR 1.00 MT";"TELAS";"";"Unidade";false;false;9.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";64.30000000000004
@@ -8905,7 +8905,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 67.0029;"BLOCO CONCRETO CALHA 09 X 19 X 39";"ARTEFATOS DE CONCRETO";"";"Unidade";false;false;5.60;;;false;"/assets/produtos/67.0029.jpg";false;"Produto sem descrição.";548
 67.0030;"BLOCO CONCRETO MEIO 19 X 19 X 19";"ARTEFATOS DE CONCRETO";"";"Unidade";false;false;3.60;;;false;"/assets/produtos/67.0030.png";false;"Produto sem descrição.";684
 67.0031;"BLOCO CONCRETO ESTRUTURAL 14X19X39";"ARTEFATOS DE CONCRETO";"";"Unidade";false;false;6.00;;;false;"/assets/produtos/67.0031.jpg";false;"Produto sem descrição.";-2122
-67.0032;"BLOCO CONCRETO 14 X 19 X 39 VAZADO";"ARTEFATOS DE CONCRETO";"";"Unidade";false;false;5.50;;;false;"/assets/produtos/67.0032.jpg";false;"Produto sem descrição.";-891
+67.0032;"BLOCO CONCRETO 14 X 19 X 39 VAZADO";"ARTEFATOS DE CONCRETO";"";"Unidade";false;false;5.50;;;false;"/assets/produtos/67.0032.jpg";false;"Produto sem descrição.";-900
 67.0033;"TELHA FRANCESA DIREITA NOVA (46)";"TELHAS DE BARRO";"";"Unidade";false;false;4.80;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";335
 67.0034;"BLOCO CELULAR 10X30X60";"ARTEFATOS DE CONCRETO";"";"Unidade";false;false;23.45;;;false;"/assets/produtos/67.0034.jpg";false;"Produto sem descrição.";406
 67.0035;"TELHA FRANCESA ESQUERDA NOVA (40)";"TELHAS DE BARRO";"";"Unidade";false;false;4.80;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";251
@@ -10296,7 +10296,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 75.0002;"JALECO DE BRIM AZUL C/ MAN G";"UNIFORMES";"";"Unidade";false;false;75.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-2
 75.0003;"CAMISA MALHA CINZA TAM GG";"UNIFORMES";"";"Unidade";false;false;35.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 77.0001;"SALDO CHURRASQUEIRA";"ARTEFATOS ACO INOX";"";"Unidade";false;true;1.50;2.10;29;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4.547473508864641e-13
-800000;"FRETE    ELETRO FERRAGENS CONDE DE BONFIM";"REAL";"";"Unidade";false;false;10.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-3403.9300000000003
+800000;"FRETE    ELETRO FERRAGENS CONDE DE BONFIM";"REAL";"";"Unidade";false;false;10.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-3404.9300000000003
 77.0003;"VALE CREDITO PRAZO 30 (TRINTA) DIAS CORRIDOS";"REAL";"";"Unidade";false;false;1.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";5722.1
 79.0001;"BANQUETA ASTRA/TRAMONTINA BCO BF3 BR1";"MATERIAIS PLASTICOS";"";"Unidade";false;true;35.02;42.02;17;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
 79.0002;"CESTO TELADO C/ TAMPA BCO";"MATERIAIS PLASTICOS";"";"Unidade";false;true;29.94;35.00;14;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -10418,7 +10418,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 800186;"REFIL LOREN ACQUA BELLA/VITALE 1686";"FILTROS E VELAS";"";"Unidade";false;false;49.40;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";18
 800188;"TORN LOREN PAREDE 1168 C 30";"METAIS E TORN LORENZETT";"";"Unidade";false;true;89.00;118.68;25;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 800129;"TERMINAL GARFO 1,5 A 2,5 MM";"MATERIAL ELETRICO 1";"";"Unidade";false;false;0.80;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";135
-800130;"LAMP LED A 60 9W 6500K";"LAMPADAS";"";"Unidade";false;false;2.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1203
+800130;"LAMP LED A 60 9W 6500K";"LAMPADAS";"";"Unidade";false;false;2.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1193
 800136;"FACAO N 16";"ARTEFATOS ACO INOX";"";"Unidade";false;true;29.99;51.37;42;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 800189;"TORN LOREN MESA 1167 C 30";"METAIS E TORN LORENZETT";"";"Unidade";false;true;108.08;147.40;27;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 800239;"GRELHA PVC ECOLOGICA 15X15";"RALOS E GRELHAS";"";"Unidade";false;false;11.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";65
@@ -10635,7 +10635,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 801358;"POTE PLAST 2,1L C/ TAMPA";"MATERIAIS PLASTICOS";"";"Unidade";false;true;10.39;11.97;13;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 800838;"LA DE ROCHA 50MM 60X120 6UN 4,32M2 32KG/M3";"DRYWAL/GESSO";"";"Unidade";false;true;114.80;125.40;8;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 801387;"FRIGIDEIRA ALUM ANTIADERENTE 24 CM";"ARTEFATOS ACO INOX";"";"Unidade";false;false;42.05;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-800464;"MASSA IBERE BRANCA 400 GR";"ADESIVOS";"";"Unidade";false;false;17.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";9
+800464;"MASSA IBERE BRANCA 400 GR";"ADESIVOS";"";"Unidade";false;false;17.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
 801305;"CINTA AMARRA�AO CARGA 5M NYLON";"FERRAMENTAS";"";"Unidade";false;true;14.44;16.63;13;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 800292;"ASPIRADOR COM ESCOVA PISCINA";"PRODUTOS PISCINA";"";"Unidade";false;false;83.98;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 801306;"LANTERNA RECARREGAVEL 11 LEDS BIVOLTS";"PILHAS E BATERIAS";"";"Unidade";false;true;57.10;73.03;22;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
@@ -12191,7 +12191,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 801922;"TAMPA RED CEGA  TIGRE 250";"SERIE R PVC";"";"Unidade";false;true;60.50;75.64;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 801923;"POTE DE VIDRO C/ TAMPA 1,2 LT";"LOUCAS E VIDROS";"";"Unidade";false;true;15.17;18.67;19;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 802553;"SABONETEIRA BANCADA INOX";"LOUCAS";"";"Unidade";false;true;16.00;20.00;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-801949;"ROLO LA ANTIGOTA BRASILEIRINHO 1374 / 23CM";"MATERIAIS DE PINTURA";"";"Unidade";false;false;20.57;;;false;"/assets/produtos/801949.jpg";false;"Produto sem descrição.";46
+801949;"ROLO LA ANTIGOTA BRASILEIRINHO 1374 / 23CM";"MATERIAIS DE PINTURA";"";"Unidade";false;false;20.57;;;false;"/assets/produtos/801949.jpg";false;"Produto sem descrição.";44
 801160;"LAMP LED TUBULAR (20)  9 W 3000K";"LAMPADAS";"";"Unidade";false;false;10.89;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";14
 801161;"LAMP LED TUBULAR (40) 18 W 3000K";"LAMPADAS";"";"Unidade";false;false;13.32;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";20
 801887;"HASTE TERRA 3.0 MT";"MATERIAL ELETRICO 1";"";"Unidade";false;true;69.69;80.80;14;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -12566,7 +12566,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 801927;"DISJUNTOR LORENZETTI 1X16 C";"DISJ E QUADROS";"";"Unidade";false;true;11.48;15.34;25;false;"/assets/produtos/801927.jpg";false;"Produto sem descrição.";-3
 801928;"DISJUNTOR TRAMONTINA 2X20 C";"DISJ E QUADROS";"";"Unidade";false;true;33.47;47.54;30;false;"/assets/produtos/801928.png";false;"Produto sem descrição.";0
 801809;"TE SOLDOVEL 60X50 MM";"SOLDAVEL MARROM/PPR/PBA";"";"Unidade";false;false;55.25;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
-803169;"MASSA PVA METALATEX 25 KG";"TINTAS DIVERSAS";"";"Unidade";false;false;142.89;;;false;"/assets/produtos/803169.png";false;"Produto sem descrição.";2
+803169;"MASSA PVA METALATEX 25 KG";"TINTAS DIVERSAS";"";"Unidade";false;false;142.89;;;false;"/assets/produtos/803169.png";false;"Produto sem descrição.";3
 801929;"DISJUNTOR LORENZETTI 1X32 B";"DISJ E QUADROS";"";"Unidade";false;true;10.80;15.34;30;false;"/assets/produtos/801929.jpg";false;"Produto sem descrição.";0
 802798;"CX C/DISJ 25+TOM 20 A ELETROMAR/PERLEX INTERNA";"DISJ E QUADROS";"";"Unidade";false;false;41.64;;;false;"/assets/produtos/802798.jpg";false;"Produto sem descrição.";-9
 801181;"TAMPAO FF 60 X 60 C/C FECHADO PESADO";"FERRO FUNDIDO";"";"Unidade";false;false;632.40;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -12931,7 +12931,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 802009;"REJUNTE QUARTZ CORDA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;11.50;;;false;"/assets/produtos/802009.jpg";false;"Produto sem descrição.";24
 802923;"FITA DEMARCACAO PRETA 48 X 15 ROLO";"ADESIVOS";"";"Unidade";false;true;18.05;20.06;10;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-12
 802924;"FITA DEMARCACAO AZUL 48 X 15 ROLO";"ADESIVOS";"";"Unidade";false;false;28.31;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
-802010;"REJUNTE MULTIUSO TRAVERTINO 1KG";"Sem categoria";"";"Unidade";false;false;15.00;;;false;"/assets/produtos/802010.jpg";false;"Produto sem descrição.";0
+802010;"REJUNTE MULTIUSO TRAVERTINO 1KG";"Sem categoria";"";"Unidade";false;false;15.00;;;false;"/assets/produtos/802010.jpg";false;"Produto sem descrição.";-20
 802011;"REJUNTE QUARTZ PORCEL PALHA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;true;19.56;24.27;19;false;"/assets/produtos/802011.png";false;"Produto sem descrição.";-4
 802012;"REJUNTE QUARTZ PORCEL CZ OUTONO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;true;12.02;14.31;16;false;"/assets/produtos/802012.jpg";false;"Produto sem descrição.";0
 802081;"CONE SINALIZADOR 50 CM PT/AM";"MATERIAIS PLASTICOS";"";"Unidade";false;true;27.65;33.79;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -14184,7 +14184,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 804597;"DISCO CONTINUO STARRET";"FERRAMENTAS";"";"Unidade";false;false;47.68;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 804593;"TORN BANCA C61 SLIM ALTA 5070 COBRA";"METAIS DIVERSOS 1";"";"Unidade";false;false;119.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 804902;"MANTA POLIESTER 3 MM REF 246 VIAPOL RL";"INFLAMAVEL";"";"Unidade";false;false;460.13;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";33
-803858;"ADESIVO PU 40 FIX BRANCO 360 GR";"ADESIVOS";"";"Unidade";false;false;18.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";119
+803858;"ADESIVO PU 40 FIX BRANCO 360 GR";"ADESIVOS";"";"Unidade";false;false;18.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";118
 803859;"LA DE PET BRANCA TERMO/ACUSTICO (1.20X30M) RL";"DRYWAL/GESSO";"";"Unidade";false;false;322.99;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 804444;"TAMPAO FF P/CISTERNA 80X80";"FERRO FUNDIDO";"";"Unidade";false;false;632.40;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 804808;"LAMP LED BULBO 40W 6500K";"LAMPADAS";"";"Unidade";false;false;21.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";32
