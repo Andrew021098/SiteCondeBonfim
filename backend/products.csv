@@ -42,7 +42,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 01.0053;"TAMPO POLIESTER ESTRELA MAR AMAR";"TAMPOS E ACESSORIOS";"";"Unidade";false;true;299.00;381.22;22;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 01.0115;"TAMPO POLIESTER LISO CARAMELO";"TAMPOS E ACESSORIOS";"";"Unidade";false;true;299.00;381.22;22;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 01.0116;"ANEL BORRACHA PBA 75/85";"SOLDAVEL MARROM/PPR/PBA";"";"Unidade";false;true;230.00;423.62;46;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-01.0117;"KIT ARM MGM TULIPA  BCO/CAF� 59 CM";"ARMARIOS";"";"Unidade";false;false;479.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+01.0117;"KIT ARM MGM TULIPA  BCO/CAFÉ 59 CM";"ARMARIOS";"";"Unidade";false;false;479.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 01.0118;"CANTONEIRA MAO FRANCESA GALV 38X20";"FERRAGENS";"";"Unidade";false;false;13.06;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
 01.0119;"VASO JARD SAFIRA 17 AMARELO";"MATERIAIS PLASTICOS";"";"Unidade";false;true;40.69;50.35;19;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 01.0121;"VASO JARD CONICO ATENAS 45 PEDRA";"MATERIAIS PLASTICOS";"";"Unidade";false;false;72.65;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
@@ -54,14 +54,14 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 01.0129;"GABINETE BERGAN 50 CM BRANCO";"LOUCAS E VIDROS";"";"Unidade";false;true;794.82;989.76;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 01.0132;"GABINETE BERGAN 50 CM VERMELHO";"LOUCAS E VIDROS";"";"Unidade";false;true;794.82;994.73;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 01.0133;"BARRA ROSCAVEL 1/4 C/ 3 MTS";"FERRAGENS";"";"Unidade";false;true;21.00;25.47;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";113
-01.0134;"KIT ARM MGM LIRIO BCO/CAF� 59 CM";"ARMARIOS";"";"Unidade";false;false;389.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+01.0134;"KIT ARM MGM LIRIO BCO/CAFÉ 59 CM";"ARMARIOS";"";"Unidade";false;false;389.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 01.0135;"GABINETE BERGAN 50 CM PRETO";"LOUCAS E VIDROS";"";"Unidade";false;true;794.82;989.76;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 01.0136;"ARMARIO RORATO AEREO BCO 2 PORTAS 56,5 CM";"ARMARIOS";"";"Unidade";false;false;199.00;;;false;"/assets/produtos/01.0136.jpg";false;"Produto sem descrição.";0
 01.0137;"VASO JARD TAMARA 60 BEGE";"MATERIAIS PLASTICOS";"";"Unidade";false;false;60.35;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-2
 01.0138;"VASO JARD TAMARA 60 CAFE";"MATERIAIS PLASTICOS";"";"Unidade";false;false;60.35;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 01.0140;"PORTA TOALHA 2040 F24 QUADRA PT FOSCO LORENZETTI";"METAIS E TORN LORENZETT";"";"Unidade";false;true;39.90;52.64;24;false;"/assets/no-image.jpg";false;"Produto sem descrição.";7
 01.0141;"KIT ARM MGM IRIS CAFE/BRANCO 44 CM";"ARMARIOS";"";"Unidade";false;false;189.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-01.0142;"KIT ARM MGM HORTENCIA BCO/CAF� 55 CM";"ARMARIOS";"";"Unidade";false;false;299.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+01.0142;"KIT ARM MGM HORTENCIA BCO/CAFÉ 55 CM";"ARMARIOS";"";"Unidade";false;false;299.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 01.0144;"UNIDUT CONICO ZINCADO 11/2";"CONDULETE ALUMINIO";"";"Unidade";false;true;15.00;19.06;21;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 803202;"TUBO AQUECEDOR 90 MM X 1,5 M";"ACESSORIOS DE AQUECEDOR";"";"Unidade";false;false;81.10;;;false;"/assets/produtos/803202.png";false;"Produto sem descrição.";30
 01.0146;"TAMPA P/CX DAGUA FIBRA 15000 LT";"CAIXAS DAGUA";"";"Unidade";false;true;2589.19;3164.47;18;false;"/assets/produtos/01.0146.png";false;"Produto sem descrição.";0
@@ -85,8 +85,8 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 03.0001;"SALDO ACESSORIOS BANHEIRO";"ACO INOXIDAVEL";"";"Unidade";false;true;25.00;29.00;14;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 03.0002;"SALDO PAPELEIRA INOX GANCHO";"METAIS AGUIA";"";"Unidade";false;false;38.35;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 03.0003;"SUP TRIPE EXTINTOR CHAO";"SEM GRUPO";"";"Unidade";false;true;82.18;139.64;41;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-03.0004;"KIT 5 P�S 2000 F24 ROSE GOLD LORENZETT";"MATERIAIS PLASTICOS";"";"Unidade";false;false;174.89;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
-03.0006;"KIT 5 P�S 2000 F24 QUADRA BR LORENZETTI";"MATERIAIS PLASTICOS";"";"Unidade";false;false;97.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
+03.0004;"KIT 5 PÇS 2000 F24 ROSE GOLD LORENZETT";"MATERIAIS PLASTICOS";"";"Unidade";false;false;174.89;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
+03.0006;"KIT 5 PÇS 2000 F24 QUADRA BR LORENZETTI";"MATERIAIS PLASTICOS";"";"Unidade";false;false;97.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
 03.0007;"SABONET 15 X 7,5 S/P 215 MOLDENOX";"ACO INOXIDAVEL";"";"Unidade";false;true;20.00;75.00;73;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 03.0008;"SABONET 15 X 7.5 C/P 15A MOLDENOX";"ACO INOXIDAVEL";"";"Unidade";false;true;25.00;139.34;82;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 03.0009;"SABONET 15 X 15 S/P 216 MOLDENOX";"ACO INOXIDAVEL";"";"Unidade";false;true;29.00;85.00;66;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
@@ -94,7 +94,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 03.0011;"SABONETE FRUTAS VERMELHAS";"MATERIAL DE LIMPEZA";"";"Unidade";false;false;2.01;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";12
 03.0012;"SABONETEIRA LIQUIDA GIRATORIA PVC";"ACO INOXIDAVEL";"";"Unidade";false;true;25.00;30.00;17;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 03.0013;"SABONET 15 X 30 DUPLA MOLDENOX";"ACO INOXIDAVEL";"";"Unidade";false;true;49.00;552.00;91;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
-03.0014;"KIT 4 P�S 2004 F71 ROSE GOLD LORENZETTI";"MATERIAIS PLASTICOS";"";"Unidade";false;false;249.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
+03.0014;"KIT 4 PÇS 2004 F71 ROSE GOLD LORENZETTI";"MATERIAIS PLASTICOS";"";"Unidade";false;false;249.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
 03.0016;"PORTA SHAMPOO 2028 F24 QUADRA BR LORENZETT";"METAIS E TORN LORENZETT";"";"Unidade";false;true;38.00;40.27;6;false;"/assets/no-image.jpg";false;"Produto sem descrição.";10
 03.0017;"ARANDELA C/BRACO ALUMINIO 45";"LUMINARIAS";"";"Unidade";false;true;30.00;36.00;17;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 03.0018;"PORTA SHAMPO 2028 F24 QUAD PT FOSCO LORENZETT";"MATERIAIS PLASTICOS";"";"Unidade";false;false;46.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";10
@@ -109,11 +109,11 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 03.0033;"PORTA PAPEL TOALHA  14 AV MOLDENOX";"ACO INOXIDAVEL";"";"Unidade";false;true;39.00;171.41;77;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4
 03.0034;"KIT BANHEIRO ABS VENEZA BRANCO";"METAIS DIVERSOS 1";"";"Unidade";false;false;14.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";3
 03.0035;"KIT BANHEIRO BRASIL CRISTAL C/ 5 PECAS";"ACO INOXIDAVEL";"";"Unidade";false;true;36.73;43.03;15;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-03.0036;"KIT LAVANDERIA AM�LIA C/TANQ DUPLO  PT";"ARMARIOS";"";"Unidade";false;false;699.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
-03.0037;"KIT LAVANDERIA AM�LIA C/TANQ GELO";"ARMARIOS";"";"Unidade";false;false;499.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
+03.0036;"KIT LAVANDERIA AMALIA C/TANQ DUPLO  PT";"ARMARIOS";"";"Unidade";false;false;699.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";2
+03.0037;"KIT LAVANDERIA AMALIA C/TANQ GELO";"ARMARIOS";"";"Unidade";false;false;499.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 03.0038;"KIT BANHEIRO BCO C/4 VIQUA";"ACO INOXIDAVEL";"";"Unidade";false;false;30.29;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-03.0039;"KIT BANHEIRO STANDER 5P�S COBRA METAIS 10600";"ACO INOXIDAVEL";"";"Unidade";false;false;69.19;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-03.0040;"KIT 5 P�S SAMBA JAPI";"METAIS DIVERSOS 1";"";"Unidade";false;false;34.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";17
+03.0039;"KIT BANHEIRO STANDER 5PÇS COBRA METAIS 10600";"ACO INOXIDAVEL";"";"Unidade";false;false;69.19;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+03.0040;"KIT 5 PÇS SAMBA JAPI";"METAIS DIVERSOS 1";"";"Unidade";false;false;34.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";17
 03.0041;"KIT BANHEIRO VIDRO VERDE";"ACO INOXIDAVEL";"";"Unidade";false;false;119.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";1
 803281;"PEITORIL GRAN BG ICARAI 1,25X13";"MARMORES E GRANITOS";"";"Unidade";false;false;74.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";7
 03.0042;"KIT BANHEIRO VIDRO TRANSPARENTE";"ACO INOXIDAVEL";"";"Unidade";false;false;119.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -155,7 +155,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 04.0004;"CLORO GRANULADO ATCLL 3X1 10 KG";"PRODUTOS PISCINA";"";"Unidade";false;false;199.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";11
 04.0005;"ARALDITE 5 MIN 23 G RAPIDO";"ADESIVOS";"";"Unidade";false;false;27.68;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";5
 04.0006;"COLA TACO 1KG";"ADESIVOS";"";"Unidade";false;true;26.08;33.52;22;false;"/assets/no-image.jpg";false;"Produto sem descrição.";5
-04.0007;"SOLU�AO TITULANTE";"PRODUTOS PISCINA";"";"Unidade";false;true;9.98;11.74;15;false;"/assets/no-image.jpg";false;"Produto sem descrição.";7
+04.0007;"SOLUÇÃO TITULANTE";"PRODUTOS PISCINA";"";"Unidade";false;true;9.98;11.74;15;false;"/assets/no-image.jpg";false;"Produto sem descrição.";7
 803235;"CX CLIPS 2/0";"FERRAMENTAS";"";"Unidade";false;false;40.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 04.0008;"SODA CAUSTICA 400  GR";"ADESIVOS";"";"Unidade";false;false;12.90;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";7
 04.0009;"VIEUXCHENE NOGUEIRA 500ML";"ADESIVOS";"";"Unidade";false;false;19.96;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
@@ -253,7 +253,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 04.0098;"CLORO GRANULADO HTH 10 KG AZUL";"PRODUTOS PISCINA";"";"Unidade";false;false;159.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4
 04.0099;"CLORO GRANULADO 2,5 KG";"PRODUTOS PISCINA";"";"Unidade";false;false;61.81;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 04.0100;"CLORO PASTILHA 200 GR";"PRODUTOS PISCINA";"";"Unidade";false;false;10.34;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";33
-04.0101;"CLORO GRANULADO 5 FUN�OES 1KG";"PRODUTOS PISCINA";"";"Unidade";false;false;26.72;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+04.0101;"CLORO GRANULADO 5 FUNÇÕES 1KG";"PRODUTOS PISCINA";"";"Unidade";false;false;26.72;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 04.0102;"CERA AUTOMOTIVA 200 GR";"MATERIAL DE LIMPEZA";"";"Unidade";false;false;21.66;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";8
 04.0103;"LIMPA BORDA LT";"PRODUTOS PISCINA";"";"Unidade";false;false;21.68;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";25
 04.0104;"ALGICIDA DE CHOQUE LT";"PRODUTOS PISCINA";"";"Unidade";false;false;30.75;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";32
@@ -370,7 +370,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 04.0213;"MASSA CALAFETAR FILETADA CX 350 GR HENKEL";"ADESIVOS";"";"Unidade";false;false;18.62;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-2
 04.0214;"FIX TUDO BRANCO 400 GR";"ADESIVOS";"";"Unidade";false;true;28.02;29.77;6;false;"/assets/no-image.jpg";false;"Produto sem descrição.";6
 04.0215;"MASSA VIDRACEIRO KG";"ADESIVOS";"";"Unidade";false;true;22.19;26.46;16;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-04.0216;"OLEO DE LINHA�A 900 ML";"MATERIAL DE LIMPEZA";"";"Unidade";false;false;25.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+04.0216;"OLEO DE LINHAÇA 900 ML";"MATERIAL DE LIMPEZA";"";"Unidade";false;false;25.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 04.0217;"PICHE LIQUIDO LITRO";"INFLAMAVEL";"";"Unidade";false;true;8.73;9.72;10;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 803216;"AR CONDICIONADO JANELA 12.000BTUS 220V";"Sem categoria";"";"Unidade";false;false;2500.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 04.0218;"CASCOLA 30 GR BISNAGA HENKEL";"ADESIVOS";"";"Unidade";false;false;13.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
@@ -490,16 +490,16 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 803243;"DISCO DIAMANTADO SEGMENTADO 7 MM";"FERRAMENTAS";"";"Unidade";false;false;63.81;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-2
 05.0025;"FABRIMASSA/ECOMIX /PRAOBRA MULTIUSO 50 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;33.70;;;false;"/assets/produtos/05.0025.jpg";false;"Produto sem descrição.";437
 05.0026;"AREIA LAVADA SACO PEQUENO";"CIMENTO E AGREGADOS";"";"Unidade";false;false;2.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-20061
-05.0027;"AREIA LAVADA MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;180.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-148.50004197966865
+05.0027;"AREIA LAVADA M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;180.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-148.50004197966865
 05.0029;"REJUNTE QUARTZ PORCEL BEGE KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;15.70;;;false;"/assets/produtos/05.0029.jpg";false;"Produto sem descrição.";19
 05.0030;"CIMENTO PRETO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;1.50;;;false;"/assets/produtos/05.0030.jpg";false;"Produto sem descrição.";15
-05.0031;"PEDRA N 1  MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;220.00;;;false;"/assets/produtos/05.0031.jpg";false;"Produto sem descrição.";-3.1012014333292584
+05.0031;"PEDRA N 1 M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;220.00;;;false;"/assets/produtos/05.0031.jpg";false;"Produto sem descrição.";-3.1012014333292584
 05.0032;"PEDRA N 1 SACO PEQUENO";"CIMENTO E AGREGADOS";"";"Unidade";false;false;2.95;;;false;"/assets/produtos/05.0032.png";false;"Produto sem descrição.";-7882
 05.0033;"PEDRA N 2 SACO PEQUENO";"CIMENTO E AGREGADOS";"";"Unidade";false;false;3.00;;;false;"/assets/produtos/05.0033.png";false;"Produto sem descrição.";-59
 803244;"BROCA SDS PLUS 22 MM X 260 MM";"FERRAMENTAS";"";"Unidade";false;true;72.44;76.15;5;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0034;"PEDRA N 0 SACO PEQUENO";"CIMENTO E AGREGADOS";"";"Unidade";false;false;3.70;;;false;"/assets/produtos/05.0034.png";false;"Produto sem descrição.";-2189
 05.0035;"PO DE PEDRA SACO";"CIMENTO E AGREGADOS";"";"Unidade";false;true;4.90;11.67;58;false;"/assets/produtos/05.0035.png";false;"Produto sem descrição.";-2159
-05.0036;"PEDRA N 0  MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;220.00;;;false;"/assets/produtos/05.0036.jpg";false;"Produto sem descrição.";27.03471304761898
+05.0036;"PEDRA N 0 M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;220.00;;;false;"/assets/produtos/05.0036.jpg";false;"Produto sem descrição.";27.03471304761898
 05.0037;"REJUNTE QUARTZ BCO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;12.00;;;false;"/assets/produtos/05.0037.png";false;"Produto sem descrição.";111
 05.0038;"REJUNTE QUARTZ CZ OUTONO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;12.00;;;false;"/assets/produtos/05.0038.jpg";false;"Produto sem descrição.";156
 05.0039;"REJUNTE QUARTZ PRETO GRAF KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;11.40;;;false;"/assets/produtos/05.0039.png";false;"Produto sem descrição.";87
@@ -534,17 +534,17 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 05.0067;"HUMUS DE MINHOCA 1 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;4.50;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0068;"ARGAMIL ARDOSIA/MARMORE/GRANITO 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;20.48;;;false;"/assets/produtos/05.0068.png";false;"Produto sem descrição.";0
 05.0070;"REJUNTE QUARTZ ACRILICO BRANCO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;35.00;;;false;"/assets/produtos/05.0070.jpg";false;"Produto sem descrição.";-3
-05.0071;"AREOLA MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;160.00;;;false;"/assets/produtos/05.0071.jpg";false;"Produto sem descrição.";3.5
+05.0071;"AREOLA M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;160.00;;;false;"/assets/produtos/05.0071.jpg";false;"Produto sem descrição.";3.5
 05.0072;"REJUNTE EPOXI PORTOKOL MARFIM KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0072.jpg";false;"Produto sem descrição.";2
 05.0073;"REJUNTE EPOXI PORTOKOL CZ PLATINA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0073.png";false;"Produto sem descrição.";13
 05.0074;"ARGAMASSA QUARTZ AC1 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;19.93;;;false;"/assets/produtos/05.0074.jpg";false;"Produto sem descrição.";713
 05.0075;"REJUNTE EPOXI PORTOKOL BCO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0075.png";false;"Produto sem descrição.";58
 05.0076;"CHAPISCO ROLADO QUARTZ 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;95.00;;;false;"/assets/produtos/05.0076.jpg";false;"Produto sem descrição.";77
-803251;"METALON REDONDO 1 1/2 (14)";"FERRO E A�O";"";"Unidade";false;false;201.07;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+803251;"METALON REDONDO 1 1/2 (14)";"FERRO E AÇO";"";"Unidade";false;false;201.07;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0077;"ARM MGM SENSE TITANIUM/FREIJO 60 CM";"ARMARIOS";"";"Unidade";false;false;849.00;;;false;"/assets/produtos/05.0077.jpg";false;"Produto sem descrição.";0
-05.0078;"CAL P/ EMBO�O HIDRATADO SACO 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;17.00;;;false;"/assets/produtos/05.0078.jpg";false;"Produto sem descrição.";-6
+05.0078;"CAL P/ EMBOÇO HIDRATADO SACO 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;17.00;;;false;"/assets/produtos/05.0078.jpg";false;"Produto sem descrição.";-6
 05.0079;"ARGAMASSA QUARTZ PORC INT CZA 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;40.00;;;false;"/assets/produtos/05.0079.png";false;"Produto sem descrição.";167
-804939;"SALDO VIGA P/ LAJE MT";"TELHAS DE BARRO";"";"Unidade";false;false;15.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-3
+804939;"SALDO VIGA P/ LAJE M²";"TELHAS DE BARRO";"";"Unidade";false;false;15.00;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-3
 05.0080;"ARGAMASSA PORTOKOL AC2  PAST/BLOCO MULT BCA 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;75.98;;;false;"/assets/produtos/05.0080.png";false;"Produto sem descrição.";39
 05.0081;"ARGAMASSA QUARTZ PORC/PISO EXT CZ 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;55.00;;;false;"/assets/produtos/05.0081.png";false;"Produto sem descrição.";256
 05.0082;"ARGAMASSA QUARTZ AC1 5 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;10.95;;;false;"/assets/produtos/05.0082.png";false;"Produto sem descrição.";296
@@ -552,22 +552,22 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 05.0084;"VERMICULITA SUPER FINA SC 12 KG 100 L";"CIMENTO E AGREGADOS";"";"Unidade";false;false;85.00;;;false;"/assets/produtos/05.0084.png";false;"Produto sem descrição.";296
 05.0085;"ARG POLIMERICA NAUTIFULL 25 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;true;216.81;255.12;15;false;"/assets/produtos/05.0085.jpg";false;"Produto sem descrição.";-3
 05.0766;"CIMENTO QUEIMADO PORTOKOL 5 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;92.92;;;false;"/assets/produtos/05.0766.jpg";false;"Produto sem descrição.";0
-05.0767;"BICA CORRIDA MT2";"CIMENTO E AGREGADOS";"";"Unidade";false;false;389.40;;;false;"/assets/produtos/05.0767.jpg";false;"Produto sem descrição.";14.269900960784124
-05.0768;"PEDRA PORTUGUESA BCA MT� (1 SACO =0,5M)";"CIMENTO E AGREGADOS";"";"Unidade";false;false;117.50;;;false;"/assets/produtos/05.0768.jpg";false;"Produto sem descrição.";7.000000000000085
+05.0767;"BICA CORRIDA M²";"CIMENTO E AGREGADOS";"";"Unidade";false;false;389.40;;;false;"/assets/produtos/05.0767.jpg";false;"Produto sem descrição.";14.269900960784124
+05.0768;"PEDRA PORTUGUESA BCA M² (1 SACO =0,5M)";"CIMENTO E AGREGADOS";"";"Unidade";false;false;117.50;;;false;"/assets/produtos/05.0768.jpg";false;"Produto sem descrição.";7.000000000000085
 05.0769;"ARG PREPARO PRO QUARTZOLIT 10 KG";"QUARTZOLIT";"";"Unidade";false;true;270.41;331.38;18;false;"/assets/no-image.jpg";false;"Produto sem descrição.";5
 05.0770;"PLACA DRYWAL ACARTONADA BCA ST 1,80X1,20";"DRYWAL/GESSO";"";"Unidade";false;false;45.00;;;false;"/assets/produtos/05.0770.jpg";false;"Produto sem descrição.";559
 05.0771;"PORTA ALUM 2,10 X 80  PALITO DT";"PORTAS/JANELAS FERRO/ALUM";"";"Unidade";false;false;512.67;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";4
 05.0772;"GN25X3,5 DRYWALL C/1000";"DRYWAL/GESSO";"";"Unidade";false;true;43.00;43.30;1;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-1
-05.0773;"PEDRA N 4  MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;333.20;;;false;"/assets/produtos/05.0773.jpg";false;"Produto sem descrição.";0.0031428571428593344
+05.0773;"PEDRA N 4 M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;333.20;;;false;"/assets/produtos/05.0773.jpg";false;"Produto sem descrição.";0.0031428571428593344
 05.0774;"REJUNTE BRANCO ARGAMIL KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;5.80;;;false;"/assets/produtos/05.0774.png";false;"Produto sem descrição.";11
 05.0775;"REJUNTE EPOXI PORTOKOL CINZA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0775.jpg";false;"Produto sem descrição.";5
 05.0776;"REGISTRO SOLD C UNIAO 75 MM";"SOLDAVEL MARROM/PPR/PBA";"";"Unidade";false;false;287.91;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";5
 05.0777;"SAIBRO SACO";"CIMENTO E AGREGADOS";"";"Unidade";false;true;1.30;1.85;30;false;"/assets/produtos/05.0777.png";false;"Produto sem descrição.";-50
-05.0778;"SAIBRO MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;126.00;;;false;"/assets/produtos/05.0778.jpg";false;"Produto sem descrição.";-4
-05.0779;"PEDRA N 2  MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;260.00;;;false;"/assets/produtos/05.0779.png";false;"Produto sem descrição.";-2.2096855862068825
-05.0780;"PO DE PEDRA MT�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;190.00;;;false;"/assets/produtos/05.0780.png";false;"Produto sem descrição.";25.467458382744347
+05.0778;"SAIBRO MT";"CIMENTO E AGREGADOS";"";"Unidade";false;false;126.00;;;false;"/assets/produtos/05.0778.jpg";false;"Produto sem descrição.";-4
+05.0779;"PEDRA N 2 M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;260.00;;;false;"/assets/produtos/05.0779.png";false;"Produto sem descrição.";-2.2096855862068825
+05.0780;"PO DE PEDRA M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;190.00;;;false;"/assets/produtos/05.0780.png";false;"Produto sem descrição.";25.467458382744347
 05.0781;"VIAPOL CONTRA UMIDADE 18 LTS";"INFLAMAVEL";"";"Unidade";false;true;28.88;32.30;11;false;"/assets/produtos/05.0781.png";false;"Produto sem descrição.";-1
-05.0782;"PEDRA DE MAO MT";"CIMENTO E AGREGADOS";"";"Unidade";false;true;200.00;250.00;20;false;"/assets/produtos/05.0782.png";false;"Produto sem descrição.";0.3149999999999995
+05.0782;"PEDRA DE MAO M³";"CIMENTO E AGREGADOS";"";"Unidade";false;true;200.00;250.00;20;false;"/assets/produtos/05.0782.png";false;"Produto sem descrição.";0.3149999999999995
 803205;"FORRO ECOMIN FILIGRAN 6250X625X13MM LAYIN CX 12UN";"DRYWAL/GESSO";"";"Unidade";false;true;315.20;492.50;36;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0783;"ARGAMASSA QUARTZ PORC/PISO INT BCO 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;58.00;;;false;"/assets/produtos/05.0783.png";false;"Produto sem descrição.";313
 05.0784;"REJUNTE PORTOKOL ACRILICO CZ ARTICO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;29.50;;;false;"/assets/produtos/05.0784.jpg";false;"Produto sem descrição.";15
@@ -577,7 +577,7 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 05.0788;"CIMENTO BCO ESTRUTURAL 25 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;true;228.00;286.00;20;false;"/assets/no-image.jpg";false;"Produto sem descrição.";-111
 05.0789;"REJUNTE QUARTZ BCO 5 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;true;24.93;29.92;17;false;"/assets/produtos/05.0789.jpg";false;"Produto sem descrição.";0
 05.0790;"REJUNTE PORTOKOL ACRILICO CAMURCA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;29.50;;;false;"/assets/produtos/05.0790.png";false;"Produto sem descrição.";12
-05.0791;"REJUNTE EPOXI PORTOKOL CAMUR�A KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0791.png";false;"Produto sem descrição.";14
+05.0791;"REJUNTE EPOXI PORTOKOL CAMURÇA KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;59.00;;;false;"/assets/produtos/05.0791.png";false;"Produto sem descrição.";14
 05.0792;"REJUNTE PORTOKOL GRAFITE KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;7.90;;;false;"/assets/produtos/05.0792.jpg";false;"Produto sem descrição.";-70
 05.0793;"ARM MGM SENSE CAPPUCCINO/FREIJO 60 CM";"ARMARIOS";"";"Unidade";false;false;650.00;;;false;"/assets/produtos/05.0793.png";false;"Produto sem descrição.";0
 05.0794;"REJUNTE PORTOKOL ACRILICO BCO KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;32.00;;;false;"/assets/produtos/05.0794.png";false;"Produto sem descrição.";-29
@@ -586,15 +586,15 @@ id;name;category;brand;saleFormat;installmentsNoInterest;flashOffer;price;oldPri
 05.0797;"SALDO REJUNTE 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;15.00;;;false;"/assets/produtos/05.0797.jpg";false;"Produto sem descrição.";0
 05.0798;"REJUNTE  BEGE KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;3.89;;;false;"/assets/produtos/05.0798.png";false;"Produto sem descrição.";-7
 05.0799;"REJUNTE PORTOKOL ACRILICO GRAFITE KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;29.50;;;false;"/assets/produtos/05.0799.jpeg";false;"Produto sem descrição.";44
-05.0801;"ATERRO M�";"CIMENTO E AGREGADOS";"";"Unidade";false;false;95.00;;;false;"/assets/produtos/05.0801.jpg";false;"Produto sem descrição.";-29.870588235294235
+05.0801;"ATERRO M³";"CIMENTO E AGREGADOS";"";"Unidade";false;false;95.00;;;false;"/assets/produtos/05.0801.jpg";false;"Produto sem descrição.";-29.870588235294235
 05.0802;"PARALELEPIPEDO NATURAL UNIDADE";"CIMENTO E AGREGADOS";"";"Unidade";false;false;2.00;;;false;"/assets/produtos/05.0802.png";false;"Produto sem descrição.";-1540
 05.0803;"REJUNTE PORTOKOL ACRILICO MARFIM KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;29.50;;;false;"/assets/produtos/05.0803.png";false;"Produto sem descrição.";39
 05.0804;"MEIO FIO (0,80X0,30X0,12)";"CIMENTO E AGREGADOS";"";"Unidade";false;true;66.66;86.67;23;false;"/assets/produtos/05.0804.jpg";false;"Produto sem descrição.";0
 05.0805;"REMOVEDOR REJUNTE EPOXI";"MATERIAL DE LIMPEZA";"";"Unidade";false;false;143.84;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0807;"VOTOMASSA 20 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;true;18.00;34.05;47;false;"/assets/produtos/05.0807.jpg";false;"Produto sem descrição.";-30
 800010;"SALDO LUMINARIAS";"MATERIAL ELETRICO 1";"";"Unidade";false;true;9.90;90.00;89;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
-05.0809;"LOCA��O DE CA�AMBA P/ ENTULHO POR 48h";"CIMENTO E AGREGADOS";"";"Unidade";false;false;470.00;;;false;"/assets/produtos/05.0809.png";false;"Produto sem descrição.";-320
-803252;"METALON REDONDO 3 X 2,65 MM";"FERRO E A�O";"";"Unidade";false;false;506.77;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
+05.0809;"LOCAÇÃO DE CAÇAMBA P/ ENTULHO POR 48h";"CIMENTO E AGREGADOS";"";"Unidade";false;false;470.00;;;false;"/assets/produtos/05.0809.png";false;"Produto sem descrição.";-320
+803252;"METALON REDONDO 3 X 2,65 MM";"FERRO E AÇO";"";"Unidade";false;false;506.77;;;false;"/assets/no-image.jpg";false;"Produto sem descrição.";0
 05.0810;"QUALIMASSA P/FACHADA 50 KG";"CIMENTO E AGREGADOS";"";"Unidade";false;false;44.60;;;false;"/assets/produtos/05.0810.png";false;"Produto sem descrição.";173
 06.0001;"BRACO CURVO METAL 1/2";"ALUMINIO";"";"Unidade";false;true;12.01;23.54;49;false;"/assets/produtos/06.0001.png";false;"Produto sem descrição.";0
 06.0002;"TRILHO CORTINA TRIPLO METRO";"ALUMINIO";"";"Unidade";false;true;8.56;10.70;20;false;"/assets/produtos/06.0002.jpg";false;"Produto sem descrição.";-4.440892098500626e-16
