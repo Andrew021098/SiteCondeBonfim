@@ -350,7 +350,7 @@ async function fetchProductsPage(page = 1, limit = 100, extraFilters = {}) {
 }
 
 async function fetchProducts() {
-  const firstPage = await fetchProductsPage(1, 300);
+  const firstPage = await fetchProductsPage(1, 12);
 
   console.log("fetchProducts ->", firstPage);
 
