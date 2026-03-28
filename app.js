@@ -36,6 +36,8 @@ let PRODUCTS = [];
 let offersLoadedProducts = [];
 let catalogLoadedProducts = [];
 
+let ALL_CATEGORIES = [];
+let ALL_CATEGORIES_TOTAL = 0;
 let catalogPage = 1;
 let catalogLimit = 30;
 let catalogLoading = false;
@@ -180,7 +182,11 @@ function getCategorySource() {
 }
 
 function getDynamicCategories() {
-  const source = getCategorySource();
+  if (ALL_CATEGORIES.length) {
+    return ["Todos", ...ALL_CATEGORIES];
+  }
+
+  const source = PRODUCTS.length ? PRODUCTS : getCategorySource();
 
   const categories = [...new Set(
     source
@@ -192,6 +198,13 @@ function getDynamicCategories() {
 }
 
 function getDynamicCategoriesWithCount() {
+  if (ALL_CATEGORIES.length) {
+    return [
+      { name: "Todos", count: ALL_CATEGORIES_TOTAL },
+      ...ALL_CATEGORIES
+    ];
+  }
+
   const source = getCategorySource();
   const counts = new Map();
 
@@ -208,27 +221,39 @@ function getDynamicCategoriesWithCount() {
   return [{ name: "Todos", count: source.length }, ...sorted];
 }
 
+async function loadAllCategories() {
+  try {
+    const pageSize = 1000;
+    let page = 1;
+    let hasMore = true;
+    const categoriesSet = new Set();
+
+    while (hasMore) {
+      const result = await fetchProductsPage(page, pageSize);
+
+      result.products.forEach((product) => {
+        const category = String(product.category || "").trim();
+        if (category) categoriesSet.add(category);
+      });
+
+      hasMore = result.hasMore;
+      page += 1;
+    }
+
+    ALL_CATEGORIES = Array.from(categoriesSet).sort((a, b) =>
+      a.localeCompare(b, "pt-BR", { sensitivity: "base" })
+    );
+  } catch (error) {
+    console.error("Erro ao carregar todas as categorias:", error);
+    ALL_CATEGORIES = [];
+  }
+}
+
 function ensureActiveCategoryIsValid() {
   const categories = getDynamicCategories();
   if (!categories.includes(activeCategory)) {
     activeCategory = "Todos";
   }
-}
-
-function findCatalogCategoryFiltersContainer() {
-  const explicitContainer = document.getElementById("catalogCategoryFilters");
-  if (explicitContainer) return explicitContainer;
-
-  const existingInputs = document.querySelectorAll('input[name="categoryFilter"]');
-  if (!existingInputs.length) return null;
-
-  const firstInput = existingInputs[0];
-  return (
-    firstInput.closest(".filtersCard__group") ||
-    firstInput.closest(".filtersCard") ||
-    firstInput.closest(".catalogFilters") ||
-    firstInput.parentElement
-  );
 }
 
 function syncCategoryFilterSelection() {
@@ -239,7 +264,7 @@ function syncCategoryFilterSelection() {
 }
 
 function renderCatalogCategoryFilters() {
-  const container = findCatalogCategoryFiltersContainer();
+  const container = document.getElementById("catalogCategoryFilters");
   if (!container) return;
 
   const categories = getDynamicCategoriesWithCount();
@@ -256,13 +281,14 @@ function renderCatalogCategoryFilters() {
             value="${escapeHtml(category.name)}"
             ${activeCategory === category.name ? "checked" : ""}
           />
-          <span>${escapeHtml(category.name)}${typeof category.count === "number" ? ` (${category.count})` : ""}</span>
+          <span>${escapeHtml(category.name)} (${category.count})</span>
         </label>
       `).join("")}
     </div>
   `;
 
   const categoryInputs = container.querySelectorAll('input[name="categoryFilter"]');
+
   categoryInputs.forEach((input) => {
     input.addEventListener("change", async () => {
       activeCategory = input.value || "Todos";
@@ -338,6 +364,25 @@ async function fetchProducts() {
   }));
 
   return PRODUCTS;
+}
+
+async function loadCategoryCounts() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/categories`);
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    ALL_CATEGORIES = Array.isArray(data.categories) ? data.categories : [];
+    ALL_CATEGORIES_TOTAL = Number(data.total || 0);
+  } catch (error) {
+    console.error("Erro ao carregar contagem de categorias:", error);
+    ALL_CATEGORIES = [];
+    ALL_CATEGORIES_TOTAL = 0;
+  }
 }
 
 async function loadCatalogPage(reset = false) {
@@ -1652,6 +1697,25 @@ function exposeAppApi() {
   };
 }
 
+function setupCategoryCollapse() {
+  const button = document.getElementById("toggleCategoryFilters");
+  const content = document.getElementById("catalogCategoryFilters");
+
+  if (!button || !content) return;
+
+  button.addEventListener("click", () => {
+    const isExpanded = button.getAttribute("aria-expanded") === "true";
+
+    button.setAttribute("aria-expanded", String(!isExpanded));
+    content.classList.toggle("is-collapsed", isExpanded);
+
+    const icon = button.querySelector(".filterCollapseIcon");
+    if (icon) {
+      icon.textContent = isExpanded ? "+" : "-";
+    }
+  });
+}
+
 async function init() {
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
@@ -1664,17 +1728,19 @@ async function init() {
   setupWhatsApp();
   setupDrawer();
   setupProductModal();
+  setupCategoryCollapse();
 
   const isCatalogPage = Boolean(document.getElementById("catalogGrid"));
   const isHomeOffers = Boolean(document.getElementById("offersGrid"));
 
   if (isCatalogPage) {
-    renderBrands();
-    setupCatalog();
-    await loadCatalogPage(true);
-    setupCatalogInfiniteScroll();
-    renderCart();
-  } else {
+  renderBrands();
+  await loadCategoryCounts();
+  setupCatalog();
+  await loadCatalogPage(true);
+  setupCatalogInfiniteScroll();
+  renderCart();
+} else {
     const products = await fetchProducts();
 
     console.log("HOME PRODUCTS ->", products);

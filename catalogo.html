@@ -115,54 +115,21 @@
         <aside class="catalogSidebar catalogSidebar--marketplace">
           <div class="filterSection">
 
-            <div class="filterSectioninter">
-              <h3 class="filterSection__title">Categorias</h3>
+            <!-- CATEGORIAS DINÂMICAS -->
+            <div class="filterSectioninter filterSectioninter--collapsible">
+  <button
+    type="button"
+    class="filterCollapseBtn"
+    id="toggleCategoryFilters"
+    aria-expanded="false"
+    aria-controls="catalogCategoryFilters"
+  >
+    <span>Categorias</span>
+    <span class="filterCollapseIcon">+</span>
+  </button>
 
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Todos" checked hidden>
-                <span>Todos</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Materiais de Construção" hidden>
-                <span>Construção</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Cimento e Concreto" hidden>
-                <span>Cimento e Concreto</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Blocos e Tijolos" hidden>
-                <span>Blocos e Tijolos</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Materiais Elétricos" hidden>
-                <span>Materiais Elétricos</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Materiais Hidráulicos" hidden>
-                <span>Materiais Hidráulicos</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Tintas e Acessórios" hidden>
-                <span>Tintas e Acessórios</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Ferramentas" hidden>
-                <span>Ferramentas</span>
-              </label>
-
-              <label class="filterCheckItem">
-                <input type="radio" name="categoryFilter" value="Banheiros e Acessórios" hidden>
-                <span>Banheiros e Acessórios</span>
-              </label>
-            </div>
+  <div id="catalogCategoryFilters" class="filterCollapseContent is-collapsed"></div>
+</div>
 
             <div class="filterSectioninter">
               <h3 class="filterSection__title">Descontos</h3>

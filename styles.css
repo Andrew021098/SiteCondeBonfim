@@ -1977,3 +1977,88 @@ textarea{font-family:inherit}
     transform: rotate(360deg);
   }
 }
+
+.filtersCard__options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.filterOption{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:14px;
+  line-height:1.35;
+  cursor:pointer;
+}
+
+.filterOption input{
+  margin-top:2px;
+  flex:0 0 auto;
+}
+
+.filterOption span{
+  display:block;
+  color:#1f2937;
+  word-break:break-word;
+}
+
+.filtersCard__title{
+  margin:0 0 14px;
+  font-size:18px;
+  font-weight:700;
+  color:#1d4ed8;
+}
+
+#catalogCategoryFilters .filterSection__title{
+  margin-bottom:14px;
+}
+
+#catalogCategoryFilters .filterCheckItem{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  margin-bottom:10px;
+  cursor:pointer;
+}
+
+#catalogCategoryFilters .filterCheckItem input{
+  margin-top:3px;
+}
+
+#catalogCategoryFilters .filterCheckItem span{
+  display:block;
+  line-height:1.35;
+  word-break:break-word;
+}
+
+.filterCollapseBtn{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:none;
+  border:none;
+  padding:0;
+  cursor:pointer;
+  font:inherit;
+  font-weight:700;
+  color:#1d4ed8;
+  margin-bottom:12px;
+}
+
+.filterCollapseIcon{
+  font-size:20px;
+  line-height:1;
+  color:#1d4ed8;
+}
+
+.filterCollapseContent{
+  overflow:hidden;
+  transition:all .25s ease;
+}
+
+.filterCollapseContent.is-collapsed{
+  display:none;
+}
