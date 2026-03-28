@@ -357,6 +357,8 @@ async function fetchProducts() {
   PRODUCTS = Array.isArray(firstPage.products) ? firstPage.products : [];
   isProductsReady = PRODUCTS.length > 0;
 
+  sanitizeCartAgainstProducts();
+
   ensureActiveCategoryIsValid();
 
   window.dispatchEvent(new CustomEvent("cb:productsLoaded", {
@@ -432,6 +434,7 @@ async function loadCatalogPage(reset = false) {
   console.log("catalogLoadedProducts", catalogLoadedProducts);
 
   mergeProductsIntoStore(result.products);
+  sanitizeCartAgainstProducts();
 
   catalogHasMore = result.hasMore;
   catalogLastTotal = result.total;
@@ -678,8 +681,14 @@ function renderCategories() {
     card.type = "button";
 
     card.innerHTML = `
-      <div class="catTitle">${escapeHtml(category.name)}</div>
-      <div class="catMeta">${typeof category.count === "number" ? `${category.count} itens` : ""}</div>
+      <div class="catIcon">📦</div>
+
+      <div class="catContent">
+        <div class="catTitle">${escapeHtml(category.name)}</div>
+        <div class="catCount">
+          ${typeof category.count === "number" ? `${category.count} itens` : ""}
+        </div>
+      </div>
     `;
 
     card.addEventListener("click", async () => {
@@ -845,14 +854,20 @@ function renderCart() {
   const list = document.getElementById("cartList");
   const empty = document.getElementById("cartEmpty");
 
-  if (cartCountEl) cartCountEl.textContent = String(cartCount());
-  if (floatingCountEl) floatingCountEl.textContent = String(cartCount());
-  if (subtotalEl) subtotalEl.textContent = brl(cartSubtotal());
+  const items = getCartItems();
+
+  const realCount = items.reduce((acc, item) => acc + Number(item.qty || 0), 0);
+  const realSubtotal = items.reduce((acc, item) => {
+    return acc + Number(item.product.price || 0) * Number(item.qty || 0);
+  }, 0);
+
+  if (cartCountEl) cartCountEl.textContent = String(realCount);
+  if (floatingCountEl) floatingCountEl.textContent = String(realCount);
+  if (subtotalEl) subtotalEl.textContent = brl(realSubtotal);
   if (!list || !empty) return;
 
   list.innerHTML = "";
 
-  const items = getCartItems();
   empty.style.display = items.length ? "none" : "block";
 
   items.forEach(({ product, qty }) => {
@@ -1714,6 +1729,25 @@ function setupCategoryCollapse() {
       icon.textContent = isExpanded ? "+" : "-";
     }
   });
+}
+
+function sanitizeCartAgainstProducts() {
+  if (!PRODUCTS.length) return;
+
+  let changed = false;
+
+  for (const [id, qty] of cart.entries()) {
+    const exists = PRODUCTS.some((p) => String(p.id) === String(id));
+
+    if (!exists || !Number.isFinite(Number(qty)) || Number(qty) <= 0) {
+      cart.delete(id);
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    saveCart();
+  }
 }
 
 async function init() {
