@@ -185,37 +185,47 @@
             </div>
 
             <div id="checkoutAddressWrap">
-              <div class="checkoutFormGrid">
-                <label class="checkoutField checkoutField--full">
-                  <span>Endereço</span>
-                  <input
-                    type="text"
-                    id="checkoutAddress"
-                    placeholder="Rua, número e bairro"
-                    autocomplete="street-address"
-                  />
-                </label>
+  <div class="checkoutAddressGrid">
+    <label class="checkoutField checkoutField--full">
+      <span>CEP</span>
+      <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" />
+    </label>
 
-                <label class="checkoutField">
-                  <span>Complemento</span>
-                  <input
-                    type="text"
-                    id="checkoutComplement"
-                    placeholder="Apto, bloco, referência"
-                  />
-                </label>
+    <label class="checkoutField checkoutField--full">
+      <span>Endereço</span>
+      <input type="text" id="address" name="address" placeholder="Rua, avenida, travessa..." />
+    </label>
 
-                <label class="checkoutField">
-                  <span>CEP</span>
-                  <input
-                    type="text"
-                    id="checkoutZip"
-                    placeholder="00000-000"
-                    inputmode="numeric"
-                  />
-                </label>
-              </div>
-            </div>
+    <div class="checkoutFormGrid checkoutFormGrid--address">
+      <label class="checkoutField">
+        <span>Número</span>
+        <input type="text" id="number" name="number" placeholder="Ex: 36" />
+      </label>
+
+      <label class="checkoutField">
+        <span>Complemento</span>
+        <input type="text" id="complement" name="complement" placeholder="Ex: Casa, apto, referência" />
+      </label>
+    </div>
+
+    <div class="checkoutFormGrid checkoutFormGrid--address3">
+      <label class="checkoutField">
+        <span>Bairro</span>
+        <input type="text" id="district" name="district" />
+      </label>
+
+      <label class="checkoutField">
+        <span>Cidade</span>
+        <input type="text" id="city" name="city" />
+      </label>
+
+      <label class="checkoutField">
+        <span>UF</span>
+        <input type="text" id="state" name="state" maxlength="2" />
+      </label>
+    </div>
+  </div>
+</div>
 
             <div class="checkoutCard__head" style="margin-top:20px;">
               <h2>Forma de pagamento</h2>

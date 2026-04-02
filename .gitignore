@@ -4,3 +4,5 @@ backend/.env
 BANCOSQL
 
 backend/ export-csv.js
+backend/ products.csv
+backend/ sales.csv

@@ -2159,3 +2159,98 @@ textarea{font-family:inherit}
 .filterCollapseContent.is-collapsed{
   display:none;
 }
+/* =========================
+   CHECKOUT - ENDEREÇO / CEP
+========================= */
+
+#checkoutAddressWrap{
+  margin-top: 18px;
+}
+
+.checkoutAddressGrid{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.checkoutFormGrid--address{
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 14px;
+}
+
+.checkoutFormGrid--address3{
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 120px;
+  gap: 14px;
+}
+
+.checkoutField{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkoutField span{
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.checkoutField input,
+.checkoutField textarea,
+.checkoutField select{
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid #d7ddea;
+  border-radius: 14px;
+  background: #fff;
+  padding: 0 16px;
+  font-size: 16px;
+  color: #0f172a;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  box-sizing: border-box;
+}
+
+.checkoutField textarea{
+  min-height: 110px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+.checkoutField input::placeholder,
+.checkoutField textarea::placeholder{
+  color: #94a3b8;
+}
+
+.checkoutField input:focus,
+.checkoutField textarea:focus,
+.checkoutField select:focus{
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.checkoutField input[readonly]{
+  background: #f8fafc;
+  color: #334155;
+}
+
+.checkoutField--full{
+  width: 100%;
+}
+
+/* mobile */
+@media (max-width: 768px){
+  .checkoutFormGrid--address,
+  .checkoutFormGrid--address3{
+    grid-template-columns: 1fr;
+  }
+
+  .checkoutField input,
+  .checkoutField textarea,
+  .checkoutField select{
+    min-height: 50px;
+    font-size: 15px;
+  }
+}
