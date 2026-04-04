@@ -13,16 +13,37 @@ const PAYMENT_CONFIG = {
   orderPrefix: "scdbinfinite"
 };
 
-const BRANDS = [
-  "Votorantim",
-  "Tigre",
-  "Suvinil",
-  "Tramontina",
-  "Deca",
-  "Gerdau",
-  "Portobello",
-  "Atlas"
+const PARTNER_BRANDS = [
+  { name: "Votorantim", logo: "./assets/brands/votorantim.png" },
+  { name: "Tigre", logo: "./assets/brands/tigre.png" },
+  { name: "Suvinil", logo: "./assets/brands/suvinil.png" },
+  { name: "Tramontina", logo: "./assets/brands/tramontina.png" },
+  { name: "Deca", logo: "./assets/brands/deca.png" },
+  { name: "Gerdau", logo: "./assets/brands/gerdau.png" },
+  { name: "Portobello", logo: "./assets/brands/portobello.png" },
+  { name: "Atlas", logo: "./assets/brands/atlas.png" }
 ];
+
+function renderBrands() {
+  const track = document.getElementById("partnersTrack");
+  if (!track) return;
+
+  const brandsForLoop = [...PARTNER_BRANDS, ...PARTNER_BRANDS];
+
+  track.innerHTML = brandsForLoop.map((brand) => `
+    <div class="partnerLogoCard" title="${escapeHtml(brand.name)}" aria-label="${escapeHtml(brand.name)}">
+      <img
+        src="${brand.logo}"
+        alt="${escapeHtml(brand.name)}"
+        loading="lazy"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <div class="partnerLogoFallback" style="display:none;">
+        ${escapeHtml(brand.name)}
+      </div>
+    </div>
+  `).join("");
+}
 
 const API_BASE_URL =
   window.location.hostname === "localhost" ||
@@ -484,38 +505,29 @@ async function loadOffersPage(reset = false) {
 
   if (reset) {
     offersPage = 1;
-    offersHasMore = true;
+    offersHasMore = false;
     offersLoadedProducts = [];
-  }
-
-  if (!offersHasMore) {
-    renderCategories();
-    renderOffersInfinite();
-    return;
   }
 
   offersLoading = true;
   renderOffersInfinite();
 
-  const result = await fetchProductsPage(offersPage, offersLimit, {
+  const result = await fetchProductsPage(1, 100, {
     search: searchTerm,
     category: activeCategory
   });
 
-  if (reset) {
-    offersLoadedProducts = [...result.products];
-  } else {
-    const map = new Map(offersLoadedProducts.map((product) => [String(product.id), product]));
-    result.products.forEach((product) => {
-      map.set(String(product.id), product);
-    });
-    offersLoadedProducts = Array.from(map.values());
-  }
+  const promoProducts = (Array.isArray(result.products) ? result.products : [])
+    .filter((product) => typeof product.offPct === "number" && product.offPct > 0)
+    .sort((a, b) => Number(b.offPct || 0) - Number(a.offPct || 0))
+    .slice(0, 9);
 
-  mergeProductsIntoStore(result.products);
+  offersLoadedProducts = promoProducts;
 
-  offersHasMore = result.hasMore;
-  offersPage += 1;
+  mergeProductsIntoStore(promoProducts);
+
+  offersHasMore = false;
+  offersPage = 1;
   offersLoading = false;
   isProductsReady = PRODUCTS.length > 0 || offersLoadedProducts.length > 0;
 
@@ -812,9 +824,7 @@ function renderOffersInfinite() {
 
   if (!grid) return;
 
-  const source = offersLoadedProducts.length ? offersLoadedProducts : PRODUCTS;
-
-  const promoProducts = [...source]
+  const promoProducts = [...offersLoadedProducts]
     .filter((product) => typeof product.offPct === "number" && product.offPct > 0)
     .filter((product) => {
       if (!searchTerm.trim()) return true;
@@ -826,12 +836,15 @@ function renderOffersInfinite() {
         normalizeText(product.description).includes(term)
       );
     })
-    .filter((product) => activeCategory === "Todos" || String(product.category || "").trim() === activeCategory)
-    .sort((a, b) => Number(b.offPct || 0) - Number(a.offPct || 0));
+    .filter((product) =>
+      activeCategory === "Todos" || String(product.category || "").trim() === activeCategory
+    )
+    .sort((a, b) => Number(b.offPct || 0) - Number(a.offPct || 0))
+    .slice(0, 9);
 
   grid.innerHTML = "";
 
-  if (!promoProducts.length && !offersLoading) {
+  if (!promoProducts.length) {
     grid.innerHTML = `<div class="emptyState">Nenhuma oferta encontrada para esse filtro.</div>`;
   } else {
     promoProducts.forEach((product) => {
@@ -840,8 +853,7 @@ function renderOffersInfinite() {
   }
 
   if (loader) {
-    loader.style.display = offersHasMore || offersLoading ? "block" : "none";
-    loader.textContent = offersLoading ? "Carregando mais promoções..." : "Role para carregar mais";
+    loader.style.display = "none";
   }
 }
 
@@ -1465,24 +1477,16 @@ function setupCatalogInfiniteScroll() {
 }
 
 function setupOffersInfiniteScroll() {
-  if (isOffersObserverStarted) return;
-
   const sentinel = document.getElementById("offersInfiniteSentinel");
-  if (!sentinel) return;
+  if (sentinel) {
+    sentinel.style.display = "none";
+  }
 
-  const observer = new IntersectionObserver(async (entries) => {
-    const entry = entries[0];
-    if (!entry.isIntersecting) return;
-    if (offersLoading || !offersHasMore) return;
+  const loader = document.getElementById("offersLoader");
+  if (loader) {
+    loader.style.display = "none";
+  }
 
-    await loadOffersPage(false);
-  }, {
-    root: null,
-    rootMargin: "300px 0px",
-    threshold: 0
-  });
-
-  observer.observe(sentinel);
   isOffersObserverStarted = true;
 }
 
