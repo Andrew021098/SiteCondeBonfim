@@ -2332,14 +2332,14 @@ textarea{font-family:inherit}
   flex: 0 0 auto;
   width: 180px;
   height: 86px;
-  border: 1px solid #d9dfeb;
+  border: 1px solid #d9dfeb00;
   border-radius: 18px;
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 14px 18px;
-  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+  box-shadow: 6px 0px 8px 22px rgba(15, 23, 42, 0.027);
 }
 
 .partnerLogoCard img{
