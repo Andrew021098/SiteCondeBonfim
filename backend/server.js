@@ -36,7 +36,7 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use("/assets", express.static(path.join(__dirname, "assets")));
+app.use("/assets", express.static(path.join(__dirname, "../assets")));
 
 const vendedoresFile = path.join(__dirname, "vendedores.json");
 const leadsFile = path.join(__dirname, "leads.json");

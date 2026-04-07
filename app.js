@@ -763,18 +763,35 @@ function renderCategories() {
   });
 }
 
+// 🔥 FUNÇÃO NOVA PARA IMAGEM (ADICIONADA)
+function getImageUrl(product) {
+  if (!product.image) {
+    return `${API_BASE_URL}/assets/produtos/no-image.jpg`;
+  }
+
+  // se já vier com /assets
+  if (product.image.startsWith("/")) {
+    return `${API_BASE_URL}${product.image}`;
+  }
+
+  return product.image;
+}
+
 function productCard(product) {
   const hasOff = typeof product.offPct === "number" && product.offPct > 0;
   const hasOld = typeof product.oldPrice === "number" && product.oldPrice > product.price;
+
   const brandLabel = product.brand
     ? `<div class="pCategory">${escapeHtml(product.brand)}</div>`
     : `<div class="pCategory">${escapeHtml(product.category)}</div>`;
+
+  const imageUrl = getImageUrl(product);
 
   const card = document.createElement("div");
   card.className = "pCard";
 
   card.innerHTML = `
-    <div class="pImg" style="background-image:url('${product.image || "./assets/product-placeholder.jpg"}')">
+    <div class="pImg" style="background-image:url('${imageUrl}')">
       ${hasOff ? `<div class="badgeOff">${product.offPct}% OFF</div>` : ""}
     </div>
 
@@ -811,6 +828,13 @@ function productCard(product) {
 
   return card;
 }
+
+// ⚠️ IMPORTANTE:
+// GARANTA QUE O ARQUIVO EXISTE EM:
+// /assets/produtos/no-image.jpg
+
+// E que o backend está servindo:
+// app.use("/assets", express.static(path.join(__dirname, "../assets")));
 
 function renderProductsInGrid(gridId, products, emptyMessage) {
   const grid = document.getElementById(gridId);
