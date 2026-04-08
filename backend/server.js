@@ -138,7 +138,16 @@ function getBaseUrl(req) {
 
 function parseMoney(value) {
   if (value == null || value === "") return null;
-  const num = Number(value);
+
+  const normalized = String(value)
+    .trim()
+    .replace(/^R\$\s*/i, "")
+    .replace(/\s/g, "")
+    .replace(/\.(?=\d{3}(\D|$))/g, "")
+    .replace(",", ".")
+    .replace(/[^\d.-]/g, "");
+
+  const num = Number(normalized);
   return Number.isFinite(num) ? num : null;
 }
 
@@ -277,12 +286,12 @@ function firebirdQuery(sql, params = []) {
 }
 
 function mapFirebirdRowToProduct(row) {
-  const id = String(row.ID || "").trim();
-  const name = String(row.NAME || "").trim();
-  const category = String(row.CATEGORY || "Sem categoria").trim();
+  const id = String(row.CDPRODUTO || "").trim();
+  const name = String(row.PRODUTO || "").trim();
+  const category = String(row.GRUPOS || "Sem categoria").trim();
 
-  const oldPriceRaw = parseMoney(row.PRICE);
-  const promoPriceRaw = parseMoney(row.PROMO_PRICE);
+  const oldPriceRaw = parseMoney(row.PADRAO);
+  const promoPriceRaw = parseMoney(row.PROMOCAO);
 
   const price =
     promoPriceRaw != null && promoPriceRaw > 0
@@ -304,9 +313,12 @@ function mapFirebirdRowToProduct(row) {
       : null;
 
   let description = "Produto sem descrição.";
-if (typeof row.DESCRIPTION === "string" && row.DESCRIPTION.trim()) {
-  description = row.DESCRIPTION.trim();
-}
+  if (
+    typeof row.DESCRICAO_PRODUTO === "string" &&
+    row.DESCRICAO_PRODUTO.trim()
+  ) {
+    description = row.DESCRICAO_PRODUTO.trim();
+  }
 
   return {
     id,
@@ -320,10 +332,10 @@ if (typeof row.DESCRIPTION === "string" && row.DESCRIPTION.trim()) {
     oldPrice,
     offPct,
     freeShip: false,
-    image: buildImagePath(row.IMAGE),
+    image: buildImagePath(row.FOTO),
     featured: false,
     description,
-    stock: Number(row.STOCK || 0)
+    stock: Number(row.QTDEATUAL || 0)
   };
 }
 
@@ -467,14 +479,14 @@ app.get("/api/products-db", requireInternalApiKey, async (req, res) => {
 
     const sql = `
   SELECT
-    ID,
-    NAME,
-    IMAGE,
-    DESCRIPTION,
-    CATEGORY,
-    STOCK,
-    PRICE,
-    PROMO_PRICE
+    CDPRODUTO,
+    PRODUTO,
+    FOTO,
+    DESCRICAO_PRODUTO,
+    GRUPOS,
+    QTDEATUAL,
+    PADRAO,
+    PROMOCAO
   FROM BANCOSQL
 `;
 

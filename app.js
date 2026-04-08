@@ -555,6 +555,18 @@ function loadCart() {
   try {
     const data = JSON.parse(raw);
 
+    if (Array.isArray(data)) {
+      data.forEach((item) => {
+        const parsedQty = Number(item.qty);
+        const parsedId = String(item.id);
+
+        if (parsedId && !Number.isNaN(parsedQty) && parsedQty > 0) {
+          cart.set(parsedId, parsedQty);
+        }
+      });
+      return;
+    }
+
     Object.entries(data).forEach(([id, qty]) => {
       const parsedQty = Number(qty);
       const parsedId = String(id);
@@ -566,19 +578,6 @@ function loadCart() {
   } catch (error) {
     console.error("Erro ao carregar carrinho:", error);
   }
-}
-
-function saveCart() {
-  const data = {};
-  cart.forEach((qty, id) => {
-    data[id] = qty;
-  });
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
-  window.dispatchEvent(new CustomEvent("cb:cartUpdated", {
-    detail: { count: cartCount(), subtotal: cartSubtotal() }
-  }));
 }
 
 function cartCount() {
@@ -601,16 +600,104 @@ function cartSubtotal() {
 }
 
 function getCartItems() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return [];
+
+  try {
+    const data = JSON.parse(raw);
+
+    if (Array.isArray(data)) {
+      return data
+        .filter(item => item && item.id && Number(item.qty) > 0)
+        .map(item => ({
+          product: {
+            id: item.id,
+            name: item.name || "Produto",
+            price: Number(item.price || 0),
+            image: item.image || "",
+            category: item.category || ""
+          },
+          qty: Number(item.qty || 0)
+        }));
+    }
+
+    // fallback formato antigo
+    return Object.entries(data)
+      .map(([id, qty]) => {
+        const product = PRODUCTS.find(p => String(p.id) === String(id));
+        if (!product || Number(qty) <= 0) return null;
+
+        return {
+          product: {
+            id: product.id,
+            name: product.name || "Produto",
+            price: Number(product.price || 0),
+            image: product.image || "",
+            category: product.category || ""
+          },
+          qty: Number(qty || 0)
+        };
+      })
+      .filter(Boolean);
+
+  } catch (e) {
+    console.error("Erro ao ler carrinho:", e);
+    return [];
+  }
+}
+
+function cartSubtotal() {
+  const items = getCartItems();
+
+  return items.reduce((total, { product, qty }) => {
+    return total + (Number(product.price || 0) * Number(qty || 0));
+  }, 0);
+}
+
+function saveCart() {
+  const existingRaw = localStorage.getItem(STORAGE_KEY);
+  let existingItems = [];
+
+  try {
+    const parsed = JSON.parse(existingRaw || "[]");
+    if (Array.isArray(parsed)) {
+      existingItems = parsed;
+    }
+  } catch (_) {
+    existingItems = [];
+  }
+
   const items = [];
 
   cart.forEach((qty, id) => {
-    const product = PRODUCTS.find((p) => String(p.id) === String(id));
-    if (product) {
-      items.push({ product, qty });
+    let product = PRODUCTS.find((p) => String(p.id) === String(id));
+
+    if (!product) {
+      product = existingItems.find((p) => String(p.id) === String(id));
+    }
+
+    if (product && Number(qty) > 0) {
+      items.push({
+        id: product.id,
+        name: product.name || "Produto",
+        price: Number(product.price || 0),
+        image: product.image || "",
+        category: product.category || "",
+        qty: Number(qty)
+      });
     }
   });
 
-  return items;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+
+  window.dispatchEvent(
+    new CustomEvent("cb:cartUpdated", {
+      detail: {
+        count: cartCount(),
+        subtotal: cartSubtotal()
+      }
+    })
+  );
 }
 
 function addToCart(id, delta = 1) {
@@ -1750,22 +1837,35 @@ function setupCategoryCollapse() {
 }
 
 function sanitizeCartAgainstProducts() {
-  if (!PRODUCTS.length) return;
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
 
-  let changed = false;
+  let storedItems = [];
 
-  for (const [id, qty] of cart.entries()) {
-    const exists = PRODUCTS.some((p) => String(p.id) === String(id));
+  try {
+    const parsed = JSON.parse(raw);
 
-    if (!exists || !Number.isFinite(Number(qty)) || Number(qty) <= 0) {
-      cart.delete(id);
-      changed = true;
+    if (Array.isArray(parsed)) {
+      storedItems = parsed.filter(
+        (item) => item && item.id && Number(item.qty) > 0
+      );
+    } else {
+      storedItems = Object.entries(parsed)
+        .filter(([id, qty]) => id && Number(qty) > 0)
+        .map(([id, qty]) => ({ id, qty: Number(qty) }));
     }
+  } catch (error) {
+    console.error("Erro ao sanitizar carrinho:", error);
+    return;
   }
 
-  if (changed) {
-    saveCart();
-  }
+  cart.clear();
+
+  storedItems.forEach((item) => {
+    cart.set(String(item.id), Number(item.qty));
+  });
+
+  saveCart();
 }
 
 async function init() {
@@ -1816,5 +1916,10 @@ async function init() {
     products: PRODUCTS
   };
 }
-
+window.CondeBonfimApp = {
+  getCartItems,
+  cartSubtotal,
+  cartCount,
+  loadCart
+};
 window.__CB_APP_READY__ = init();

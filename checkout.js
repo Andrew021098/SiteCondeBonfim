@@ -32,12 +32,53 @@ function brl(value) {
 
 function getCartItemsSafe() {
   const app = getAppApi();
-  return app?.getCartItems ? app.getCartItems() : [];
+
+  if (app?.getCartItems) {
+    const items = app.getCartItems();
+    if (Array.isArray(items) && items.length) return items;
+  }
+
+  try {
+    const raw = localStorage.getItem("cb_cart_v7");
+    if (!raw) return [];
+
+    const data = JSON.parse(raw);
+
+    if (Array.isArray(data)) {
+      return data
+        .filter(item => item && item.id && Number(item.qty) > 0)
+        .map(item => ({
+          product: {
+            id: item.id,
+            name: item.name || "Produto",
+            price: Number(item.price || 0),
+            image: item.image || "",
+            category: item.category || ""
+          },
+          qty: Number(item.qty || 0)
+        }));
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Erro ao ler carrinho no checkout:", error);
+    return [];
+  }
 }
 
 function cartSubtotalSafe() {
   const app = getAppApi();
-  return app?.cartSubtotal ? app.cartSubtotal() : 0;
+
+  if (app?.cartSubtotal) {
+    const subtotal = Number(app.cartSubtotal());
+    if (!Number.isNaN(subtotal) && subtotal > 0) return subtotal;
+  }
+
+  const items = getCartItemsSafe();
+
+  return items.reduce((total, { product, qty }) => {
+    return total + (Number(product.price || 0) * Number(qty || 0));
+  }, 0);
 }
 
 function cartCountSafe() {
@@ -520,3 +561,12 @@ function setupCepLookup() {
 
   cepInput.addEventListener("blur", fetchAddressByCep);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadCartSafe();
+  renderCheckoutPage();
+
+  window.addEventListener("cb:cartUpdated", () => {
+    renderCheckoutPage();
+  });
+});
