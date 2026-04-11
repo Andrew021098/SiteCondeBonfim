@@ -287,10 +287,19 @@ function ensureActiveCategoryIsValid() {
   }
 }
 
+document.querySelectorAll('input[name="discountFilter"]').forEach((input) => {
+  input.addEventListener("change", async () => {
+    catalogFilters.minDiscount = Number(input.value || 0);
+    await loadCatalogPage(true);
+  });
+});
+
 function syncCategoryFilterSelection() {
   const inputs = document.querySelectorAll('input[name="categoryFilter"]');
+  const current = String(activeCategory || "Todos").trim();
+
   inputs.forEach((input) => {
-    input.checked = input.value === activeCategory;
+    input.checked = String(input.value || "").trim() === current;
   });
 }
 
@@ -299,22 +308,25 @@ function renderCatalogCategoryFilters() {
   if (!container) return;
 
   const categories = getDynamicCategoriesWithCount();
-  ensureActiveCategoryIsValid();
 
   container.innerHTML = `
-    <h3 class="filtersCard__title">Categorias</h3>
     <div class="filtersCard__options">
-      ${categories.map((category) => `
-        <label class="filterOption">
-          <input
-            type="radio"
-            name="categoryFilter"
-            value="${escapeHtml(category.name)}"
-            ${activeCategory === category.name ? "checked" : ""}
-          />
-          <span>${escapeHtml(category.name)} (${category.count})</span>
-        </label>
-      `).join("")}
+      ${categories.map((category) => {
+        const categoryName = String(category.name || "").trim();
+        const isChecked = String(activeCategory || "").trim() === categoryName;
+
+        return `
+          <label class="filterOption">
+            <input
+              type="radio"
+              name="categoryFilter"
+              value="${escapeHtml(categoryName)}"
+              ${isChecked ? "checked" : ""}
+            />
+            <span>${escapeHtml(categoryName)} (${category.count})</span>
+          </label>
+        `;
+      }).join("")}
     </div>
   `;
 
@@ -322,10 +334,17 @@ function renderCatalogCategoryFilters() {
 
   categoryInputs.forEach((input) => {
     input.addEventListener("change", async () => {
-      activeCategory = input.value || "Todos";
+      activeCategory = String(input.value || "Todos").trim();
+
+      categoryInputs.forEach((radio) => {
+        radio.checked = radio.value === activeCategory;
+      });
+
       await loadCatalogPage(true);
     });
   });
+
+  syncCategoryFilterSelection();
 }
 
 async function fetchProductsPage(page = 1, limit = 100, extraFilters = {}) {
@@ -474,11 +493,11 @@ async function loadCatalogPage(reset = false) {
   if (catalogLoading) return;
 
   const selectedCategory =
-    document.querySelector('input[name="categoryFilter"]:checked')?.value ||
-    activeCategory ||
-    "Todos";
+  document.querySelector('input[name="categoryFilter"]:checked')?.value ||
+  activeCategory ||
+  "Todos";
 
-  activeCategory = selectedCategory;
+  activeCategory = String(activeCategory || "Todos").trim();
 
   if (reset) {
     catalogPage = 1;
@@ -864,16 +883,12 @@ function getImageUrl(product) {
   return product.image;
 }
 
-// Ver detalhes
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".productDetailsBtn");
   if (!btn) return;
 
-  const id = Number(btn.dataset.id);
-  const product = PRODUCTS.find(p => Number(p.id) === id);
-  if (!product) return;
-
-  openProductModal(product);
+  const id = String(btn.dataset.id).trim();
+  openProductModal(id);
 });
 
 
@@ -887,41 +902,41 @@ function productCard(product) {
   card.className = "pCard";
 
   card.innerHTML = `
-  <div class="pImg" style="background-image:url('${imageUrl}')">
-    ${hasOff ? `<div class="badgeOff">${product.offPct}% OFF</div>` : ""}
-  </div>
-
-  <div class="pBody">
-    <div class="pCategory">${escapeHtml(product.brand || product.category || "")}</div>
-
-    <p class="pName" title="${escapeHtml(product.name)}">
-      ${escapeHtml(product.name)}
-    </p>
-
-    <div class="pPrices">
-      ${hasOld ? `<div class="oldPrice">${brl(product.oldPrice)}</div>` : `<div class="oldPrice"></div>`}
-      <div class="newPrice">${brl(product.price)}</div>
+    <div class="pImg" style="background-image:url('${imageUrl}')">
+      ${hasOff ? `<div class="badgeOff">${product.offPct}% OFF</div>` : ""}
     </div>
 
-    <div class="pInstallment">
-      ${product.installmentsNoInterest ? "em até 10x sem juros" : "à vista"}
-    </div>
+    <div class="pBody">
+      <div class="pCategory">${escapeHtml(product.brand || product.category || "")}</div>
 
-    <div class="pActions">
-      <button class="btn btn--outline productDetailsBtn" type="button" data-id="${product.id}">
-        Ver detalhes
-      </button>
+      <p class="pName" title="${escapeHtml(product.name)}">
+        ${escapeHtml(product.name)}
+      </p>
 
-      <button class="addBtn" type="button" data-id="${product.id}">
-        <span aria-hidden="true">🛒</span>
-        <span>Adicionar</span>
-      </button>
+      <div class="pPrices">
+        ${hasOld ? `<div class="oldPrice">${brl(product.oldPrice)}</div>` : `<div class="oldPrice"></div>`}
+        <div class="newPrice">${brl(product.price)}</div>
+      </div>
+
+      <div class="pInstallment">
+        ${product.installmentsNoInterest ? "em até 10x sem juros" : "à vista"}
+      </div>
+
+      <div class="pActions">
+        <button class="btn btn--outline productDetailsBtn" type="button" data-id="${escapeHtml(String(product.id))}">
+          Ver detalhes
+        </button>
+
+        <button class="addBtn" type="button" data-id="${escapeHtml(String(product.id))}">
+          <span aria-hidden="true">🛒</span>
+          <span>Adicionar</span>
+        </button>
+      </div>
     </div>
-  </div>
-`;
+  `;
 
   const addBtn = card.querySelector(".addBtn");
-  const detailButtons = card.querySelectorAll(".productDetailsBtn");
+  const detailsBtn = card.querySelector(".productDetailsBtn");
 
   addBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -929,15 +944,13 @@ function productCard(product) {
     openDrawer();
   });
 
-  detailButtons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openProductModal(product);
-    });
+  detailsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openProductModal(product.id);
   });
 
   card.addEventListener("click", () => {
-    openProductModal(product);
+    openProductModal(product.id);
   });
 
   return card;
@@ -1321,7 +1334,7 @@ function setupSort() {
 }
 
 function getSelectedDeliveryType() {
-  const selected = document.querySelector('input[name="deliveryType"]:checked');
+  const selected = document.querySelector('input[name="categoryFilter"]:checked')?.value
   return selected ? selected.value : "Entrega";
 }
 
@@ -1480,9 +1493,12 @@ function setupDrawer() {
 }
 
 function openProductModal(productId) {
-  const product = PRODUCTS.find((p) => String(p.id) === String(productId))
-    || catalogLoadedProducts.find((p) => String(p.id) === String(productId))
-    || offersLoadedProducts.find((p) => String(p.id) === String(productId));
+  const key = String(productId).trim();
+
+  const product =
+    PRODUCTS.find((p) => String(p.id).trim() === key) ||
+    catalogLoadedProducts.find((p) => String(p.id).trim() === key) ||
+    offersLoadedProducts.find((p) => String(p.id).trim() === key);
 
   if (!product) return;
 
@@ -1501,7 +1517,7 @@ function openProductModal(productId) {
     return;
   }
 
-  image.src = product.image || "./assets/product-placeholder.jpg";
+  image.src = getImageUrl(product);
   image.alt = product.name || "Produto";
   category.textContent = product.brand || product.category || "Produto";
   title.textContent = product.name || "Produto";

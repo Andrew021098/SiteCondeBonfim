@@ -9,7 +9,7 @@ const Firebird = require("node-firebird");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const REUTILIZAR_MESMO_VENDEDOR = true; // Configuração para reutilizar o mesmo vendedor enquanto ele estiver ativo
+const REUTILIZAR_MESMO_VENDEDOR = false; // Configuração para reutilizar o mesmo vendedor enquanto ele estiver ativo
 const INTERNAL_SECRET = process.env.INTERNAL_SECRET || "";
 
 console.log("FIREBIRD_HOST:", process.env.FIREBIRD_HOST);
@@ -122,7 +122,7 @@ function normalizeProduct(product, baseUrl) {
   const imageValue = String(product.image || "").trim();
   const isAbsolute = /^https?:\/\//i.test(imageValue);
 
-  let finalImage = `${baseUrl}/assets/no-image.jpg`;
+  let finalImage = `${baseUrl}/assets/produtos/no-image.jpg`;
 
   if (imageValue) {
     if (isAbsolute) {
@@ -621,7 +621,7 @@ app.post("/distribuir-lead", (req, res) => {
     const enderecoTexto =
       formaRecebimento.includes("Retirada")
         ? "Retirada na loja"
-        : [lead.endereco, lead.complemento, lead.cep ? `📍 CEP: ${lead.cep}` : ""]
+        : [lead.endereco, lead.complemento, lead.cep ? `"" CEP: ${lead.cep}` : ""]
             .filter(Boolean)
             .join(" | ");
 
