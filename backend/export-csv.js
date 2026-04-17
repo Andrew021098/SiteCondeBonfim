@@ -4,7 +4,7 @@ const fs = require("fs");
 const BASE_URL = process.env.PRODUCTS_DB_URL || "http://localhost:3000/api/products-db";
 const API_KEY = process.env.INTERNAL_SECRET || "";
 const LIMIT = Number(process.env.EXPORT_LIMIT || 1000);
-const OUTPUT = "./products.csv";
+const OUTPUT = process.env.EXPORT_OUTPUT || "./products.csv";
 
 async function fetchPage(page) {
   const url = `${BASE_URL}?page=${page}&limit=${LIMIT}`;
@@ -43,42 +43,102 @@ function normalizeMoney(value) {
   return Number.isFinite(num) ? num.toFixed(2) : "";
 }
 
+function normalizeInteger(value, fallback = 0) {
+  if (value == null || value === "") return fallback;
+
+  const num = Number(String(value).replace(/[^\d-]/g, ""));
+  return Number.isFinite(num) ? Math.trunc(num) : fallback;
+}
+
+function normalizeBoolean(value) {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value !== 0;
+
+  const normalized = String(value ?? "").trim().toLowerCase();
+
+  return ["true", "1", "sim", "yes"].includes(normalized);
+}
+
+function normalizeText(value, fallback = "") {
+  if (value == null) return fallback;
+  return String(value).trim();
+}
+
+function mapProduct(product) {
+  return {
+    id: product.id ?? product.CDPRODUTO ?? "",
+    name: normalizeText(product.name ?? product.PRODUTO),
+    category: normalizeText(product.category ?? product.GRUPOS),
+    brand: normalizeText(product.brand),
+    saleFormat: normalizeText(product.saleFormat ?? product.CDUNIDVENDA ?? "Unidade"),
+    installmentsNoInterest: normalizeBoolean(product.installmentsNoInterest),
+    flashOffer: normalizeBoolean(product.flashOffer),
+    price: normalizeMoney(product.price ?? product.PADRAO),
+    oldPrice: normalizeMoney(product.oldPrice ?? product.PROMOCAO),
+    offPct: product.offPct ?? "",
+    freeShip: normalizeBoolean(product.freeShip),
+    image: normalizeText(product.image ?? product.FOTO),
+    featured: normalizeBoolean(product.featured),
+    description: normalizeText(product.description ?? product.DESCRICAO_PRODUTO ?? "Produto sem descrição."),
+    stock: normalizeInteger(product.stock ?? product.QTDEATUAL, 0),
+    location: normalizeText(product.location ?? product.LOCALIZACAO_DEPOSITO),
+    barcode: normalizeText(product.barcode ?? product.CODBARRA),
+    unit: normalizeText(product.unit ?? product.CDUNIDVENDA),
+    cdsetor: normalizeInteger(product.cdsetor ?? product.CDSETOR, ""),
+    cdsetdep: normalizeInteger(product.cdsetdep ?? product.CDSETDEP, "")
+  };
+}
+
 function toCSV(products) {
   const headers = [
-    "id",
-    "name",
-    "category",
-    "brand",
-    "saleFormat",
-    "installmentsNoInterest",
-    "flashOffer",
-    "price",
-    "oldPrice",
-    "offPct",
-    "freeShip",
-    "image",
-    "featured",
-    "description",
-    "stock"
-  ];
+  "id",
+  "name",
+  "category",
+  "brand",
+  "saleFormat",
+  "installmentsNoInterest",
+  "flashOffer",
+  "price",
+  "oldPrice",
+  "offPct",
+  "freeShip",
+  "image",
+  "featured",
+  "description",
+  "stock",
+  "location",
+  "barcode",
+  "unit",
+  "cdsetor",
+  "cdsetdep"
+];
 
-  const lines = products.map((p) => [
-    p.id ?? "",
-    escapeCsv(p.name),
-    escapeCsv(p.category),
-    escapeCsv(p.brand),
-    escapeCsv(p.saleFormat),
-    p.installmentsNoInterest ?? false,
-    p.flashOffer ?? false,
-    normalizeMoney(p.price),
-    normalizeMoney(p.oldPrice),
-    p.offPct ?? "",
-    p.freeShip ?? false,
-    escapeCsv(p.image),
-    p.featured ?? false,
-    escapeCsv(p.description),
-    p.stock ?? 0
-  ].join(";"));
+  const lines = products.map((raw) => {
+    const p = mapProduct(raw);
+
+    return [
+  p.id,
+  escapeCsv(p.name),
+  escapeCsv(p.category),
+  escapeCsv(p.brand),
+  escapeCsv(p.saleFormat),
+  p.installmentsNoInterest,
+  p.flashOffer,
+  p.price,
+  p.oldPrice,
+  p.offPct,
+  p.freeShip,
+  escapeCsv(p.image),
+  p.featured,
+  escapeCsv(p.description),
+  p.stock,
+  escapeCsv(p.location),
+  escapeCsv(p.barcode),
+  escapeCsv(p.unit),
+  p.cdsetor,
+  p.cdsetdep
+].join(";");
+  });
 
   return [headers.join(";"), ...lines].join("\n");
 }
