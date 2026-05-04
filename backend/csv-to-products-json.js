@@ -64,19 +64,14 @@ function toBoolean(value) {
   return String(value || "").trim().toLowerCase() === "true";
 }
 
-function normalizeImage(imageValue, id) {
-  const value = String(imageValue || "").trim();
+function normalizeImage(id) {
+  const cleanId = String(id || "").trim();
 
-  if (value.startsWith("http://") || value.startsWith("https://")) return value;
-  if (value.startsWith("/assets/")) return value;
-  if (value.startsWith("./assets/")) return value.replace(".", "");
-
-  // 🔥 se vier vazio, usa o ID como nome da imagem
-  if (!value && id) {
-    return `/assets/produtos/${id}.jpg`;
+  if (!cleanId) {
+    return "/assets/produtos/no-image.jpg";
   }
 
-  return "/assets/produtos/no-image.jpg";
+  return `/assets/produtos/${cleanId}.jpg`;
 }
 
 function buildOffPct(price, oldPrice) {
@@ -132,7 +127,7 @@ function run() {
         oldPrice,
         offPct,
         freeShip: toBoolean(row.freeShip),
-        image: normalizeImage(row.image, row.id),
+        image: normalizeImage(row.id),
         featured: toBoolean(row.featured),
         description: String(row.description || "Produto sem descrição.").trim(),
         stock: toNumber(row.stock, 0)
