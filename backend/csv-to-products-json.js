@@ -71,7 +71,18 @@ function normalizeImage(id) {
     return "/assets/produtos/no-image.jpg";
   }
 
-  return `/assets/produtos/${cleanId}.jpg`;
+  const extensions = [".jpg", ".webp", ".jpeg", ".png"];
+
+  for (const ext of extensions) {
+    const fileName = `${cleanId}${ext}`;
+    const filePath = path.join(ASSETS_DIR, fileName);
+
+    if (fs.existsSync(filePath)) {
+      return `/assets/produtos/${fileName}`;
+    }
+  }
+
+  return "/assets/produtos/no-image.jpg";
 }
 
 function buildOffPct(price, oldPrice) {
